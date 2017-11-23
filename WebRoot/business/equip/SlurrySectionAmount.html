@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<link rel="stylesheet"	href="../../component/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/layoutit.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/bootstrap-combined.min.css">
+    <link rel="stylesheet"	href="../../component/jquery-easyui-1.4.2/themes/icon.css">
+    <link rel="stylesheet"	href="css/common.css">
+
+    <script src="../../component/jquery/jquery.mini.js"></script>
+    <script src="../../component/bootstrap/bootstrap.min.js"></script>
+    <script src="../../component/echarts/echarts.min.js"></script>
+    
+    <style>
+    html,body
+    {
+        height:100%;
+        margin:auto;
+        width:100%;
+    }
+</style>
+</head>
+<body >
+	<div class="container-fluid" style="height:100%">
+		<div id="charts" class="row-fluid" style="height:100%">
+			<div class="span4" id="left" style="height:100%">
+			</div>
+			<div class="span4" id="middle" style="height:100%">
+			</div>
+			<div class="span4" id="right" style="height:100%">
+			</div>
+			<script>
+			var left = echarts.init(document.getElementById('left'));
+			
+			var middle = echarts.init(document.getElementById('middle'));
+
+			var right = echarts.init(document.getElementById('right'));
+			
+			function buildOption(amount){
+				return {
+				    title : {
+				        text: amount.sectionName,
+				        subtext: '水  : '+amount.realWaterAmount/1000+' 吨\n'+'水 泥 : '+amount.realCementAmount/1000+" 吨",
+				        subtextStyle:{
+				            color:'red',
+				            fontSize:20
+				        },
+				        x:'center'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} ({d}%)"
+				    },
+				    legend: {
+				        orient: 'vertical',
+				        left: 'left',
+				        data: ['水','水泥']
+				    },
+				    series : [
+				        {
+				            name: '',
+				            type: 'pie',
+				            radius : '55%',
+				            center: ['50%', '60%'],
+				            data:[
+				                {value:amount.realWaterAmount, name:'水'},
+				                {value:amount.realCementAmount, name:'水泥'}
+				            ],
+				            itemStyle: {
+				                emphasis: {
+				                    shadowBlur: 10,
+				                    shadowOffsetX: 0,
+				                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+				                }
+				            }
+				        }
+				    ]
+				}
+			}
+
+			$.ajax({
+		        url:'../../resource/SlurryService/querySectionAmount',
+		        async:false,
+		        data:{
+		        	projectId:1,
+		        	sectionId:1
+		        },
+		        type:'post',
+		        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+		        cache:false,
+		        dataType:'json',
+		        success:function(data) {
+		        	//console.info("data1 : ",data);
+					left.setOption(buildOption(data.sectionAmount[0]));
+		        },
+		        error : function() {
+		        }
+		    });
+			
+			$.ajax({
+		        url:'../../resource/SlurryService/querySectionAmount',
+		        async:false,
+		        data:{
+		        	projectId:12,
+		        	sectionId:1
+		        },
+		        type:'post',
+		        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+		        cache:false,
+		        dataType:'json',
+		        success:function(data) {
+		        	middle.setOption(buildOption(data.sectionAmount[0]));
+		        },
+		        error : function() {
+		        }
+		    });
+			
+			$.ajax({
+		        url:'../../resource/SlurryService/querySectionAmount',
+		        async:false,
+		        data:{
+		        	projectId:12,
+		        	sectionId:2
+		        },
+		        type:'post',
+		        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+		        cache:false,
+		        dataType:'json',
+		        success:function(data) {
+		        	right.setOption(buildOption(data.sectionAmount[0]));
+		        },
+		        error : function() {
+		        }
+		    });
+			
+			$("#charts").resize(function(){
+				left.resize();
+				middle.resize();
+				right.resize();
+             })
+			</script>
+		</div>
+	</div>
+</body>
+</html>

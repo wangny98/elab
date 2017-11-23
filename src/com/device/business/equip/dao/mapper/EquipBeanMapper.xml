@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.device.business.equip.dao.mapper.EquipBeanMapper" >
+  <select id="getMaxId" resultType="java.lang.Integer">
+  	select max(zjid) from zj
+  </select>
+  <insert id="addEquip" parameterType="com.device.business.equip.bean.EquipBean">
+  	insert into zj (jrbm,zjmc,jjfl)
+  	values (#{equipmentCode,jdbcType=VARCHAR},#{equipmentName,jdbcType=VARCHAR},#{equipmentType,jdbcType=VARCHAR})
+  </insert>
+</mapper>

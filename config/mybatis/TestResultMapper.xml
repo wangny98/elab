@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.assetManage.dao.mapper.AssetMapper">
+	<insert id="insertTestResult" parameterType="com.device.business.assetManage.element.TestResultElement" >  
+   		INSERT INTO t_fixedasset_testresult (  
+        	ID, 
+        	fanumber,
+        	TESTRESULT,
+        	TESTSTAFF,
+        	TESTDATE,
+        	REMARK,
+        	ENTERSTAFF,
+        	ENTERDATE,
+        	CETIFICATENO,
+        	testdept
+        	  )
+    	VALUES (  
+        	#{id},  
+        	#{fanumber},
+        	#{testresult},  
+        	#{teststaff},  
+        	to_date(#{testdate}, 'yyyy-mm-dd'),
+        	#{remark},  
+        	#{enterstaff},
+        	to_date(#{enterdate}, 'yyyy-mm-dd'),
+        	#{cetificateno},   
+        	#{testdept}
+        	)  
+	</insert> 
+	
+	<update id="updateTestResult" parameterType="com.device.business.assetManage.element.TestResultElement" statementType="PREPARED">
+		update t_fixedasset_testresult
+			set 
+			TESTRESULT = #{testresult}, 
+			fanumber = #{fanumber},
+        	TESTSTAFF = #{teststaff},  
+        	TESTDATE = to_date(#{testdate}, 'yyyy-mm-dd'),
+        	REMARK = #{remark},
+        	testdept=#{testdept}
+		where cetificateno=#{cetificateno}
+	</update>
+	
+	<delete id="deleteTestResult" parameterType="string"  statementType="PREPARED">
+		delete 
+		from t_fixedasset_testresult t 
+		where cetificateno in (#{id}) 
+	</delete>
+	
+	<select id="queryTestResult" parameterType="com.device.business.assetManage.bean.TestResultBean"
+		resultType="com.device.business.assetManage.bean.TestResultBean">
+		select
+			b.fanumber,b.faname,TESTRESULT,
+        	TESTSTAFF,to_char(TESTDATE, 'yyyy-mm-dd') TESTDATE,REMARK,
+        	ENTERSTAFF,to_char(ENTERDATE, 'yyyy-mm-dd') ENTERDATE,CETIFICATENO,
+        	testdept
+		from 
+		t_fixedasset_basic b 
+		left join t_fixedasset_testresult t on b.fanumber = t.fanumber
+		where 
+     		status in (2,3,4) and b.fameasure = 1
+     	<if test="cetificateno != null and cetificateno != ''">
+     		and cetificateno = #{cetificateno}
+     	</if>
+     	<if test="teststaff != null and teststaff != ''">
+     		and teststaff like #{teststaff}
+     	</if>
+     	<if test="tsdate != null and tsdate != ''">
+			and testdate >= to_date(#{tsdate},'yyyy-mm-dd hh24:mi:ss') 
+			and to_date(#{tedate},'yyyy-mm-dd hh24:mi:ss') >= testdate  
+     	</if>
+	</select>
+	
+	<select id="countTestResult" parameterType="com.device.business.assetManage.bean.TestResultBean"
+		resultType="Integer">
+		select
+			count(*)
+		from 
+		t_fixedasset_basic b 
+		left join t_fixedasset_testresult t on b.fanumber = t.fanumber
+		where 
+     		status in (2,3,4) and b.fameasure = 1
+     	<if test="cetificateno != null and cetificateno != ''">
+     		and cetificateno = #{cetificateno}
+     	</if>
+     	<if test="teststaff != null and teststaff != ''">
+     		and teststaff like #{teststaff}
+     	</if>
+     	<if test="tsdate != null and tsdate != ''">
+			and testdate >= to_date(#{tsdate},'yyyy-mm-dd hh24:mi:ss') 
+			and to_date(#{tedate},'yyyy-mm-dd hh24:mi:ss') >= testdate  
+     	</if>
+	</select>
+	
+	<select id="queryTestResultByFanumber" parameterType="string"
+		resultType="int">
+		select
+			count(*)
+		from t_fixedasset_testresult 
+		where fanumber like #{fanumber}
+	</select>
+	
+	
+
+</mapper>

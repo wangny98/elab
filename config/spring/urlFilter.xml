@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<url>
+	
+	<!-- 不能访问警告页面 -->
+	<warn warning-page="/warning.html" />
+	<intercept-url type="warning-page">
+		<pattern>/page/common/warning.jsp</pattern>
+	</intercept-url>
+	
+	<!--
+	pattern 匹配正则表达式
+	 -->
+	
+	<!-- 模糊匹配 一般放资源文件 -->
+	<intercept-url type="rough">
+		<pattern>/*.doc</pattern>
+		<pattern>/*.docx</pattern>
+		<pattern>/ext/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/business/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/comm/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/style/css/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/component/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/style/images/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/frame/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/img/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/style/imagesimg/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/images/navigate/close.png
+		</pattern>
+		<pattern>/style/default/images/pic_error.gif
+		</pattern>
+		<pattern>/weboffice/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/resource/security/validate
+		</pattern>
+	</intercept-url>
+
+	<!-- 登陆之后才能访问 -->
+	<intercept-url type="login">
+		<pattern>/resource/testClass/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+		<pattern>/resource/userManager/([a-zA-Z0-9]*/)*[\s\S]*
+		</pattern>
+	</intercept-url>
+</url>

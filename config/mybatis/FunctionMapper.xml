@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.roleManage.dao.mapper.FunctionMapper">
+		
+	<update id="updateCodes" statementType="PREPARED">
+		update t_system_role
+			set func_code = #{codes}
+		where id =#{roleId}
+	</update>
+	
+	<select id="getAllCodes" resultType="java.lang.String">
+		select code from t_system_func
+	</select>
+	
+	<select id="getCheckModule" resultType="com.device.business.roleManage.bean.CheckNodeBean">
+		select
+			id,
+			name text,
+			code idfex,
+			sortseq,
+			css iconCls,
+			parent_id,
+			1 checkedNum
+		from t_system_module
+		where code in ${codes}
+	</select>
+	
+	<select id="getNotCheckModule" resultType="com.device.business.roleManage.bean.CheckNodeBean">
+		select
+			id,
+			name text,
+			code idfex,
+			sortseq,
+			css iconCls,
+			parent_id,
+			0 checkedNum
+		from t_system_module
+		where code not in ${codes}
+	</select>
+	
+	<select id="getAssignModule" resultType="com.device.business.roleManage.bean.NodeBean">
+		select
+			id,
+			name text,
+			code idfex,
+			sortseq,
+			css iconCls,
+			parent_id
+		from t_system_module
+		where code in ${codes}
+	</select>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.recordManager.dao.mapper.RecordGrantMapper">
+	<select id="query" parameterType="string" resultType="com.device.business.recordManager.bean.RecordGrantBean">
+		select
+			id,
+			grant_no,
+			consume_user,
+			consume_date,
+			remark
+		from t_record_grant
+		where delete_flag=1
+		<if test="searchName!=null and searchName!='' ">and remark like #{searchName}</if>
+	</select>
+	
+	<select id="load" parameterType="string" resultType="com.device.business.recordManager.bean.RecordGrantBean">
+		select
+			id,
+			grant_no,
+			consume_user,
+			consume_date,
+			remark
+		from t_record_grant
+		where id = #{id}
+	</select>
+	
+	<select id="count" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_record_grant
+		where  delete_flag=1  
+		<if test="searchName!=null and searchName!='' ">and remark like #{searchName}</if>
+	</select>
+	
+	<insert id="add" parameterType="com.device.business.recordManager.bean.RecordGrantBean" statementType="PREPARED">
+		insert into t_record_grant
+		(
+			id,
+			grant_no,
+			consume_user,
+			consume_date,
+			remark,
+			delete_flag
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.grant_no},
+			#{bean.consume_user},
+			#{bean.consume_date},
+			#{bean.remark},
+			#{bean.delete_flag}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.device.business.recordManager.bean.RecordGrantBean" statementType="PREPARED">
+		update t_record_grant set
+			grant_no = #{bean.grant_no},
+				consume_user = #{bean.consume_user},
+					consume_date = #{bean.consume_date},
+						remark = #{bean.remark}
+		where id = #{bean.id}
+	</update>
+	
+	<delete id="delete" parameterType="string" statementType="PREPARED">
+		delete from t_record_grant where id =#{id}
+	</delete>
+</mapper>

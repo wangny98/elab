@@ -1,0 +1,975 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.assetManage.dao.mapper.AssetMapper">
+	<insert id="insertBasicAsset"
+		parameterType="com.device.business.assetManage.element.AssetElement"
+		statementType="PREPARED">
+		INSERT INTO t_fixedasset_basic(
+		ID,
+		FANUMBER,
+		FACLASSIFICATION,
+		FAGNUMBER,
+		FANAME,
+		FAMODEL,
+		FAMANUFACTURER,
+		FAAMOUNT,
+		FAUOM,
+		FAFNUM,
+		FAMEASURE,
+		FAARRIVEDATE,
+		FAACCOUNTDATE,
+		FAUSEAGE,
+		FADEPRECTION,
+		FAFR,
+		FATOV,
+		FAVALUE,
+		FAGM,
+		FADFU,
+		FAUSESTATE,
+		FADEPT,
+		FAUSER,
+		FAREMARKS,
+		STATUS
+		)
+		VALUES (
+		#{id},
+		#{fanumber},
+		#{faclassification},
+		#{fagnumber},
+		#{faname},
+		#{famodel},
+		#{famanufacturer},
+		#{faamount},
+		#{fauom},
+		#{fafnum},
+		#{fameasure},
+		to_date(#{faarrivedate}, 'yyyy-mm-dd'),
+		to_date(#{faaccountdate}, 'yyyy-mm-dd'),
+		#{fauseage},
+		#{fadeprection},
+		#{fafr},
+		#{fatov},
+		#{favalue},
+		#{fagm},
+		#{fadfu},
+		#{fausestate},
+		#{fadept},
+		#{fauser},
+		#{faremarks},
+		1
+		)
+	</insert>
+	
+	<select id="queryAssetSearch" parameterType="com.device.business.assetManage.bean.AssetBean"
+		resultType="com.device.business.assetManage.bean.AssetBean">
+		select
+		b.fanumber , b.id, faclassification, fagnumber, faname,
+		famodel, famanufacturer, faamount, fauom, b.fafnum,
+		fameasure,to_char(faarrivedate, 'yyyy-mm-dd') faarrivedate, to_char(faaccountdate, 'yyyy-mm-dd') faaccountdate , fauseage, fadeprection,
+		fafr, fatov, favalue, fagm, fadfu,
+		fausestate, fadept, fauser, faremarks, status,
+		DEVICETYPE, CPUTYPE, CLOCKSPEED, RAM, HARDDISK,
+		MONITOR, KEYBOARD, MOUSE,
+		HTEL, HCONTRACT, HWUYE, HQUALITY, HSTRUCTURE,
+		to_char(HCOMPLETEDATE, 'yyyy-mm-dd') HCOMPLETEDATE,HTYPE, HSIZE, HLANDSIZE, HPURPOSE,
+		HLANDPROPERTY,HEATTYPE, HBLAYER, HLAYER, HCQNUM,
+		HFORM, HNAME, HBSIZE,
+		CARVALIDATEM2,CARTYPE, MILEAGE, CARFRAME,to_char(CARPDATE, 'yyyy-mm-dd') CARPDATE,
+		to_char(CAREXPIREDDATE, 'yyyy-mm-dd') CAREXPIREDDATE,to_char(CARUPDATEDATE, 'yyyy-mm-dd') CARUPDATEDATE, 
+		CARSEAT, OILTYPE, CARCC,
+		CARVALIDATEM1,CARENGINE, CARNUM,
+		FAPOF,FABUYER,FACONTRACT,FASUPPLIER,
+		FASUPPLIERTEL,to_char(FAPDATE, 'yyyy-mm-dd') FAPDATE,FAINVOICENUMBER,
+		FAADN,FAREPORT,
+		to_char(CHECKDATE, 'yyyy-mm-dd') CHECKDATE,CHECKER,c.FAFNUM cfafnum,to_char(ALLCOVERDATE, 'yyyy-mm-dd') ALLCOVERDATE,CHECKRESULT,
+		FAAREA,CHECKREMARK,
+		to_char(FAFIRSTMEASURE, 'yyyy-mm-dd') FAFIRSTMEASURE, RETESTPERIOD,to_char(LASTTESTDATE, 'yyyy-mm-dd') LASTTESTDATE
+		from
+		t_fixedasset_basic b 
+		left join t_fixedasset_computer d on b.FANUMBER = d.FANUMBER 
+		left join t_fixedasset_house h on b.FANUMBER=h.FANUMBER
+		left join t_fixedasset_vehicle v on b.FANUMBER = v.FANUMBER
+		left join t_fixedasset_purchase p on b.fanumber = p.fanumber
+		left join t_fixedasset_check c on b.fanumber = c.fanumber
+		where
+		1 = 1
+		<if test="fanumber != null and fanumber != ''">
+			and b.fanumber = #{fanumber}
+		</if>
+		<if test="faclassification != null and faclassification != ''">
+			and faclassification = #{faclassification}
+		</if>
+		<if test="faname != null and faname != ''">
+			and faname like #{faname}
+		</if>
+		<if test="fadept != null and fadept != ''">
+			and fadept = #{fadept}
+		</if>
+		<if test="fareport != null and fareport != ''">
+			and fareport = #{fareport}
+		</if>
+		<if test="fapof != null and fapof != ''">
+			and fapof = #{fapof}
+		</if>
+		<if test="fafr != null and fafr != ''">
+			and fafr = #{fafr}
+		</if>
+		<if test="fareport != null and fareport != ''">
+			and fareport = #{fareport}
+		</if>
+		<if test="yearfrom != null and yearfrom != ''">
+			and faarrivedate >= to_date(#{yearfrom},'yyyy-mm-dd')
+			and to_date(#{yearto},'yyyy-mm-dd') >= faarrivedate
+		</if>
+		<if test="fauser != null and fauser != ''">
+			and fauser like #{fauser}
+		</if>
+		<if test="fabuyer != null and fabuyer != ''">
+			and fabuyer like #{fabuyer}
+		</if>
+		<if test="status != null and status != ''">
+			and status = #{status}
+		</if>
+		<if test="fameasure != null and fameasure != ''">
+			and fameasure = #{fameasure}
+		</if>
+		<if test="preToMeasure != null and preToMeasure != ''">
+			and LASTTESTDATE >= to_date(#{dateFrom},'yyyy-mm-dd')
+			and to_date(#{dateTo},'yyyy-mm-dd') >= LASTTESTDATE
+		</if>
+		order by b.fanumber desc
+	</select>
+
+	<select id="countAssetSearch" parameterType="com.device.business.assetManage.bean.AssetBean"
+		resultType="Integer">
+		select
+		count(*)
+		from (
+		select
+		*
+		from
+		t_fixedasset_basic b 
+		left join t_fixedasset_computer d on b.FANUMBER = d.FANUMBER 
+		left join t_fixedasset_house h on b.FANUMBER=h.FANUMBER
+		left join t_fixedasset_vehicle v on b.FANUMBER = v.FANUMBER
+		left join t_fixedasset_purchase p on b.fanumber = p.fanumber
+		where
+		1 = 1
+		<if test="fanumber != null and fanumber != ''">
+			and b.fanumber = #{fanumber}
+		</if>
+		<if test="faclassification != null and faclassification != ''">
+			and faclassification = #{faclassification}
+		</if>
+		<if test="faname != null and faname != ''">
+			and faname like #{faname}
+		</if>
+		<if test="fadept != null and fadept != ''">
+			and fadept = #{fadept}
+		</if>
+		<if test="fareport != null and fareport != ''">
+			and fareport = #{fareport}
+		</if>
+		<if test="fapof != null and fapof != ''">
+			and fapof = #{fapof}
+		</if>
+		<if test="fafr != null and fafr != ''">
+			and fafr = #{fafr}
+		</if>
+		<if test="fareport != null and fareport != ''">
+			and fareport = #{fareport}
+		</if>
+		<if test="yearfrom != null and yearfrom != ''">
+			and faarrivedate >= to_date(#{yearfrom},'yyyy-mm-dd')
+			and to_date(#{yearto},'yyyy-mm-dd') >= faarrivedate
+		</if>
+		<if test="fauser != null and fauser != ''">
+			and fauser like #{fauser}
+		</if>
+		<if test="fabuyer != null and fabuyer != ''">
+			and fabuyer like #{fabuyer}
+		</if>
+		<if test="status != null and status != ''">
+			and status = #{status}
+		</if>
+		<if test="fameasure != null and fameasure != ''">
+			and fameasure = #{fameasure}
+		</if>
+		<if test="preToMeasure != null and preToMeasure != ''">
+			and LASTTESTDATE >= to_date(#{dateFrom},'yyyy-mm-dd')
+			and to_date(#{dateTo},'yyyy-mm-dd') >= LASTTESTDATE
+		</if>
+		order by fanumber desc
+		)
+	</select>
+	
+	<select id="queryDictionary" parameterType="string"
+		resultType="com.device.business.assetManage.bean.DictionaryBean">
+		select
+		id,
+		attr_name,
+		attr_key,
+		attr_value
+		from t_base_dictionary where attr_name = #{attr_name} and deleteflag =
+		1
+	</select>
+	
+	<select id="getComboValue" parameterType="string"
+		resultType="string">
+		select
+		attr_value
+		from t_base_dictionary 
+		where 
+		attr_name = #{attr_name} and 
+		attr_key = #{attr_key} and
+		deleteflag = 1 
+	</select>
+	
+	<select id="getClassName" parameterType="string"
+		resultType="string">
+		select
+		class_name
+		from t_base_classification 
+		where 
+		class_code = #{code} and
+		deleteflag = 1 
+	</select>
+	
+	<select id="getDeptName" parameterType="string"
+		resultType="string">
+		select
+		depart_name
+		from t_base_department 
+		where 
+		depart_code = #{code} and
+		deleteflag = 1 
+	</select>
+	
+	<select id="getClassId" parameterType="string"
+		resultType="string">
+		select
+		id
+		from t_base_classification 
+		where 
+		class_code = #{code} and
+		deleteflag = 1 
+	</select>
+	
+	<select id="getDeptId" parameterType="string"
+		resultType="string">
+		select
+		id
+		from t_base_organization 
+		where 
+		org_code = #{code} and
+		deleteflag = 1 
+	</select>
+	
+	<select id="queryAssetName" parameterType="string"
+		resultType="string">
+		select
+		faname
+		from t_fixedasset_basic where fanumber = #{fanumber}
+	</select>
+	
+	<update id="updateAsset"
+		parameterType="com.device.business.assetManage.element.AssetElement"
+		statementType="PREPARED">
+		update t_fixedasset_basic
+		set
+		faclassification = #{faclassification}, fagnumber = #{fagnumber}, faname = #{faname},
+		famodel = #{famodel}, famanufacturer = #{famanufacturer}, faamount = #{faamount}, 
+		fauom = #{fauom}, fafnum = #{fafnum},fameasure = #{fameasure}, faarrivedate = to_date(#{faarrivedate}, 'yyyy-mm-dd'), 
+		faaccountdate= to_date(#{faaccountdate}, 'yyyy-mm-dd'), fauseage = #{fauseage}, fadeprection= #{fadeprection},
+		fafr= #{fafr}, fatov= #{fatov}, favalue= #{favalue}, fagm= #{fagm},
+		fadfu= #{fadfu},fausestate= #{fausestate}, fadept= #{fadept}, fauser= #{fauser}, 
+		faremarks= #{faremarks}
+		where fanumber=#{fanumber}
+	</update>
+	
+	<update id="updateBasicAssetStatus" parameterType="com.device.business.assetManage.element.AssetElement"
+		statementType="PREPARED">
+		update t_fixedasset_basic
+		set
+		status = #{status}
+		where fanumber = #{fanumber}
+	</update>
+	
+	<insert id="insertPurchaseAsset"
+		parameterType="com.device.business.assetManage.element.AssetElement"
+		statementType="PREPARED">
+		INSERT INTO t_fixedasset_purchase(
+		ID,
+		FANUMBER,
+		FAPOF,
+		FABUYER,
+		FACONTRACT,
+		FASUPPLIER,
+		FASUPPLIERTEL,
+		FAPDATE,
+		FAINVOICENUMBER,
+		FAADN,
+		FAREPORT
+		)
+		VALUES (
+		#{id},
+		#{fanumber},
+		#{fapof},
+		#{fabuyer},
+		#{facontract},
+		#{fasupplier},
+		#{fasuppliertel},
+		to_date(#{fapdate}, 'yyyy-mm-dd'),
+		#{fainvoicenumber},
+		#{faadn},
+		#{fareport}
+		)
+	</insert>
+	
+	<update id="updatePurchaseAsset"
+		parameterType="com.device.business.assetManage.element.AssetElement"
+		statementType="PREPARED">
+		update t_fixedasset_purchase
+		set
+		FAPOF = #{fapof},
+		FABUYER = #{fabuyer},
+		FACONTRACT = #{facontract},
+		FASUPPLIER = #{fasupplier},
+		FASUPPLIERTEL = #{fasuppliertel},
+		FAPDATE = to_date(#{fapdate}, 'yyyy-mm-dd'),
+		FAINVOICENUMBER = #{fainvoicenumber},
+		FAADN = #{faadn},
+		FAREPORT = #{fareport}
+		where fanumber=#{fanumber}
+	</update>
+	
+	<select id="isPurchaseExist" parameterType="string"
+		resultType="int">
+		select
+		count(*)
+		from t_fixedasset_purchase where fanumber = #{fanumber}
+	</select>
+	
+	<select id="isCheckExist" parameterType="string"
+		resultType="int">
+		select
+		count(*)
+		from t_fixedasset_check where fanumber = #{fanumber}
+	</select>
+	
+	<insert id="insertCheckAsset"
+		parameterType="com.device.business.assetManage.element.AssetElement"
+		statementType="PREPARED">
+		INSERT INTO t_fixedasset_check(
+		ID,
+		FANUMBER,
+		CHECKDATE,
+		CHECKER,
+		FAFNUM,
+		ALLCOVERDATE,
+		CHECKRESULT,
+		FAAREA,
+		CHECKREMARK
+		)
+		VALUES (
+		#{id},
+		#{fanumber},
+		to_date(#{checkdate}, 'yyyy-mm-dd'),
+		#{checker},
+		#{fafnum},
+		to_date(#{allcoverdate}, 'yyyy-mm-dd'),
+		#{checkresult},
+		#{faarea},
+		#{checkremark}
+		)
+	</insert>
+	
+	<update id="updateCheckAsset"
+		parameterType="com.device.business.assetManage.element.AssetElement"
+		statementType="PREPARED">
+		update t_fixedasset_check
+		set
+		CHECKDATE = to_date(#{checkdate}, 'yyyy-mm-dd'),
+		CHECKER = #{checker},
+		FAFNUM = #{fafnum},
+		ALLCOVERDATE= to_date(#{allcoverdate}, 'yyyy-mm-dd'),
+		CHECKRESULT = #{checkresult},
+		FAAREA = #{faarea},
+		CHECKREMARK = #{checkremark}
+		where fanumber=#{fanumber}
+	</update>
+	
+	<insert id="insertDeviceUse"
+		parameterType="com.device.business.assetManage.element.DeviceUseElement"
+		statementType="PREPARED">
+		INSERT INTO t_fixedasset_deviceuse(
+		ID,
+		FANUMBER,
+		USEDATE,
+		USECONTENT,
+		USEBEGINTIME,
+		USEENDTIME,
+		COUNT,
+		SAMPLEAMOUNT,
+		INCOME,
+		GUIFEE,
+		RUNSTATE,
+		OPERATOR,
+		USEDEPT
+		)
+		VALUES (
+		#{id},
+		#{fanumber},
+		to_date(#{usedate}, 'yyyy-mm-dd'),
+		#{usecontent},
+		to_date(#{usebegintime}, 'yyyy-mm-dd hh24:mi:ss'),
+		to_date(#{useendtime}, 'yyyy-mm-dd hh24:mi:ss'),
+		#{count},
+		#{sampleamount},
+		#{income},
+		#{guifee},
+		#{runstate},
+		#{operator},
+		#{usedept}
+		)
+	</insert>
+	
+	<update id="updateDeviceUse"
+		parameterType="com.device.business.assetManage.element.DeviceUseElement"
+		statementType="PREPARED">
+		update t_fixedasset_deviceuse
+		set
+		USEDATE = to_date(#{usedate}, 'yyyy-mm-dd'),
+		USECONTENT = #{usecontent},
+		USEBEGINTIME = to_date(#{usebegintime}, 'yyyy-mm-dd hh24:mi:ss'),
+		USEENDTIME = to_date(#{useendtime}, 'yyyy-mm-dd hh24:mi:ss'),
+		COUNT = #{count},
+		SAMPLEAMOUNT = #{sampleamount},
+		INCOME = #{income},
+		GUIFEE = #{guifee},
+		RUNSTATE = #{runstate},
+		OPERATOR =#{operator},
+		USEDEPT = #{usedept}
+		where id=#{id}
+	</update>
+	
+	<select id="queryDeviceUse" parameterType="string"
+		resultType="com.device.business.assetManage.bean.DeviceUseBean">
+		select
+		*
+		from t_fixedasset_deviceuse where fanumber = #{fanumber}
+	</select>
+	
+	<select id="countDeviceUse" parameterType="string"
+		resultType="int">
+		select
+		count(*)
+		from t_fixedasset_deviceuse where fanumber = #{fanumber}
+	</select>
+	
+	<delete id="deleteDeviceUse" statementType="PREPARED" parameterType="string">
+		delete
+		from t_fixedasset_deviceuse t
+		where id = #{id}
+	</delete>
+	
+	<select id="queryUse" parameterType="string"
+		resultType="com.device.business.assetManage.bean.UseBean">
+		select
+		u.id, b.fanumber , b.faname, u.usestart,
+		u.useend, u.usedept, u.u_user,
+		u.reason, u.mile, u.oilwear,
+		u.premium, u.toll
+		from t_fixedasset_use u
+		left join t_fixedasset_basic b on u.fanumber = b.fanumber
+		where u.fanumber = #{fanumber}
+	</select>
+	
+	<select id="countUse" parameterType="string" resultType="Integer">
+		select
+		count(*)
+		from t_fixedasset_use
+		where fanumber = #{fanumber}
+	</select>
+	
+	<select id="queryUseByID" parameterType="string"
+		resultType="int">
+		select
+		count(*)
+		from t_fixedasset_use u
+		where u.id = #{id}
+	</select>
+	
+	<delete id="deleteUse" parameterType="string" statementType="PREPARED">
+		delete
+		from t_fixedasset_use
+		where id like #{id}
+	</delete>
+	
+	<insert id="insertUse" parameterType="com.device.business.assetManage.element.UseElement"
+		statementType="PREPARED">
+		INSERT INTO t_fixedasset_use (
+		ID,
+		FANUMBER,
+		USESTART,
+		USEEND,
+		USEDEPT,
+		U_USER,
+		REASON,
+		MILE,
+		OILWEAR,
+		PREMIUM,
+		TOLL
+		)
+		VALUES (
+		#{id},
+		#{fanumber},
+		to_date(#{usestart}, 'yyyy-mm-dd'),
+		to_date(#{useend}, 'yyyy-mm-dd'),
+		#{usedept},
+		#{u_user},
+		#{reason},
+		#{mile},
+		#{oilwear},
+		#{premium},
+		#{toll}
+		)
+	</insert>
+
+	<update id="updateUse" parameterType="com.device.business.assetManage.element.UseElement"
+		statementType="PREPARED">
+		update t_fixedasset_use
+		set
+		USESTART = to_date(#{usestart}, 'yyyy-mm-dd'),
+		USEEND = to_date(#{useend}, 'yyyy-mm-dd'),
+		USEDEPT  =#{usedept},
+		U_USER = #{u_user},
+		REASON = #{reason},
+		MILE = #{mile},
+		OILWEAR = #{oilwear},
+		PREMIUM = #{premium},
+		TOLL = #{toll}
+		where id = #{id}
+	</update>
+	
+	<select id="queryRepair" parameterType="string"
+		resultType="com.device.business.assetManage.bean.RepairBean">
+		select
+		*
+		from t_fixedasset_repair
+		where fanumber like #{fanumber}
+	</select>
+	
+	<select id="countRepair" parameterType="string" resultType="Integer">
+		select
+		count(*)
+		from t_fixedasset_repair
+		where fanumber like #{fanumber}
+	</select>
+	
+	<insert id="insertRepair"
+		parameterType="com.device.business.assetManage.element.RepairElement"
+		statementType="PREPARED">
+		INSERT INTO t_fixedasset_repair (
+		ID,
+		FANUMBER,
+		RDEPT,
+		RDATE,
+		RCOST,
+		RREMARK,
+		CHUXIAN,
+		PAID
+		)
+		VALUES (
+		#{id},
+		#{fanumber},
+		#{rdept},
+		to_date(#{rdate}, 'yyyy-mm-dd'),
+		#{rcost},
+		#{rremark},
+		#{chuxian},
+		#{paid}
+		)
+	</insert>
+
+	<update id="updateRepair"
+		parameterType="com.device.business.assetManage.element.RepairElement"
+		statementType="PREPARED">
+		update t_fixedasset_repair
+		set
+		RDEPT = #{rdept},
+		RDATE = to_date(#{rdate}, 'yyyy-mm-dd'),
+		RCOST = #{rcost},
+		RREMARK = #{rremark},
+		CHUXIAN = #{chuxian},
+		PAID = #{paid}
+		where id = #{id}
+	</update>
+
+	<delete id="deleteRepair" parameterType="string" statementType="PREPARED">
+		delete
+		from t_fixedasset_repair
+		where id like #{id}
+	</delete>
+	
+	<select id="queryRent" parameterType="string"
+		resultType="com.device.business.assetManage.bean.RentBean">
+		select
+		*
+		from t_fixedasset_rent
+		where fanumber like #{fanumber}
+	</select>
+	
+	<select id="countRent" parameterType="string" resultType="Integer">
+		select
+		count(*)
+		from t_fixedasset_rent
+		where fanumber like #{fanumber}
+	</select>
+	
+	<insert id="insertRent"
+		parameterType="com.device.business.assetManage.element.RentElement"
+		statementType="PREPARED">
+		INSERT INTO t_fixedasset_rent (
+		ID,
+		FANUMBER,
+		RENTDATE,
+		RENTMONTH,
+		RENTDEPT,
+		RENTCONTRACTER,
+		RENTTEL,
+		RENTSIZE,
+		RENTAMOUNT
+		)
+		VALUES (
+		#{id},
+		#{fanumber},
+		to_date(#{rentdate}, 'yyyy-mm-dd'),
+		#{rentmonth},
+		#{rentdept},
+		#{rentcontracter},
+		#{renttel},
+		#{rentsize},
+		#{rentamount}
+		)
+	</insert>
+
+	<update id="updateRent"
+		parameterType="com.device.business.assetManage.element.RentElement"
+		statementType="PREPARED">
+		update t_fixedasset_rent
+		set
+		RENTDATE=to_date(#{rentdate}, 'yyyy-mm-dd'),
+		RENTMONTH=#{rentmonth},
+		RENTDEPT=#{rentdept},
+		RENTCONTRACTER=#{rentcontracter},
+		RENTTEL=#{renttel},
+		RENTSIZE=#{rentsize},
+		RENTAMOUNT=	#{rentamount}
+		where id = #{id}
+	</update>
+
+	<delete id="deleteRent" parameterType="string" statementType="PREPARED">
+		delete
+		from t_fixedasset_rent
+		where id like #{id}
+	</delete>
+	
+	<select id="isQRCodeExist" parameterType="string" resultType="Integer">
+		select
+			count(*) 
+		from t_asset_qrcode
+		where asset_id = #{fanumber}
+	</select>
+	
+	<delete id="deleteQRCode" statementType="PREPARED" parameterType="string">
+		delete 
+		from t_asset_qrcode t 
+		where asset_id = #{bean}
+	</delete>
+	
+	<insert id="generateQRCode" parameterType="com.device.business.manageQRCode.bean.manageQRCodeBean" statementType="PREPARED">  
+   		INSERT INTO t_asset_qrcode (  
+        	ID, ASSET_ID, QRCODE, STATE, DESCRIPTION, CREATE_DATE)
+    	VALUES (  
+        	#{id},#{asset_id},#{qrcode},
+        	#{state},#{description},#{create_date}
+        	)  
+	</insert>
+	
+	<update id="updateMeasure"
+		parameterType="com.device.business.assetManage.element.AssetElement"
+		statementType="PREPARED">
+		update t_fixedasset_basic
+		set
+		fafirstmeasure = to_date(#{fafirstmeasure}, 'yyyy-mm-dd'),
+		retestperiod = #{retestperiod},
+		lasttestdate = to_date(#{lasttestdate}, 'yyyy-mm-dd')
+		where fanumber = #{fanumber}
+	</update>
+	
+	<update id="updateMeasureLast"
+		parameterType="com.device.business.assetManage.element.AssetElement"
+		statementType="PREPARED">
+		update t_fixedasset_basic
+		set
+		lasttestdate = to_date(#{lasttestdate}, 'yyyy-mm-dd')
+		where fanumber = #{fanumber}
+	</update>
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+	<select id="queryAssetForApply" parameterType="com.device.business.assetManage.bean.AssetBean"
+		resultType="com.device.business.assetManage.bean.AssetBean">
+		select * from(
+		select fanumber,faname,faclassification,1 tabletype,status,submit,fadept
+		from T_FIXEDASSET_BASIC a
+		union all
+		select fanumber,faname,faclassification,2 tabletype,status,submit,fadept
+		from T_FIXEDASSET_INSTRUMENT b
+		union all
+		select fanumber,faname,faclassification,3 tabletype,status,submit,fadept
+		from T_FIXEDASSET_HOUSEHOLD c
+		)
+		where status = 1 and submit = 1
+		<if test="fanumber != null and fanumber != ''">
+			and fanumber = #{fanumber}
+		</if>
+		<if test="faclassification != null and faclassification != ''">
+			and faclassification like #{faclassification}
+		</if>
+		<if test="faname != null and faname != ''">
+			and faname like #{faname}
+		</if>
+		<if test="fadept != null and fadept != ''">
+			and fadept like #{fadept}
+		</if>
+	</select>
+
+	<select id="countAssetForApply" parameterType="com.device.business.assetManage.bean.AssetBean"
+		resultType="Integer">
+		select
+		count(a.id)
+		from
+		(
+		select id,status,submit,fadept,fanumber,faname,faclassification from
+		T_FIXEDASSET_BASIC a
+		union all
+		select id,status,submit,fadept,fanumber,faname,faclassification from
+		T_FIXEDASSET_INSTRUMENT b
+		union all
+		select id,status,submit,fadept,fanumber,faname,faclassification from
+		T_FIXEDASSET_HOUSEHOLD c
+		)a
+		where status = 1 and submit = 1
+		<if test="fanumber != null and fanumber != ''">
+			and fanumber = #{fanumber}
+		</if>
+		<if test="faclassification != null and faclassification != ''">
+			and faclassification like #{faclassification}
+		</if>
+		<if test="faname != null and faname != ''">
+			and faname like #{faname}
+		</if>
+		<if test="fadept != null and fadept != ''">
+			and fadept like #{fadept}
+		</if>
+	</select>
+
+	<update id="updateAssetStatus"
+		parameterType="com.device.business.assetManage.bean.AssetBean"
+		statementType="PREPARED">
+		update t_fixedasset_basic
+		set
+		status = #{status}
+		where fanumber = #{fanumber}
+	</update>
+
+	<delete id="deleteAsset" statementType="PREPARED" parameterType="string">
+		delete
+		from t_fixedasset_basic t
+		where fanumber in (#{ids})
+	</delete>
+
+	<insert id="insertTrouble"
+		parameterType="com.device.business.assetManage.element.TroubleElement"
+		statementType="PREPARED">
+		INSERT INTO t_fixedasset_trouble (
+		ID,
+		FANUMBER,
+		TDATE,
+		TPLACE,
+		TORIGIN,
+		TDUTY,
+		TCOST,
+		TPAYCOST,
+		REMARK,
+		TID
+		)
+		VALUES (
+		#{fanumber},
+		#{fanumber},
+		#{tdate},
+		#{tplace},
+		#{torigin},
+		#{tduty},
+		#{tcost},
+		#{tpaycost},
+		#{remark},
+		#{tid}
+		)
+	</insert>
+
+	<update id="updateTrouble"
+		parameterType="com.device.business.assetManage.element.TroubleElement"
+		statementType="PREPARED">
+		update t_fixedasset_trouble
+		set
+		TDATE = #{tdate},
+		TPLACE = #{tplace},
+		TORIGIN = #{torigin},
+		TDUTY = #{tduty},
+		TCOST = #{tcost},
+		TPAYCOST = #{tpaycost},
+		REMARK = #{remark}
+		where TID = #{tid}
+	</update>
+
+	<select id="queryTrouble" parameterType="string"
+		resultType="com.device.business.assetManage.bean.TroubleBean">
+		select
+		*
+		from t_fixedasset_trouble
+		where fanumber like #{id}
+	</select>
+
+	<select id="queryTroubleByTid" parameterType="string"
+		resultType="com.device.business.assetManage.bean.TroubleBean">
+		select
+		*
+		from t_fixedasset_trouble
+		where TID = #{tid}
+	</select>
+
+	<select id="countTrouble" parameterType="string" resultType="Integer">
+		select
+		count(id)
+		from t_fixedasset_trouble
+		where fanumber like #{id}
+	</select>
+
+	<delete id="deleteTrouble" parameterType="string" statementType="PREPARED">
+		delete
+		from t_fixedasset_trouble
+		where tid like #{tid}
+	</delete>
+
+	<select id="queryUseByUseid" parameterType="string"
+		resultType="com.device.business.assetManage.bean.UseBean">
+		select
+		*
+		from t_fixedasset_use
+		where USEID = #{useid}
+	</select>
+
+	<select id="queryRepairByOrder" parameterType="string"
+		resultType="com.device.business.assetManage.bean.RepairBean">
+		select
+		*
+		from t_fixedasset_repair
+		where RORDER like #{rorder}
+	</select>
+
+	
+
+	<select id="queryHousehold" parameterType="string"
+		resultType="com.device.business.assetManage.bean.AssetBean">
+		select
+		*
+		from t_fixedasset_basic
+		where faclassification like #{searchName}
+	</select>
+
+	<select id="countHouseHold" parameterType="string" resultType="Integer">
+		select
+		count(id)
+		from t_fixedasset_basic
+		where faclassification like #{searchName}
+	</select>
+
+	
+
+	
+
+	<select id="getAssetMayTest" parameterType="com.device.business.assetManage.bean.AssetBean"
+		resultType="com.device.business.assetManage.bean.AssetBean">
+		select * from(
+		select fanumber,faname,faclassification,1
+		tabletype,status,submit,fadept,fameasure from T_FIXEDASSET_BASIC a
+		union all
+		select fanumber,faname,faclassification,2
+		tabletype,status,submit,fadept,fameasure from T_FIXEDASSET_INSTRUMENT
+		b
+		union all
+		select fanumber,faname,faclassification,3
+		tabletype,status,submit,fadept,fameasure from T_FIXEDASSET_HOUSEHOLD c
+		)
+		where submit = 1 and fameasure = 1 and fanumber not in (select
+		asset_id from t_fixedasset_testresult_union)
+		<if test="fanumber != null and fanumber != ''">
+			and fanumber = #{fanumber}
+		</if>
+		<if test="faclassification != null and faclassification != ''">
+			and faclassification like #{faclassification}
+		</if>
+		<if test="faname != null and faname != ''">
+			and faname like #{faname}
+		</if>
+		<if test="fadept != null and fadept != ''">
+			and fadept like #{fadept}
+		</if>
+	</select>
+
+	<select id="countAssetMayTest" parameterType="com.device.business.assetManage.bean.AssetBean"
+		resultType="Integer">
+		select
+		count(a.id)
+		from
+		(
+		select id,status,submit,fadept,fanumber,faname,faclassification,fameasure
+		from T_FIXEDASSET_BASIC a
+		union all
+		select id,status,submit,fadept,fanumber,faname,faclassification,fameasure
+		from T_FIXEDASSET_INSTRUMENT b
+		union all
+		select id,status,submit,fadept,fanumber,faname,faclassification,fameasure
+		from T_FIXEDASSET_HOUSEHOLD c
+		)a
+		where submit = 1 and fameasure = 1 and fanumber not in (select asset_id
+		from t_fixedasset_testresult_union)
+		<if test="fanumber != null and fanumber != ''">
+			and fanumber = #{fanumber}
+		</if>
+		<if test="faclassification != null and faclassification != ''">
+			and faclassification like #{faclassification}
+		</if>
+		<if test="faname != null and faname != ''">
+			and faname like #{faname}
+		</if>
+		<if test="fadept != null and fadept != ''">
+			and fadept like #{fadept}
+		</if>
+	</select>
+
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.assetManage.dao.mapper.AssetComputerMapper">
+	
+	<insert id="insertComputerAsset" statementType="PREPARED" parameterType="com.device.business.assetManage.element.AssetElement" >  
+   		INSERT INTO t_fixedasset_computer (  
+        	ID,  
+        	FANUMBER,  
+        	DEVICETYPE,
+        	CPUTYPE,
+        	CLOCKSPEED,
+        	RAM,
+        	HARDDISK,
+        	MONITOR,
+        	KEYBOARD,
+        	MOUSE
+        	  )
+    	VALUES (  
+        	#{id},  
+        	#{fanumber},    
+        	#{devicetype}, 
+        	#{cputype}, 
+        	#{clockspeed}, 
+        	#{ram}, 
+        	#{harddisk}, 
+        	#{monitor}, 
+        	#{keyboard},
+        	#{mouse}
+        	)  
+	</insert>
+	
+	<update id="updateComputerAsset" parameterType="com.device.business.assetManage.element.AssetElement" statementType="PREPARED">
+		update t_fixedasset_computer
+			set 
+				DEVICETYPE = #{devicetype},
+        		CPUTYPE = #{cputype}, 
+        		CLOCKSPEED = #{clockspeed}, 
+        		RAM = #{ram}, 
+        		HARDDISK = #{harddisk}, 
+        		MONITOR = #{monitor}, 
+        		KEYBOARD = #{keyboard},
+        		MOUSE = #{mouse}
+		where fanumber=#{fanumber}
+	</update>
+
+	<delete id="deleteComputerAsset" statementType="PREPARED" parameterType="string">
+		delete 
+		from t_fixedasset_computer t 
+		where id in (#{ids}) 
+	</delete>
+	
+	<select id="isComputerInfoExist" parameterType="string"
+		resultType="int">
+		select
+		count(*)
+		from t_fixedasset_computer 
+		where 
+		fanumber = #{fanumber}
+	</select>
+
+</mapper>

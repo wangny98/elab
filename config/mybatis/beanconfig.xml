@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<properties>
+		<property name="dialect" value="MYSQL" />
+	</properties>
+		<settings>
+	<!-- changes from the defaults -->
+	<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<plugins>
+		<plugin interceptor="com.device.component.plugin.page.mssql.PaginationInterceptor" />
+	</plugins>
+	<mappers>
+		<mapper resource="com/device/business/equip/dao/mapper/EquipBeanMapper.xml" />
+		<mapper resource="com/device/business/equip/dao/mapper/PileBeanMapper.xml" />
+		<mapper resource="com/device/business/equip/dao/mapper/PperdeepBeanMapper.xml" />
+		<mapper resource="com/device/business/equip/dao/mapper/SectionBeanMapper.xml" />
+		
+		<mapper resource="com/device/business/equip/dao/mapper/SlurryRecordBeanMapper.xml" />
+		<mapper resource="com/device/business/equip/dao/mapper/SlurryPerdayBeanMapper.xml" />
+		<mapper resource="com/device/business/equip/dao/mapper/SlurryAmountBeanMapper.xml" />
+		
+		<mapper resource="mybatis/TestMapper.xml" />
+		<mapper resource="mybatis/UserMapper.xml" />
+		<mapper resource="mybatis/InnerAllocateMapper.xml" />
+		<mapper resource="mybatis/AssetMapper.xml" />
+		<mapper resource="mybatis/AssetComputerMapper.xml" />
+		<mapper resource="mybatis/AssetInstrumentMapper.xml" />
+		<mapper resource="mybatis/AssetHouseMapper.xml" />
+		<mapper resource="mybatis/AssetHouseHoldMapper.xml" />
+		<mapper resource="mybatis/AssetVehicleMapper.xml" />
+		<mapper resource="mybatis/TestResultMapper.xml" />
+		<mapper resource="mybatis/RoleMapper.xml" />
+		<mapper resource="mybatis/DictionaryMapper.xml" />
+		<mapper resource="mybatis/OrganizationMapper.xml" />
+		<mapper resource="mybatis/TransferMapper.xml" />
+		<mapper resource="mybatis/ManageQRCodeMapper.xml" />
+		<mapper resource="mybatis/ScrapMapper.xml" />
+		<mapper resource="mybatis/CheckManageMapper.xml" />
+		<mapper resource="mybatis/FunctionMapper.xml" />
+		<mapper resource="mybatis/ClassificationMapper.xml" />
+		<mapper resource="mybatis/UnitMapper.xml" />
+		<mapper resource="mybatis/Union.xml" />
+		<mapper resource="mybatis/DepartmentMapper.xml" />
+		<mapper resource="mybatis/PropertyReportMapper.xml" />
+		<mapper resource="mybatis/PropertyReport2.xml" />
+		<mapper resource="mybatis/UseAuditMapper.xml" />
+		<mapper resource="mybatis/ContentManagerMapper.xml" />
+		<mapper resource="mybatis/FileManagerMapper.xml" />
+		<mapper resource="mybatis/ScienceManageMapper.xml" />
+		<mapper resource="mybatis/SampleRegisterMapper.xml" />
+		<mapper resource="mybatis/DemoMapper.xml" />
+		<mapper resource="mybatis/AuthMapper.xml" />
+		<mapper resource="mybatis/CaseMapper.xml" />
+		<mapper resource="mybatis/ScienceShowMapper.xml" />
+		<mapper resource="mybatis/PicMapper.xml" />
+		<mapper resource="mybatis/RecordReleaseMapper.xml" />
+		<mapper resource="mybatis/RecordChangeMapper.xml" />
+		<mapper resource="mybatis/RecordGrantMapper.xml" />
+		<mapper resource="mybatis/RecordRecycleMapper.xml" />
+		<mapper resource="mybatis/RecordControlListMapper.xml" />
+	</mappers>
+</configuration>

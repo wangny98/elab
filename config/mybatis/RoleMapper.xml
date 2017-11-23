@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.roleManage.dao.mapper.RoleMapper">
+	
+	<select id="queryRoles" parameterType="string"
+		resultType="com.device.business.roleManage.bean.RoleBean">
+		select 
+			id,
+			name,
+			code,
+			type,
+			func_code,
+			remark,
+			creator_id,
+			creator_name,
+			creator_time,
+			deleteFlag
+		from t_system_role
+		where name like	#{searchName}  and deleteflag=1
+	</select>
+	
+	<select id="getRoleId" resultType="java.lang.String">
+	select
+		c.id
+	from t_system_user a,t_system_role_user b,t_system_role c
+	where a.id=b.user_id and b.role_id = c.id
+	and a.id=#{userId}
+	</select>
+	
+	<select id="queryAllRoles" resultType="com.device.business.roleManage.bean.RoleBean">
+		select 
+			id,
+			name,
+			code,
+			type,
+			func_code,
+			remark,
+			creator_id,
+			creator_name,
+			creator_time,
+			deleteFlag
+		from t_system_role
+		where deleteflag=1
+	</select>
+	
+	<select id="queryAllCheckRoles" resultType="com.device.business.roleManage.bean.RoleBean">
+		select 
+			a.id,a.name,a.code,a.type,a.func_code,a.remark,a.creator_id,a.creator_name,a.creator_time,a.deleteFlag,
+			(case 
+			when b.id is null then 0
+			else 1
+			end) as checked
+		from t_system_role a
+		left join t_system_role_user b on (a.id = b.role_id and b.user_id=#{userId})
+		where a.deleteflag=1
+	</select>
+	
+	<select id="countRole" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_system_role
+		where name like	#{searchName}  and deleteflag=1
+	</select>
+	
+	<insert id="addRole" parameterType="com.device.business.roleManage.bean.RoleBean" statementType="PREPARED">
+		insert into t_system_role
+		(
+			id,
+			name,
+			code,
+			type,
+			func_code,
+			remark,
+			creator_id,
+			creator_name,
+			creator_time,
+			deleteFlag
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.name},
+			#{bean.code},
+			#{bean.type},
+			#{bean.func_code},
+			#{bean.remark},
+			#{bean.creator_id},
+			#{bean.creator_name},
+			#{bean.creator_time},
+			1
+		)
+	</insert>
+	
+	<update id="updateRole" parameterType="com.device.business.roleManage.bean.RoleBean" statementType="PREPARED">
+		update t_system_role
+			set name = #{bean.name},
+					code = #{bean.code},
+						type = #{bean.type},
+							func_code = #{bean.func_code},
+								remark = #{bean.remark}
+		where id=#{bean.id}
+	</update>
+	
+	<select id="loadRole" parameterType="string"
+		resultType="com.device.business.roleManage.bean.RoleBean">
+		select
+			id,
+			name,
+			code,
+			type,
+			func_code,
+			remark,
+			creator_id,
+			creator_name,
+			creator_time,
+			deleteFlag
+		from t_system_role
+		where id =#{id}
+	</select>
+	
+	<delete id="deleteRole" parameterType="string" statementType="PREPARED">
+		delete from t_system_role where id =#{id}
+	</delete>
+	<!--  -->
+	<select id="getFunc" resultType="com.device.business.roleManage.bean.NodeBean">
+		select
+			id,
+			name text,
+			code idfex,
+			module_id parent_id
+		from t_system_func
+		where code in ${codes}
+	</select>
+	
+	<select id="getAllFunc" resultType="com.device.business.roleManage.bean.NodeBean">
+		select
+			id,
+			name text,
+			code idfex,
+			module_id parent_id
+		from t_system_func
+	</select>
+	
+	<select id="getAllCheckedFunc" resultType="com.device.business.roleManage.bean.CheckNodeBean">
+		select
+	      a.id,
+	      a.name text,
+	      a.code idfex,
+	      module_id parent_id,
+	      (case 
+	        when c.id is null
+	          then 0
+	         else 
+	           1
+	      end)checkedNum
+	      from t_system_func a
+	      left join
+	      (
+	      select b.id from t_system_func b where b.code in ${codes}
+	      )c on(a.id = c.id)
+	</select>
+	
+	<select id="getModule" resultType="com.device.business.roleManage.bean.NodeBean">
+		select
+			id,
+			name text,
+			code idfex,
+			sortseq,
+			css iconCls,
+			parent_id
+		from t_system_module
+		where id in ${ids} and code <![CDATA[>]]>#{codeLevel} 
+		and code <![CDATA[<]]>#{codeLevelMax}
+	</select>
+	
+	<select id="getAllModule" resultType="com.device.business.roleManage.bean.NodeBean">
+		select
+			id,
+			name text,
+			code idfex,
+			sortseq,
+			css iconCls,
+			parent_id
+		from t_system_module
+	</select>
+
+	<select id="getRoots" resultType="com.device.business.roleManage.bean.RootBean">
+		select 
+			id,
+			sortseq,
+			name title
+		from t_system_module m where m.parent_id='0'
+	</select>
+</mapper>

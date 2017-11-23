@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.assetManage.dao.mapper.AssetInstrumentMapper">
+	<insert id="insertInstrumentAsset" parameterType="com.device.business.assetManage.element.AssetElement" statementType="PREPARED">  
+   		INSERT INTO t_fixedasset_instrument ( 
+   			 FATESTCYCLE,     
+   			 FAFTDATE,  
+   			faacceptdate,
+   			faaccountdate, 
+        	ID,  
+        	FANUMBER,
+        	fagnumber,   
+        	FANAME,   
+        	FACLASSIFICATION,   
+        	FAMODEL,   
+        	TFACLASSIFICATION,  
+        	FABRAND,   
+        	FAPCOUNTRY,
+        	FAAMOUNT,
+        	FAMANUFACTURER,
+        	FAGM,
+        	FADEPT,
+        	FAENTRYSTAFF,
+        	FAENTRYDATE,
+        	FAREPORT,
+        	FAPOF,
+        	FAUSEAGE,
+        	FAWARRANT,
+        	FAAREA,
+        	FATOV,
+        	FAVALUE,
+        	FAPCLASSIFICATION,
+        	FAPROPERTY,
+        	FACONTRACTNUMBER,
+        	FADEPRECITION,
+        	FAFR,
+        	FAUSESTATE,
+        	FADFU,
+        	FAREMARKS,
+        	FAMEASURE,
+        	FAFNUM,
+        	FABUYER,
+        	FAADN,
+        	FAADMIN,
+        	FAPDATE,
+        	FADIVISION,
+        	FAUSER,
+        	SUBMIT,
+        	STATUS,
+        	FAREPAIRDEPT,
+        	FAREPAIRTEL
+        	  )
+    	VALUES (  
+    	#{fatestcycle},
+    	#{faftdate},
+    		#{faacceptdate},
+    		#{faaccountdate},
+        	#{id},  
+        	#{fanumber},  
+        	#{fagnumber},
+        	#{faname},   
+        	#{faclassification},   
+        	#{famodel},   
+        	#{tfaclassification},  
+        	#{fabrand},   
+        	#{fapcountry},
+        	#{faamount},
+        	#{famanufacturer},
+        	#{fagm},
+        	#{fadept},
+        	#{faentrystaff},
+        	#{faentrydate},
+        	#{fareport},
+        	#{fapof},
+        	#{fauseage},
+        	#{fawarrant},
+        	#{faarea},
+        	#{fatov},
+        	#{favalue},
+        	#{fapclassification},
+        	#{faproperty},
+        	#{facontractnumber},
+        	#{fadeprection},
+        	#{fafr},
+        	#{fausestate},
+        	#{fadfu},
+        	#{faremarks},
+        	#{fameasure},
+        	#{fafnum},
+        	#{fabuyer},
+        	#{faadn},
+        	#{faadmin},
+        	#{fapdate},
+        	#{fadivision},
+        	#{fauser},
+        	0,
+        	1,
+        	#{farepairdept},
+        	#{farepairtel}
+        	)  
+	</insert>
+	
+	<update id="updateInstrumentAsset" parameterType="com.device.business.assetManage.element.AssetElement" statementType="PREPARED">
+		update t_fixedasset_instrument
+			set FANAME = #{faname} ,  fagnumber = #{fagnumber},    FACLASSIFICATION = #{faclassification},  FAMODEL = #{famodel},          TFACLASSIFICATION = #{tfaclassification},  
+          FABRAND = #{fabrand},    FAPCOUNTRY = #{fapcountry},        FAUOM = #{fauom},            FAAMOUNT = #{faamount},          FAMANUFACTURER = #{famanufacturer},
+          FAGM = #{fagm},      FADEPT = #{fadept},        FAREPORT = #{fareport},FAREPAIRDEPT = #{farepairdept},FAREPAIRTEL = #{farepairtel},
+          FAPOF = #{fapof},      FAUSEAGE = #{fauseage},         FAWARRANT = #{fawarrant},        FAAREA = #{faarea},          FATOV = #{fatov},
+          FAVALUE = #{favalue},  FAPCLASSIFICATION = #{fapclassification}, FAPROPERTY = #{faproperty},        FACONTRACTNUMBER = #{facontractnumber},  FADEPRECITION = #{fadeprection},
+          FAFR = #{fafr},      FAUSESTATE = #{fausestate},       FADFU = #{fadfu},             FAREMARKS = #{faremarks},      FAMEASURE = #{fameasure},
+          FAFNUM = #{fafnum},      FATESTCYCLE = #{fatestcycle},     FAFTDATE = #{faftdate},        FABUYER = #{fabuyer},          FAADN = #{faadn},
+          FAADMIN = #{faadmin},  FAPDATE = #{fapdate},         FADIVISION = #{fadivision},        FAUSER = #{fauser},faaccountdate=#{faaccountdate}, faacceptdate = #{faacceptdate}
+		where fanumber=#{fanumber}
+	</update>
+	
+	<update id="submitInstrumentAsset" parameterType="com.device.business.assetManage.element.AssetElement" statementType="PREPARED">
+		update t_fixedasset_instrument
+			set 
+			SUBMIT = 1
+		where fanumber=#{id}
+	</update>
+	
+	<select id="queryInstrumentAsset" parameterType="com.device.business.assetManage.bean.AssetBean"
+		resultType="com.device.business.assetManage.bean.AssetBean">
+		select
+			*
+		from t_fixedasset_instrument 
+		where 
+			1 = 1
+		<if test="fanumber != null and fanumber != ''">
+     		and fanumber = #{fanumber}
+     	</if>
+     	<if test="faname != null and faname != ''">
+			and faname like #{faname}     		
+     	</if>
+     	<if test="fadept != null and fadept != ''">
+			and fadept like #{fadept}     		
+     	</if>
+     	<if test="submit != null and submit != ''">
+			and submit = #{submit}     		
+     	</if>
+	</select>
+	
+	<select id="queryInstrumentAssetById" parameterType="string"
+		resultType="com.device.business.assetManage.bean.AssetBean">
+		select
+			*
+		from t_fixedasset_instrument 
+		where fanumber like #{id}
+	</select>
+	
+	<select id="countInstrumentAsset" parameterType="com.device.business.assetManage.bean.AssetBean"
+		resultType="Integer">
+		select
+			count(id)
+		from t_fixedasset_instrument
+		where 
+			1 = 1
+		<if test="fanumber != null and fanumber != ''">
+     		and fanumber = #{fanumber}
+     	</if>
+     	<if test="faname != null and faname != ''">
+			and faname like #{faname}     		
+     	</if>
+     	<if test="fadept != null and fadept != ''">
+			and fadept like #{fadept}     		
+     	</if>
+     	<if test="submit != null and submit != ''">
+			and submit = #{submit}     		
+     	</if>
+	</select>
+	
+	<delete id="deleteInstrumentAsset" parameterType="string" statementType="PREPARED">
+		delete 
+		from t_fixedasset_instrument 
+		where fanumber like #{id}
+	</delete>
+
+</mapper>

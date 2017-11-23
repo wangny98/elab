@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<link rel="stylesheet"
+	href="../../component/bootstrap/bootstrap.min.css">
+<link rel="stylesheet"
+	href="../../component/jquery-ui-1.9.2/css/jquery-ui-1.9.2.css">
+<link rel="stylesheet"
+	href="../../component/bootstrap/bootstrap-combined.min.css">
+
+<script src="../../component/jquery-1.8.3.min.js"></script>
+<script src="../../component/jquery/jquery-ui.min.js"></script>
+<script src="../../component/util.js"></script>
+<script src="../../component/bootstrap/bootstrap.js"></script>
+
+<script src="../../component/angularjs/angular.js"></script>
+
+
+<title></title>
+<style>
+.row-fluid {
+	background-color: #FFFFFF;
+	width: 100%;
+}
+
+.table th {
+	font-weight: normal;
+}
+
+.printBorder {
+	padding: 8px;
+	border: 1px solid #000000;
+	margin: auto;
+	text-align: center
+}
+</style>
+</head>
+<body style="" ng-app="pileBottom" ng-controller="pileBottomCtrl">
+	<div class="panel" ng-repeat="record in records" style="margin-left: 20px; margin-right: 20px;">
+		<div class="row">
+			<div class="col-lg-2">
+				<div class="input-group">
+					<span class="input-group-addon">标段名称：</span> <input type="text"
+						class="form-control" style="height: 30px;"
+						ng-model="record.sectionName">
+				</div>
+			</div>
+			<div class="col-lg-2">
+				<div class="input-group">
+					<span class="input-group-addon">已打桩数：</span> <input type="text"
+						class="form-control" style="height: 30px;"
+						ng-model="record.allQualified">
+				</div>
+			</div>
+			<div class="col-lg-2">
+				<div class="input-group">
+					<span class="input-group-addon">不合格桩数：</span> <input type="text"
+						class="form-control" style="height: 30px;"
+						ng-model="record.allUnqualified">
+				</div>
+			</div>
+			<div class="col-lg-2">
+				<div class="input-group">
+					<span class="input-group-addon">当日桩数：</span> <input type="text"
+						class="form-control" style="height: 30px;"
+						ng-model="record.thedayQualified">
+				</div>
+			</div>
+			<div class="col-lg-2">
+				<div class="input-group">
+					<span class="input-group-addon">不合格桩数：</span> <input type="text"
+						class="form-control" style="height: 30px;"
+						ng-model="record.thedayUnqualified">
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		var app = angular.module('pileBottom', []);
+	    
+	    app.controller('pileBottomCtrl', function($scope,$http,$q) {
+	    	
+	    $scope.records=[{
+	    	sectionName:'xx',
+	    	allQualified:10,
+	    	allUnqualified:1,
+	    	thedayQualified:5,
+	    	thedayUnqualified:1
+	    },{
+	    	sectionName:'xx',
+	    	allQualified:20,
+	    	allUnqualified:2,
+	    	thedayQualified:2,
+	    	thedayUnqualified:1
+	    }]
+		$scope.load = function(){
+	   		var start = $("#start").val();
+	   		var end = $("#end").val();
+	   		$scope.queryParam =new Object();
+	   		$scope.queryParam.startTime = start;
+	   		$scope.queryParam.endTime = end;
+	   	      var deferred = $q.defer();
+	   	      $http({
+	   	        method:"POST",
+	   	        url:"/elab/resource/pileManager/sectionPileInfo",
+	   	        params:{}
+	   	      }).success(function(data, status, headers, config){
+	   	    	$scope.records=data.list;
+	   	      }).error(function(data, status, headers, config){
+	   	          //alert("获取数据失败");
+	   	      })
+   	    };
+	    $scope.load();
+    });
+	</script>
+</body>
+</html>

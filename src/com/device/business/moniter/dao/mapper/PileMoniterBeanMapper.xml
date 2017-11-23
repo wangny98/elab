@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.device.business.moniter.dao.mapper.PileMoniterBeanMapper" >
+  <resultMap id="BaseResultMap" type="com.device.business.moniter.bean.PileMoniterBean" >
+    <result column="ID" property="id" jdbcType="BIGINT" />
+    <result column="Pile_Driver_Number" property="pileDriverNumber" jdbcType="VARCHAR" />
+    <result column="Pile_Number" property="pileNumber" jdbcType="VARCHAR" />
+    <result column="Pile_Length" property="pileLength" jdbcType="DECIMAL" />
+    <result column="Start_Time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="Guniting_Second" property="gunitingSecond" jdbcType="INTEGER" />
+    <result column="Total_Liquid" property="totalLiquid" jdbcType="DECIMAL" />
+    <result column="Total_Cement" property="totalCement" jdbcType="DECIMAL" />
+    <result column="Density" property="density" jdbcType="DECIMAL" />
+    <result column="Average_Liquid" property="averageLiquid" jdbcType="DECIMAL" />
+    <result column="Average_Cement" property="averageCement" jdbcType="DECIMAL" />
+    <result column="Max_Speed" property="maxSpeed" jdbcType="DECIMAL" />
+    <result column="Max_Inside_Power" property="maxInsidePower" jdbcType="DECIMAL" />
+    <result column="Max_Outside_Power" property="maxOutsidePower" jdbcType="DECIMAL" />
+    <result column="Max_Lean" property="maxLean" jdbcType="DECIMAL" />
+    <result column="Deepth" property="deepth" jdbcType="DECIMAL" />
+    <result column="Speed" property="speed" jdbcType="DECIMAL" />
+    <result column="Flow" property="flow" jdbcType="DECIMAL" />
+    <result column="Front_Back_Angle" property="frontBackAngle" jdbcType="DECIMAL" />
+    <result column="Left_Right_Angle" property="leftRightAngle" jdbcType="DECIMAL" />
+    <result column="Outside_Power" property="outsidePower" jdbcType="DECIMAL" />
+    <result column="Inside_Power" property="insidePower" jdbcType="DECIMAL" />
+    <result column="Lean" property="lean" jdbcType="DECIMAL" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="select" resultMap="BaseResultMap">
+	  select
+		  distinct *
+	  from t_luding_pile_info limit 0, 2
+
+  </select>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<!-- 代替server.properties -->
+<properties>
+	<!-- 数据库驱动 -->
+	<!--com.p6spy.engine.spy.P6SpyDriver-->
+	<!-- <entry key="dataSource.driverClassName">com.microsoft.sqlserver.jdbc.SQLServerDriver</entry> -->
+	<!--
+		<entry
+		key="dataSource.driverClassName">com.p6spy.engine.spy.P6SpyDriver</entry>
+	-->
+	<!--
+		数据库URL <entry
+		key="dataSource.url">jdbc:oracle:thin:@192.168.1.107:dm</entry>
+		<entry
+		key="dataSource.url">jdbc:oracle:thin:@192.168.1.107:dm</entry>
+	-->
+	<!--  -->
+	<!-- <entry key="dataSource.url">jdbc:oracle:thin:@a067053.vicp.cc:1521:orcl</entry>
+	数据库用户名
+	<entry key="dataSource.username">dm</entry>
+	数据库密码
+	<entry key="dataSource.password">123456</entry> -->
+	<!-- <entry key="dataSource.url">jdbc:sqlserver://localhost;database=dcma;integratedSecurity\=true;</entry> MSSQLSERVER-->
+	<!-- <entry key="dataSource.url">jdbc:sqlserver://112.2.29.246:1433;databaseName=elab</entry>
+	数据库用户名
+	<entry key="dataSource.username">sa</entry>
+	数据库密码
+	<entry key="dataSource.password">123456aA</entry> -->
+	
+	<entry key="dataSource.driverClassName">com.mysql.jdbc.Driver</entry>
+	<entry key="dataSource.url">jdbc:mysql://localhost:3306/luding?zeroDateTimeBehavior=convertToNull</entry>
+		 
+	<!-- 数据库用户名 -->
+	<entry key="dataSource.username">db</entry>
+	<!-- 数据库密码 -->
+	<entry key="dataSource.password">db</entry>
+	
+	
+	<!-- openoffice的安装目录 -->
+	<!-- window path:D:/Program Files (x86)/OpenOffice.org 3 -->
+	<!-- linux path:/opt/openoffice.org3 -->
+	<entry key="convert.office.path">C:/Program Files (x86)/OpenOffice.org 3</entry>
+	
+	<!-- 视频格式转换器的安装目录 -->
+	<!-- linux path:/usr/local/ffmpeg/bin -->
+	<!--window path: D:/playerConvert -->
+	<entry key="convert.player.path">D:/playerConvert</entry>
+	
+	<!-- swftools的安装目录 -->
+	<!-- linux path:/home/dm/setup/swftools-2013-04-09-1007/src -->
+	<!-- window path:C:/Program Files (x86)/SWFTools -->
+	<entry key="convert.swf.path">D:/Program Files (x86)/SWFTools</entry>
+	
+</properties>

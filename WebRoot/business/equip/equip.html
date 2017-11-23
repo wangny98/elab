@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+	<!-- <link rel="stylesheet"	href="../../component/bootstrap/bootstrap.min.css"> -->
+    <link rel="stylesheet"	href="../../component/bootstrap/layoutit.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/bootstrap-combined.min.css">
+    <link rel="stylesheet"	href="../../component/jquery-easyui-1.4.2/themes/icon.css">
+    <!-- <link rel="stylesheet"	href="../../css/common.css"> -->
+    <link href="../../ext/resources/css/ext-all.css" rel="stylesheet" type="text/css"/>
+    <script src="../../component/jquery-easyui-1.4.2/jquery.min.js"></script>
+    <script src="../../component/jquery-easyui-1.4.2/jquery.easyui.min.js"></script><!--
+    <script src="../../component/jquery-easyui-1.4.2/plugins/jquery.combobox.js"></script>
+    <script src="../../component/jquery-easyui-1.4.2/plugins/jquery.form.js"></script>-->
+    <script src="../../component/bootstrap/bootstrap.min.js"></script>
+    <script src="../../component/echarts/echarts.min.js"></script>
+    <script src="../../component/echarts/theme/macarons.js"></script>
+    
+    
+    <script type="text/javascript" src="../../ext/adapter/ext/ext-base-debug.js"></script>
+	<script type="text/javascript" src="../../ext/ext-all-debug.js"></script>
+	<script type="text/javascript" src="../../ext/ext-lang-zh_cn.js"></script>
+	<script type="text/javascript" src="../../ext/ext-basex.js"></script>
+	<script type="text/javascript" src="../../ext/ux/require/require.js"></script>
+	<script type="text/javascript" src="../../ext/ux/panel/TabCloseMenu.js"></script>
+	<script type="text/javascript" src="../../ext/ux/datetime/Spinner.js"></script>
+    <script type="text/javascript" src="../../ext/ux/datetime/SpinnerField.js"></script>
+	
+	<script type="text/javascript" src="../../common/ProgressBarPager.js"></script>
+	<script type="text/javascript" src="../../component/viewOnline/js/jquery.js"></script>
+	<script type="text/javascript" src="../../component/viewOnline/js/flexpaper_flash.js"></script>
+	<script type="text/javascript" src="../../js/common/dm_object.js"></script>
+	<script type="text/javascript" src="../../js/common/common.js"></script>
+	<script type="text/javascript" src="../../js/jquery.min.js"></script>
+	<script type="text/javascript" src="../../js/ux/customForm.js"></script>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+				<div class="span3">
+					<h3 id="project" style="text-align: center;">
+						
+					</h3>
+				</div>
+				<div class="span3" style="text-align: center;">
+					<h3 id="section">
+					</h3>
+				</div>
+				<div class="span3" style="text-align: center;">
+					<h3 id="equipment">
+					</h3>
+				</div>
+				<div class="span3" style="text-align: center;">
+					<h3 id="pilenumber">
+					</h3>
+				</div>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span3">
+				<div id="west" style="width: 400px;height:800px;"></div>
+				<script type="text/javascript">
+				function writeInfo(id,text){
+					document.getElementById(id).innerHTML = text;
+				}
+				
+				function buildCharts(id,cementWeight,yAxis,powerInside,powerOutside,speed){
+					echarts.init(document.getElementById(id)).setOption(option = {
+			        	    legend: {
+			        	        data:['水泥','内电流','外电流','速度']
+			        	    },
+			        	    tooltip: {
+			        	        trigger: 'axis',
+			        	        formatter: "深度 : {b}m <br> 浆量 : {c} L <br> 内电流 : {c1} A <br> 外电流 : {c2} A <br> 速度 : {c3} cm/min"
+			        	    },
+			        	    grid: {
+			        	        left: '3%',
+			        	        right: '4%',
+			        	        bottom: '3%',
+			        	        containLabel: true
+			        	    },
+			        	    xAxis: [{
+					        	        type: 'value',
+					        	        position :'top',
+					        	        name:"水泥",
+					        	        axisLabel: {
+					        	            formatter: '{value} kg'
+					        	        }
+					        	    },
+					        	    {
+					        	        type: 'value',
+					        	        position :'top',
+					        	        offset:25,
+					        	        name:"内电流",
+					        	        axisLabel: {
+					        	            formatter: '{value} A'
+					        	        }
+					        	    },
+					        	    {
+					        	        type: 'value',
+					        	        position :'top',
+					        	        offset:50,
+					        	        name:"外电流",
+					        	        axisLabel: {
+					        	            formatter: '{value} A'
+					        	        }
+					        	    },
+					        	    {
+					        	        type: 'value',
+					        	        position :'top',
+					        	        offset:450,
+					        	        name:"速度",
+					        	        axisLabel: {
+					        	            formatter: '{value} cm/min'
+					        	        }
+					        	    }],
+			        	    yAxis: {
+			        	        type: 'category',
+			        	        axisLine: {onZero: false},
+			        	        axisLabel: {
+			        	            formatter: '{value}'
+			        	        },
+			        	        boundaryGap: false,
+			        	        data:yAxis
+			        	    },
+			        	    
+			        	    series: [
+			        	       /*  {
+			        	            name: '深度/水泥浆量',
+			        	            type: 'line',
+			        	            smooth: true,
+			        	            lineStyle: {
+			        	                normal: {
+			        	                    width: 3,
+			        	                    shadowColor: 'rgba(0,0,0,0.4)',
+			        	                    shadowBlur: 10,
+			        	                    shadowOffsetY: 10
+			        	                }
+			        	            },
+			        	            data:cementWeight
+			        	        }, */
+			        	        {
+			        	            name: '水泥',
+			        	            type: 'bar',
+			        	            smooth: true,
+			        	            barMaxWidth:10,
+			        	            itemStyle: {
+			        	                normal: {
+			        	                	color:'#66ccff',
+			        	                	
+			        	                    shadowColor: 'rgba(0,0,0,0.2)',
+			        	                    shadowBlur: 10,
+			        	                    shadowOffsetY: 10/* ,
+			        	                    color:'#b5b0b0' */
+			        	                }
+			        	            },
+			        	            data:cementWeight
+			        	        },
+			        	        {
+			        	            name: '内电流',
+			        	            type: 'line',
+			        	            xAxisIndex: 1,
+			        	            smooth: true,
+			        	            lineStyle: {
+			        	                normal: {
+			        	                	color:'#ffcc00',
+			        	                    width: 3,
+			        	                    shadowColor: 'rgba(0,0,0,0.4)',
+			        	                    shadowBlur: 10,
+			        	                    shadowOffsetY: 10
+			        	                }
+			        	            },
+			        	            data:powerInside
+			        	        },
+			        	        {
+			        	            name: '外电流',
+			        	            type: 'line',
+			        	            xAxisIndex: 2,
+			        	            smooth: true,
+			        	            lineStyle: {
+			        	                normal: {
+			        	                	color:'#33cc66',
+			        	                    width: 3,
+			        	                    shadowColor: 'rgba(0,0,0,0.4)',
+			        	                    shadowBlur: 10,
+			        	                    shadowOffsetY: 10
+			        	                }
+			        	            },
+			        	            data:powerOutside
+			        	        },
+			        	        {
+			        	            name: '速度',
+			        	            type: 'line',
+			        	            xAxisIndex: 3,
+			        	            smooth: true,
+			        	            lineStyle: {
+			        	                normal: {
+			        	                	color:'#333366',
+			        	                    width: 3,
+			        	                    shadowColor: 'rgba(0,0,0,0.4)',
+			        	                    shadowBlur: 10,
+			        	                    shadowOffsetY: 10
+			        	                }
+			        	            },
+			        	            data:speed
+			        	        }
+			        	    ]
+			        	});
+				}
+				
+			        /* // 基于准备好的dom，初始化echarts实例
+			        var west = echarts.init(document.getElementById('west'));
+			        // 使用刚指定的配置项和数据显示图表。
+			        west.setOption(option = {
+			        	    legend: {
+			        	        data:['深度/水泥浆量']
+			        	    },
+			        	    tooltip: {
+			        	        trigger: 'axis',
+			        	        formatter: "Temperature : <br/>{b}km : {c}°C"
+			        	    },
+			        	    grid: {
+			        	        left: '3%',
+			        	        right: '4%',
+			        	        bottom: '3%',
+			        	        containLabel: true
+			        	    },
+			        	    xAxis: {
+			        	        type: 'value',
+			        	        axisLabel: {
+			        	            formatter: '{value} °C'
+			        	        }
+			        	    },
+			        	    yAxis: {
+			        	        type: 'category',
+			        	        axisLine: {onZero: false},
+			        	        axisLabel: {
+			        	            formatter: '{value} km'
+			        	        },
+			        	        boundaryGap: false,
+			        	        data: ['0', '10', '20', '30', '40', '50', '60', '70', '80']
+			        	    },
+			        	    
+			        	    series: [
+			        	        {
+			        	            name: '高度(km)与气温(°C)变化关系',
+			        	            type: 'line',
+			        	            smooth: true,
+			        	            lineStyle: {
+			        	                normal: {
+			        	                    width: 3,
+			        	                    shadowColor: 'rgba(0,0,0,0.4)',
+			        	                    shadowBlur: 10,
+			        	                    shadowOffsetY: 10
+			        	                }
+			        	            },
+			        	            data:[15, -50, -56.5, -46.5, -22.1, -2.5, -27.7, -55.7, -76.5]
+			        	        }
+			        	    ]
+			        	}); */
+			    </script>
+			</div>
+			<div class="span3">
+			<div id="middle" style="position:absolute; left:400px; width: 400px;height:800px;"></div>
+				
+			</div>
+			<div class="span3" style="background: url('../../style/images/luding/t2.png')">
+			<div id="east" style="position:absolute; left:800px; width: 400px;height:800px;"></div>
+			</div>
+
+			<div class="span3">
+                <div id="grid1" style="position:absolute; left:1200px; width: 400px;height:800px;"></div>
+				<script type="text/javascript" src="equip.js"></script>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

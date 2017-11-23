@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.sampleManage.dao.mapper.SampleRegisterMapper">
+	<select id="querySamples" parameterType="com.device.business.sampleManage.bean.BaseSample"
+		resultType="com.device.business.sampleManage.bean.BaseSample">
+		select 
+			* 
+		from 
+			T_BUSINESS_BASICINFO
+		where 
+			1 = 1 
+		<if test="submit_no != null and submit_no != ''">
+     		and submit_no like #{submit_no} 
+    	</if>
+    	<if test="submit_depart != null and submit_depart != ''">
+     		and submit_depart like #{submit_depart} 
+   		</if>
+   		<if test="submitter != null and submitter != ''">
+    		and submitter like #{submitter} 
+    	</if>
+    	<if test="verify_no != null and verify_no != ''">
+     		and verify_no like #{verify_no} 
+    	</if>
+    	<if test="submit_date != null and submit_date != ''">
+			and submit_date = #{submit_date} 
+     	</if>
+     	<if test="goods_name != null and goods_name != ''">
+     		and goods_name like #{goods_name} 
+    	</if>
+    	<if test="goods_type != null and goods_type != ''">
+     		and goods_type = #{goods_type} 
+   		</if>
+   		<if test="sample_region != null and sample_region != ''">
+    		and sample_region like #{sample_region} 
+    	</if>
+    	<if test="export_import != null and export_import != ''">
+     		and export_import like #{export_import} 
+    	</if>
+    	<if test="verify_type != null and verify_type != ''">
+			and verify_type = #{verify_type} 
+     	</if>
+     	<if test="status != null and status != ''">
+			and status = #{status} 
+     	</if>
+     	<if test="verify_identify != null and verify_identify != ''">
+			and verify_identify = #{verify_identify}  
+     	</if>
+	</select>
+	
+	<select id="countSamples" parameterType="com.device.business.sampleManage.bean.BaseSample"
+		resultType="Integer">
+		select 
+			count(*) 
+		from 
+			T_BUSINESS_BASICINFO
+		where 
+			1 = 1
+		<if test="submit_no != null and submit_no != ''">
+     		and submit_no like #{submit_no} 
+    	</if>
+    	<if test="submit_depart != null and submit_depart != ''">
+     		and submit_depart like #{submit_depart} 
+   		</if>
+   		<if test="submitter != null and submitter != ''">
+    		and submitter like #{submitter} 
+    	</if>
+    	<if test="verify_no != null and verify_no != ''">
+     		and verify_no like #{verify_no} 
+    	</if>
+    	<if test="submit_date != null and submit_date != ''">
+			and submit_date = #{submit_date} 
+     	</if>
+     	<if test="goods_name != null and goods_name != ''">
+     		and goods_name like #{goods_name} 
+    	</if>
+    	<if test="goods_type != null and goods_type != ''">
+     		and goods_type = #{goods_type} 
+   		</if>
+   		<if test="sample_region != null and sample_region != ''">
+    		and sample_region like #{sample_region} 
+    	</if>
+    	<if test="export_import != null and export_import != ''">
+     		and export_import like #{export_import} 
+    	</if>
+    	<if test="verify_type != null and verify_type != ''">
+			and verify_type = #{verify_type} 
+     	</if>
+     	<if test="status != null and status != ''">
+			and status = #{status} 
+     	</if>
+     	<if test="verify_identify != null and verify_identify != ''">
+			and verify_identify = #{verify_identify}  
+     	</if>
+	</select>
+	
+	<insert id="insertSample" parameterType="com.device.business.sampleManage.element.SampleRegisterElement" statementType="PREPARED">  
+   		INSERT INTO T_BUSINESS_BASICINFO (  
+   			id, submit_no,
+        	submit_depart,
+			submitter,
+			submit_phone,
+			submit_date,
+			goods_name,
+			goods_type,
+			sample_name,
+			sample_num,
+			sample_region,
+			export_import,
+			sample_detail,
+			verify_no,
+			verify_identify,
+			verify_circle,
+			verify_type,
+			verify_projects,
+			memo,
+			status
+        	  )
+    	VALUES (  
+        	#{id},#{submit_no},#{submit_depart},
+        	#{submitter},#{submit_phone},#{submit_date},
+        	#{goods_name},#{goods_type},#{sample_name},
+        	#{sample_num},#{sample_region}, #{export_import},
+        	#{sample_detail}, #{verify_no},#{verify_identify}, 
+        	#{verify_circle},#{verify_type}, #{verify_projects},#{memo},
+        	0
+        	)  
+	</insert>
+	
+	<update id="updateSample" parameterType="com.device.business.sampleManage.element.SampleRegisterElement" statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_BASICINFO 
+   		set 
+        	submit_depart = #{submit_depart},
+			submitter = #{submitter},
+			submit_phone = #{submit_phone},
+			submit_date = #{submit_date},
+			goods_name = #{goods_name},
+			goods_type = #{goods_type},
+			sample_name = #{sample_name},
+			sample_num = #{sample_num},
+			sample_region = #{sample_region},
+			export_import = #{export_import},
+			sample_detail = #{sample_detail},
+			verify_no = #{verify_no},
+			verify_identify = #{verify_identify},
+			verify_circle = #{verify_circle},
+			verify_type = #{verify_type},
+			verify_projects = #{verify_projects},
+			memo = #{memo}
+        where
+        	id =  #{id}
+	</update>
+	
+	<delete id="deleteSample" statementType="PREPARED">
+		delete from T_BUSINESS_BASICINFO where id = #{id}
+	</delete>
+	
+	<select id="countSamplesByDate" parameterType="string"
+		resultType="Integer">
+		select 
+			count(*) 
+		from 
+			T_BUSINESS_BASICINFO
+		where 
+			submit_date = #{date}
+	</select>
+	
+	<update id="submitSample" parameterType="string" statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_BASICINFO 
+   		set 
+        	status = 1
+        where
+        	id =  #{id}
+	</update>
+	
+	<select id="queryDictionary" parameterType="string"
+		resultType="com.device.business.assetManage.bean.DictionaryBean">
+		select
+			id,
+			attr_name,
+			attr_key,
+			attr_value
+		from t_base_dictionary where attr_name = #{attr_name}
+	</select>
+	
+	<update id="rejectSample" parameterType="com.device.business.sampleManage.element.SampleRegisterElement"
+	 statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_BASICINFO 
+   		set 
+   			status = 2,
+        	chargebackreason = #{chargebackreason}
+        where
+        	id =  #{id}
+	</update>
+	
+	<update id="acceptSample" parameterType="com.device.business.sampleManage.element.SampleRegisterElement"
+	 statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_BASICINFO 
+   		set 
+   			acceptor = #{acceptor},
+   			acceptdate = #{acceptdate},
+   			status = #{status}
+        where
+        	id =  #{id}
+	</update>
+	
+	<update id="updateSampleStatus" parameterType="com.device.business.sampleManage.element.SampleRegisterElement"
+	 statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_BASICINFO 
+   		set 
+   			status = #{status}
+        where
+        	id =  #{id}
+	</update>
+	
+	<select id="querySampleUnionDemo" parameterType="string"
+		resultType="com.device.business.sampleManage.bean.DemoBean">
+		select 
+			d.status
+		from 
+			T_BUSINESS_BASICINFO b,  T_BUSINESS_DEMO d 
+		where
+			b.id = d.basic_id and b.id = #{id}
+	</select>
+	
+	<update id="insertSign" parameterType="com.device.business.sampleManage.element.SampleRegisterElement"
+	 statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_BASICINFO 
+   		set 
+        	signer = #{signer},
+        	signtitle = #{signtitle},
+        	signmemo = #{signmemo},
+        	signdate = #{signdate}
+        where
+        	id =  #{id}
+	</update>
+	
+	<update id="updateSign" parameterType="com.device.business.sampleManage.element.SampleRegisterElement"
+	 statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_BASICINFO 
+   		set 
+        	signer = #{signer},
+        	signtitle = #{signtitle},
+        	signmemo = #{signmemo}
+        where
+        	id =  #{id}
+	</update>
+	
+	<select id="loadSign" parameterType="string"
+		resultType="com.device.business.sampleManage.bean.BaseSample">
+		select 
+			signer,signtitle,signmemo,signdate
+		from 
+			T_BUSINESS_BASICINFO
+		where
+			id = #{id}
+	</select>
+	
+</mapper>

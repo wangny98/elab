@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.sampleManage.dao.mapper.SampleRegisterMapper">
+	<select id="queryAptitude" parameterType="com.device.business.sampleManage.bean.AuthBean"
+		resultType="com.device.business.sampleManage.bean.AuthBean">
+		select 
+			*
+		from 
+			
+		where 
+	</select>
+
+	<select id="queryAuth" parameterType="com.device.business.sampleManage.bean.AuthBean"
+		resultType="com.device.business.sampleManage.bean.AuthBean">
+		select 
+			*
+		from 
+			
+		where 
+	</select>
+	
+	<select id="countAuth" parameterType="com.device.business.sampleManage.bean.AuthBean"
+		resultType="Integer">
+		select 
+		from 
+		where 
+	</select>
+	
+	<select id="loadAuth" parameterType="com.device.business.sampleManage.bean.AuthBean"
+		resultType="com.device.business.sampleManage.bean.AuthBean">
+		select 
+			*
+		from 
+			T_BUSINESS_AUTH
+		where 
+			demo_id = #{id}
+	</select>
+	
+	<insert id="insertAuth" parameterType="com.device.business.sampleManage.element.AuthElement" 
+	statementType="PREPARED">  
+   		INSERT INTO T_BUSINESS_AUTH (  
+   			id,
+   			authproject,
+   			pestname,
+   			authposition,
+   			pesttype,
+   			judge,
+   			judgetitle,
+   			tel,
+   			memo,
+   			demo_id,
+   			authdate
+        	  )
+    	VALUES (  
+        	#{id},
+        	#{authproject},
+        	#{pestname},
+        	#{authposition},
+        	#{pesttype},
+        	#{judge},
+        	#{judgetitle},
+        	#{tel},
+        	#{memo},
+        	#{demo_id},
+        	#{authdate}
+        	)  
+	</insert>
+	
+	<update id="updateAuth" parameterType="com.device.business.sampleManage.element.AuthElement" 
+	statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_AUTH 
+   		set 
+   			authproject = #{authproject},
+   			pestname = #{pestname},
+   			authposition = #{authposition},
+   			pesttype = #{pesttype},
+   			judge = #{judge},
+   			judgetitle = #{judgetitle},
+   			tel = #{tel},
+   			memo = #{memo}
+        where
+        	id =  #{id}
+	</update>
+	
+	<delete id="deleteAuth" statementType="PREPARED">
+		delete from T_BUSINESS_DEMO where id = #{id}
+	</delete>
+	
+	<!-- 复核结果 -->
+	
+	<update id="insertVerify" parameterType="com.device.business.sampleManage.element.AuthElement" 
+	statementType="PREPARED">  
+   		update 
+   			T_BUSINESS_AUTH 
+   		set
+   			verifyer = #{verifyer},
+   			verifydate = #{verifydate},
+   			verifytitle = #{verifytitle},
+   			verifymemo = #{memo}
+   		where
+   			demo_id = #{id}
+	</update>
+	
+	<update id="updateVerify" parameterType="com.device.business.sampleManage.element.AuthElement" 
+	statementType="PREPARED">  
+   		update 
+   			T_BUSINESS_AUTH 
+   		set
+   			verifyer = #{verifyer},
+   			verifytitle = #{verifytitle},
+   			verifymemo = #{memo}
+   		where
+   			demo_id = #{id}
+	</update>
+	
+	<select id="loadVerify" parameterType="com.device.business.sampleManage.bean.AuthBean"
+		resultType="com.device.business.sampleManage.bean.AuthBean">
+		select 
+			verifyer,verifytitle,verifymemo as memo
+		from 
+			T_BUSINESS_AUTH
+		where 
+			demo_id = #{id}
+	</select>
+	
+</mapper>

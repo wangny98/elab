@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.device.business.dictionary.dao.mapper.DictionaryMapper">
+
+	<select id="queryDictionaryByName" parameterType="String"
+		resultType="com.device.business.dictionary.bean.DictionaryBean">
+		select
+			attr_name
+		from t_base_dictionary
+		where attr_name like #{queryDictionaryName}
+		and deleteflag=1
+		group by attr_name
+	</select>
+
+	<select id="queryDictionaryCountByName" parameterType="String"
+		resultType="Integer">
+		select 
+			count(1)
+		from T_Base_Dictionary
+		where attr_name like #{queryDictionaryName} and deleteflag=1
+		group by attr_name
+		
+	</select>
+	
+	<select id="queryDetailDictionaryByName" parameterType="HashMap"
+		resultType="com.device.business.dictionary.bean.DictionaryBean">
+		select
+		   id,
+		   attr_name,
+	       attr_key,
+	       attr_value,
+	       attr_type,
+	       seq,
+	       state,
+	       remark,
+	       creator_id,
+	       creator_name,
+	       create_time,
+	       deleteflag
+		from t_base_dictionary
+		where attr_name = #{attributeDic}
+		and deleteflag=1
+		order by seq 
+	</select>
+	
+	<select id="listDictionaryByAttribute" parameterType="String"
+		resultType="com.device.business.dictionary.bean.DictionaryBean">
+		select
+		   id,
+		   attr_name,
+	       attr_key,
+	       attr_value,
+	       seq,
+	       state
+		from t_base_dictionary
+		where  attr_name = #{attribute}
+		and deleteflag=1
+	</select>
+	
+	<!-- 查询重名的个数 -->
+	<select id="checkDictionaryByKey" parameterType="HashMap"
+		resultType="int"> 
+		select 
+			COUNT(id) 
+		from T_Base_Dictionary where attr_name = #{attr_name} 
+		and attr_key = #{attr_key} 
+		and deleteflag=1
+	</select>
+	
+	<!-- 查询重名的个数 -->
+	<select id="checkDictionaryByValue" parameterType="HashMap"
+		resultType="int"> 
+		select 
+			COUNT(id) 
+		from T_Base_Dictionary where attr_name = #{attr_name} 
+		and attr_value = #{attr_value} 
+		and deleteflag=1
+	</select>
+	
+	<insert id="addDictionary" statementType="PREPARED"
+		parameterType="com.device.business.dictionary.bean.DictionaryBean">
+		insert into T_Base_Dictionary
+		  (
+		   id,
+		   attr_name,
+		   attr_key,
+		   attr_value,
+		   attr_type,
+		   seq,
+		   state,
+		   remark,
+		   creator_id,
+		   creator_name,
+		   create_time,
+		   deleteflag
+		  )
+		values
+		  (
+		   #{id},
+		   #{attr_name},
+		   #{attr_key},
+		   #{attr_value},
+		   #{attr_type},
+		   #{seq},
+		   #{state},
+		   #{remark},
+		   #{creator_id},
+		   #{creator_name},
+		   #{create_time},
+		   #{deleteflag}
+		  )
+	</insert>
+	
+	<!--按ID查询-->
+	<select id="queryDictionaryById" parameterType="String"
+		resultType="com.device.business.dictionary.bean.DictionaryBean">
+		select
+		   id,
+		   attr_name,
+		   attr_key,
+		   attr_value,
+		   attr_type,
+		   seq,
+		   state,
+		   remark,
+		   creator_id,
+		   creator_name,
+		   create_time,
+		   deleteflag
+		from T_Base_Dictionary where id=#{dictionaryId} and deleteflag=1
+	</select>
+	
+	<update id="updateDictionaryById" statementType="PREPARED"
+		parameterType="com.device.business.dictionary.bean.DictionaryBean"> 
+		update T_Base_Dictionary 
+			set
+				attr_name=#{attr_name},
+					attr_key=#{attr_key},
+						attr_value=#{attr_value},
+							remark=#{remark},
+								seq=#{seq},
+										state=#{state},
+												deleteflag=#{deleteflag} 
+		where id=#{id}
+	</update>
+	
+	<!-- 删除-->
+	<update id="deleteDictionaryById" statementType="PREPARED"
+		parameterType="String"> 
+		update T_Base_Dictionary 
+			set deleteflag=2 
+		where id=#{id}
+	</update>
+	
+	<!--按名称查询-->
+	<select id="listDictionaryAttribute" resultType="com.device.business.dictionary.bean.DictionaryBean"> 
+		select 
+			attr_name,
+			attr_key 
+		from T_Base_Dictionary
+		where deleteflag=1 
+		group by attr_key,attr_name
+    </select>	
+</mapper>

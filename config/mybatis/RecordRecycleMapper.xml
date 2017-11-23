@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.recordManager.dao.mapper.RecordRecycleMapper">
+	<select id="query" parameterType="string" resultType="com.device.business.recordManager.bean.RecordRecycleBean">
+		select
+			id,
+			recycle_user,
+			recycle_date,
+			remark
+		from t_record_recycle
+		where delete_flag=1
+		<if test="searchName!=null and searchName!='' ">and remark like #{searchName}</if>
+	</select>
+	
+	<select id="load" parameterType="string" resultType="com.device.business.recordManager.bean.RecordRecycleBean">
+		select
+			id,
+			recycle_user,
+			recycle_date,
+			remark
+		from t_record_recycle
+		where id = #{id}
+	</select>
+	
+	<select id="count" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_record_recycle
+		where  delete_flag=1  
+		<if test="searchName!=null and searchName!='' ">and remark like #{searchName}</if>
+	</select>
+	
+	<insert id="add" parameterType="com.device.business.recordManager.bean.RecordRecycleBean" statementType="PREPARED">
+		insert into t_record_recycle
+		(
+			id,
+			recycle_user,
+			recycle_date,
+			remark,
+			delete_flag
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.recycle_user},
+			#{bean.recycle_date},
+			#{bean.remark},
+			#{bean.delete_flag}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.device.business.recordManager.bean.RecordRecycleBean" statementType="PREPARED">
+		update t_record_recycle set
+			recycle_user = #{bean.recycle_user},
+				recycle_date = #{bean.recycle_date},
+					remark = #{bean.remark}
+		where id = #{bean.id}
+	</update>
+	
+	<delete id="delete" parameterType="string" statementType="PREPARED">
+		delete from t_record_recycle where id =#{id}
+	</delete>
+</mapper>

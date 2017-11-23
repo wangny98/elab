@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet"	href="../../component/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/layoutit.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/bootstrap-combined.min.css">
+    <link rel="stylesheet"	href="../../component/jquery-easyui-1.4.2/themes/icon.css">
+    <link rel="stylesheet"	href="css/common.css">
+
+    <script src="../../component/jquery/jquery.mini.js"></script>
+    <script src="../../component/bootstrap/bootstrap.min.js"></script>
+    <script src="../../component/echarts/echarts.min.js"></script>
+    <script src="../../component/angularjs/angular.js"></script>
+    <script src="../../js/charts3.js"></script>
+    <title></title>
+    <style>
+	    .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+		    color: #ffffff;
+		}
+		.contextFooter{
+		    display:block;
+		    /* background-color:#666666; */
+		    height:35px;
+		}
+		.footer__home_logo{
+		    width: 320px;
+		    text-align: center;
+		    margin: auto;
+		    padding-top:6px;
+		}
+		
+		
+        .row-fluid {
+            background-color: #FFFFFF;
+            width: 100%;
+        }
+        #north {
+            margin-right: auto;
+            margin-left: auto;
+        }
+        #west {
+            float:right
+        }
+        #east {
+            margin-left: 0;
+        }
+
+        .container-fluid{
+            background-color: #F4F4F4;
+        }
+
+        .l_cls{
+            height:90px;
+            line-height:90px;
+        }
+
+        .row-fluid .span4 {
+            width: 33.32%;
+        }
+
+        .row-fluid .span8 {
+            width: 66.6%;
+        }
+    </style>
+</head>
+<body style="background-color: #000000">
+<div class="row-fluid">
+    <div class="span12" style="background-color: #3d3d3d;">
+        <ul class="nav nav-tabs" style="margin-bottom: 0px;">
+            <li class="" style="">
+                <a href="grid1.html" >在线一览</a>
+            </li>
+            <li class="">
+                <a href="zj.html">制浆记录</a>
+            </li>
+            <li class="active" onclick="authority()">
+                <a href="#" style="background-color: #000000;">报表统计</a>
+            </li>
+            <li class="">
+                <a href="meter.html">标段登记</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row-fluid" style="background-color: #000000">
+    <div class="span12">
+        <div id="north" style="height:400px;width:1024px;border: 1px solid #eee;"></div>
+    </div>
+</div>
+<div class="row-fluid" style="background-color: #000000">
+    <div class="span8">
+        <div id="west" style="height:350px;width:612px;border: 1px solid #eee;"></div>
+    </div>
+    <div class="span4" style="margin-left:0">
+        <div id="east" style="height:350px;width:612px;border: 1px solid #eee;"></div>
+    </div>
+</div>
+<script>
+
+    console.info("span12 ",$(".span12")[0].clientWidth);
+    console.info("span4 ",$(".span4")[0].clientWidth);
+
+    $("#north").css("width", $(".span12")[0].clientWidth);
+    $("#west").css("width", $(".span8")[0].clientWidth);
+    $("#east").css("width", $(".span4")[0].clientWidth);
+
+
+
+    var theoryline = [];
+    var truthline = [];
+    var category = [];
+    $.ajax({
+        url:'chartsOther/lineforUser.do',
+        async:false,
+        data:{},
+        type:'post',
+        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+        cache:false,
+        dataType:'json',
+        success:function(data) {
+            category = data.category;
+
+            var  mapTheory = array2Map(data.theory,"jbTimeStr","cement");
+            for(var i=0;i<data.category.length;i++){
+                if(mapTheory[data.category[i]]){
+                    theoryline.push((mapTheory[data.category[i]]));
+                }else{
+                    theoryline.push(0);
+                }
+            }
+
+            for(var j=0;j<data.truth.length;j++){
+                truthline.push(data.truth[j].cement);
+            }
+            console.info("theoryline : ",theoryline);
+            console.info("truthline : ",truthline);
+            console.info("category : ",category);
+        },
+        error : function() {
+        }
+    });
+
+
+    var pie_data;
+    $.ajax( {
+        url:'charts/queryForPie.do',// 跳转到 action
+        async:false,
+        data:{},
+        type:'post',
+        cache:false,
+        dataType:'json',
+        success:function(data) {
+            console.info("pie data : ",data.result[0]);
+            pie_data = data.result[0]
+            pie_data.all =(pie_data.water+pie_data.cement)/1000;
+            pie_data.water = pie_data.water/1000;
+            pie_data.cement = pie_data.cement/1000;
+            if(data.result.length>0){
+                var a = new Date(data.result[0].start);
+                pie_data.start = a.format("yyyy-MM-dd");
+                var d = new Date();
+                pie_data.end = d.format("yyyy-MM-dd");
+            }
+        },
+        error : function() {
+        }
+    });
+
+    var column1_data1 = new Object();
+    column1_data1.category=[];
+    column1_data1.water=[];
+    column1_data1.cement=[];
+    column1_data1.shb=[];
+    $.ajax( {
+        url:'charts/queryByMachine.do',// 跳转到 action
+        async:false,
+        data:{},
+        type:'post',
+        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+        cache:false,
+        dataType:'json',
+        success:function(data) {
+            for(var i = 0;i<data.result.length;i++){
+                column1_data1.category.push(data.result[i].zjname);
+                column1_data1.water.push(data.result[i].water/1000);
+                column1_data1.cement.push(data.result[i].cement/1000);
+                column1_data1.shb.push(data.result[i].shb/1000);
+            }
+            if(data.result.length>0){
+
+                var a = new Date(data.result[0].start);
+                column1_data1.start = a.format("yyyy-MM-dd");
+                var d = new Date();
+                column1_data1.end = d.format("yyyy-MM-dd");
+            }
+            console.info("column1_data1 : ",column1_data1);
+        },
+        error : function() {
+        }
+    });
+
+
+
+</script>
+<script>
+require.config({
+    paths: {
+        echarts: 'component/echarts'
+    }
+});
+require(
+        [
+            'echarts' ,'echarts/theme/dark',
+            //'echarts' ,'echarts/theme/blue',
+            'echarts' , 'echarts/chart/pie',
+            'echarts' ,'echarts/chart/bar',
+            'echarts' ,'echarts/chart/line'
+        ],
+        function (ec,theme) {
+            var myChart = ec.init(document.getElementById('north'),theme);
+
+
+            var a = '20'+category[0].replace("/","-").replace("/","-");
+            var b = '20'+category[category.length-1].replace("/","-").replace("/","-");
+            var option = {
+                title : {
+                    x:'center',
+                    text: '每日总浆量/总灰量统计',
+                    textStyle:{
+                        fontFamily:'微软雅黑'
+                    },
+                    subtextStyle:{
+                        color:'#FF0000',
+                        fontSize:22
+                    },
+                    subtext: a+'~'+b
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    //orient : 'vertical',
+                    x:'center',
+                    y:'bottom',
+                    data:['水泥','对比值']
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        boundaryGap : false,
+                        data : category,
+                        axisLabel: {
+                            rotate: 20,
+                            margin:-0
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        axisLabel : {
+                            formatter: '{value} T'
+                        }
+                    }
+                ],
+                series:[
+                    {
+                        name:'水泥',
+                        type:'line',
+                        data:truthline,
+                        itemStyle:{
+                            normal:{
+                                color:'#A0A097'
+                            }
+                        }
+                    },
+                    {
+                        name:'对比值',
+                        type:'line',
+                        data:theoryline,
+                        itemStyle:{
+                            normal:{
+                                color:'#ff0000'
+                            }
+                        }
+                    }
+                ]
+            };
+            myChart.setOption(option);
+
+            var myChart2 = ec.init(document.getElementById('west'),theme);
+            //console.info("column1_data1.category : ",column1_data1.category);
+            var option2 = {
+                title : {
+                    x:'center',
+                    text: '各搅拌站累计水泥量/浆量统计',
+                    textStyle:{
+                        fontFamily:'微软雅黑'
+                    },
+                    subtextStyle:{
+                        color:'#FF0000',
+                        fontSize:22
+                    },
+                    subtext:column1_data1.start+" ~ "+column1_data1.end
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    orient : 'vertical',
+                    x:'left',
+                    //y:'bottom',
+                    data:['水泥','水']
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data :column1_data1.category,
+                        axisLabel: {
+                            rotate: 60,
+                            margin:-0
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        axisLabel : {
+                            formatter: '{value} T'
+                        }
+                    }
+                ],
+                series : [
+                    {
+                        name:'水泥',
+                        type:'bar',
+                        data:column1_data1.cement,
+                        stack:1,
+                        itemStyle:{
+                            normal:{
+                                color:'#A0A097'
+                            }
+                        }
+                    },
+                    {
+                        name:'水',
+                        type:'bar',
+                        data:column1_data1.water,
+                        stack:1,
+                        itemStyle:{
+                            normal:{
+                                color:'#3E8AD6'
+                            }
+                        }
+                    }
+                ]
+            };
+            myChart2.setOption(option2);
+
+
+            var myChart4 = ec.init(document.getElementById('east'),theme);
+
+            var p1 = '水 ('+pie_data.water+')';
+            var p2 = '水泥 ('+pie_data.cement+')'
+            var option4 = {
+                title : {
+                    text: '总水泥/总浆量统计',
+                    textStyle:{
+                        fontFamily:'微软雅黑'
+                    },
+                    subtextStyle:{
+                        color:'#FF0000',
+                        fontSize:22
+                    },
+                    subtext: pie_data.start+" ~ "+pie_data.end+"\n"+'总浆量：'+pie_data.all+"吨",
+                    x:'center'
+                },
+                color:['#3E8AD6','#A0A097'],
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient : 'vertical',
+
+                    x:'left',
+                    //y:'bottom',
+                    data:['水 ('+pie_data.water+')','水泥 ('+pie_data.cement+')']
+                },
+                calculable : true,
+                series : [
+                    {
+                        name:'总水灰比',
+                        type:'pie',
+                        radius : '55%',
+                        center: ['50%', '65%'],
+                        data:[
+                            {value:pie_data.water, name:p1},
+                            {value:pie_data.cement, name:p2}
+                        ]
+                    }
+                ]
+            };
+            myChart4.setOption(option4);
+        }
+);
+</script>
+<div class="contextFooter">
+    <div class="footer__home_logo" style="color:white"><strong>Copyright © 南京路鼎搅拌桩特种技术有限公司</strong></div>
+</div>
+</body>
+<script>
+	window.setInterval(refreshLocation, 30000); 
+</script>
+</html>

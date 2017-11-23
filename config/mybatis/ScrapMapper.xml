@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.scrapManager.dao.mapper.ScrapMapper">
+	
+	<select id="query" parameterType="string"
+		resultType="com.device.business.scrapManager.bean.ScrapBean">
+		select
+		   id,
+		   scrap_no,
+		   scrap_department,
+		   scrap_use_type,
+		   scrap_user_name,
+   		   scrap_use_depart,
+		   apply_user,
+		   scrap_reason,
+		   remark,
+		   org_id,
+		   scrap_time,
+		   examine_time,
+		   check_time,
+		   apply_time,
+		   state,
+		   action,
+		   creator_id,
+		   creator_name,
+		   create_time,
+		   deleteflag
+		from t_property_scrap
+		where  deleteflag=1 and state in ${states}  
+		<if test="searchName!=null and searchName!='' ">and scrap_no like #{searchName}</if>
+	</select>
+	
+	<select id="count" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_property_scrap
+		where  deleteflag=1 and state in ${states}  
+		<if test="searchName!=null and searchName!='' ">and scrap_no like #{searchName}</if>
+	</select>
+	
+	<insert id="add" parameterType="com.device.business.scrapManager.bean.ScrapBean" statementType="PREPARED">
+		insert into T_PROPERTY_SCRAP
+		(
+		   id,
+		   scrap_no,
+		   scrap_department,
+		   scrap_use_type,
+		   scrap_user_name,
+   		   scrap_use_depart,
+		   apply_user,
+		   scrap_reason,
+		   remark,
+		   org_id,
+		   scrap_time,
+		   examine_time,
+		   check_time,
+		   apply_time,
+		   state,
+		   action,
+		   creator_id,
+		   creator_name,
+		   create_time,
+		   deleteflag
+		)
+		values
+		(
+		   #{bean.id},
+		   #{bean.scrap_no},
+		   #{bean.scrap_department},
+		   #{bean.scrap_use_type},
+		   #{bean.scrap_user_name},
+		   #{bean.scrap_use_depart},
+		   #{bean.apply_user},
+		   #{bean.scrap_reason},
+		   #{bean.remark},
+		   #{bean.org_id},
+		   #{bean.scrap_time},
+		   #{bean.examine_time},
+		   #{bean.check_time},
+		   #{bean.apply_time},
+		   #{bean.state},
+		   #{bean.action},
+		   #{bean.creator_id},
+		   #{bean.creator_name},
+		   #{bean.create_time},
+		   1
+		)
+	</insert>
+	
+	<insert id="addUnion" statementType="PREPARED">
+	insert into t_scrap_union
+	(
+		scrap_id,
+		table_name,
+		property_id
+	)
+	values
+	(
+		#{scrap_id},
+		#{table_name},
+		#{property_id}
+	)
+	</insert>
+	
+	<delete id="delunion" parameterType="string" statementType="PREPARED">
+		delete from t_scrap_union 
+		where scrap_id=#{scrap_id}
+	</delete>
+	
+	<update id="update" parameterType="com.device.business.scrapManager.bean.ScrapBean" statementType="PREPARED">
+		update t_property_scrap
+			set scrap_no = #{bean.scrap_no},
+					scrap_department = #{bean.scrap_department},
+						scrap_use_type = #{bean.scrap_use_type},
+							scrap_user_name = #{bean.scrap_user_name},
+								scrap_use_depart = #{bean.scrap_use_depart},
+									apply_user =  #{bean.apply_user},
+										scrap_reason = #{bean.scrap_reason},
+											remark = #{bean.remark},
+												action =  #{bean.action},
+													org_id =  #{bean.org_id}
+		where id=#{bean.id}
+	</update>
+	
+	<select id="load"  parameterType="string"
+		resultType="com.device.business.scrapManager.bean.ScrapBean">
+		select
+		   id,
+		   scrap_no,
+		   scrap_department,
+		    scrap_use_type,
+		   scrap_user_name,
+   		   scrap_use_depart,
+		   apply_user,
+		   scrap_reason,
+		   remark,
+		   org_id,
+		   scrap_time,
+		   examine_time,
+		   check_time,
+		   apply_time,
+		   state,
+		   action,
+		   creator_id,
+		   creator_name,
+		   create_time,
+		   deleteflag
+		from T_PROPERTY_SCRAP
+		where id= #{id}
+	</select>
+	
+	<select id="getPropertyConcat" parameterType="string" resultType="java.lang.String">
+		select
+		property_id
+		from t_scrap_union
+		where scrap_id=#{scrap_id}
+	</select>
+	
+	<select id="getCheckBaseProperty" parameterType="string" resultType="com.device.business.transferManager.bean.BasePropertyBean">
+		select id,faname,faclassification,faUseAge,1 tableType from T_FIXEDASSET_BASIC a where id in ${ids}
+		<!-- union all
+		select id,faname,faclassification,faUseAge,2 tableType from T_FIXEDASSET_INSTRUMENT b where id in ${ids}
+		union all
+		select id,faname,faclassification,faUseAge,3 tableType from T_FIXEDASSET_HOUSEHOLD c where id in ${ids} -->
+	</select>
+	
+	<select id="countCheckBaseProperty" parameterType="string" resultType="Integer">
+		select
+			count(property_id)
+		from t_scrap_union
+		where scrap_id=#{scrap_id}
+	</select>
+	<!-- ///////////////////////////////////////////////////////////////////////////////// -->
+	<update id="updateScrapState" parameterType="string" statementType="PREPARED">
+		update T_PROPERTY_SCRAP set state=#{state}
+			where id =#{scrap_id}
+	</update>
+	
+	
+	<update id="updateExamineInfo" parameterType="string" statementType="PREPARED">
+		update T_PROPERTY_SCRAP set EXAMINE_NAME=#{name}
+			where id =#{scrap_id}
+	</update>
+	
+	<update id="updatePropertyStatue4Basic" parameterType="string" statementType="PREPARED">
+		update T_FIXEDASSET_BASIC set status=#{status}
+			where id in ${ids}
+	</update>
+	
+	<update id="updatePropertyStatue4Instr" parameterType="string" statementType="PREPARED">
+		update t_fixedasset_instrument  set status=#{status}
+			where id in ${ids}
+	</update>
+	
+	<update id="updatePropertyStatue4House" parameterType="string" statementType="PREPARED">
+		update t_fixedasset_household    set status=#{status}
+			where id in ${ids}
+	</update>
+	
+	<update id="updatePropertyScrapTime" statementType="PREPARED">
+		update T_FIXEDASSET_BASIC set scraptime=#{scrapData}
+			where id in ${ids}
+	</update>
+	<!-- ///////////////////////////////////////////////////////////////////////////////// -->
+	<update id="updateScrapTime" statementType="PREPARED">
+		update T_PROPERTY_SCRAP set ${scrapTime}=#{data}
+			where id =#{scrap_id}
+	</update>
+</mapper>

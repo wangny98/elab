@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.recordManager.dao.mapper.RecordChangeMapper">
+	<select id="query" parameterType="string" resultType="com.device.business.recordManager.bean.RecordChangeBean">
+		select
+			id,
+			change_content,
+			change_date,
+			change_user,
+			examine_user,
+			check_user,
+			notice_users
+		from t_record_change
+		where delete_flag=1
+		<if test="searchName!=null and searchName!='' ">and change_content like #{searchName}</if>
+	</select>
+	
+	<select id="load" parameterType="string" resultType="com.device.business.recordManager.bean.RecordChangeBean">
+		select
+			id,
+			change_content,
+			change_date,
+			change_user,
+			examine_user,
+			check_user,
+			notice_users
+		from t_record_change
+		where id = #{id}
+	</select>
+	
+	<select id="count" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_record_change
+		where  delete_flag=1  
+		<if test="searchName!=null and searchName!='' ">and change_content like #{searchName}</if>
+	</select>
+	
+	<insert id="add" parameterType="com.device.business.recordManager.bean.RecordChangeBean" statementType="PREPARED">
+		insert into t_record_change
+		(
+			id,
+			change_content,
+			change_date,
+			change_user,
+			examine_user,
+			check_user,
+			notice_users,
+			delete_flag
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.change_content},
+			#{bean.change_date},
+			#{bean.change_user},
+			#{bean.examine_user},
+			#{bean.check_user},
+			#{bean.notice_users},
+			#{bean.delete_flag}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.device.business.recordManager.bean.RecordChangeBean" statementType="PREPARED">
+		update t_record_change set
+			change_content = #{bean.change_content},
+				change_date = #{bean.change_date},
+					change_user = #{bean.change_user},
+						examine_user = #{bean.examine_user},
+							check_user = #{bean.check_user},
+								notice_users = #{bean.notice_users}
+		where id = #{bean.id}
+	</update>
+	
+	<delete id="delete" parameterType="string" statementType="PREPARED">
+		delete from t_record_change where id =#{id}
+	</delete>
+</mapper>

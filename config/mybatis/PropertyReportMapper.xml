@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.device.business.report.dao.mapper.PropertyReportMapper">
+	<select id="groupPropertyByclassification" resultType="com.device.business.report.bean.CellBean">
+		select 
+			rowName,
+			sum(value) value
+		from 
+		(
+			select
+				(case 
+				when b.class_name='土地' then '土地'
+				when b.class_name='房屋' then '房屋'
+				when b.class_name='车辆' then '车辆'
+				when b.class_name='通用办公设备' then '通用办公设备'
+				when b.class_name='办公家具' then '办公家具'
+				else '其他固定资产'
+				end) rowName,
+				sum(a.FAVALUE) value
+			from t_fixedasset_basic a,t_base_classification b
+			where a.faclassification = b.class_code
+				and a.status in (2,3,4)
+				and a.faaccountdate <![CDATA[<]]> #{lastDate}
+			group by b.class_name)
+		group by rowName
+		union all
+		select
+	       (case 
+			when a.fadfu=1 then '自用'
+			when a.fadfu=2 then '出租出借'
+			else '其他用途'
+			end) as rowName,
+	      sum(a.FAVALUE) value
+	    from t_fixedasset_basic a
+	    where a.faaccountdate <![CDATA[<]]> #{endDate}
+			and a.faaccountdate <![CDATA[>]]> #{startDate}
+			and a.status in (2,3,4)
+	    group by a.fadfu
+	</select>
+	
+	<select id="groupPropertyByclassificationAdd" resultType="com.device.business.report.bean.CellBean">
+		select 
+			rowName,
+			sum(value) value
+		from 
+		(
+			select
+				(case 
+				when b.class_name='土地' then '土地'
+				when b.class_name='房屋' then '房屋'
+				when b.class_name='车辆' then '车辆'
+				when b.class_name='通用办公设备' then '通用办公设备'
+				when b.class_name='办公家具' then '办公家具'
+				else '其他固定资产'
+				end) rowName,
+				sum(a.FAVALUE) value
+			from t_fixedasset_basic a,t_base_classification b
+			where a.faclassification = b.class_code
+				and a.status in (2,3,4)
+				and a.faaccountdate <![CDATA[<]]> #{endDate}
+				and a.faaccountdate <![CDATA[>]]> #{startDate}
+			group by b.class_name)
+		group by rowName
+		union
+		select
+	       (case 
+			when a.fadfu=1 then '自用'
+			when a.fadfu=2 then '出租出借'
+			else '其他用途'
+			end) as rowName,
+	      sum(a.FAVALUE) value
+	    from t_fixedasset_basic a
+	    where a.faaccountdate <![CDATA[<]]> #{endDate}
+	    	and a.status in (2,3,4)
+			and a.faaccountdate <![CDATA[>]]> #{startDate}
+	    group by a.fadfu
+	</select>
+	
+	<select id="groupPropertyByclassificationDel" resultType="com.device.business.report.bean.CellBean">
+		select 
+			rowName,
+			sum(value) value
+		from 
+		(
+			select
+				(case 
+				when b.class_name='土地' then '土地'
+				when b.class_name='房屋' then '房屋'
+				when b.class_name='车辆' then '车辆'
+				when b.class_name='通用办公设备' then '通用办公设备'
+				when b.class_name='办公家具' then '办公家具'
+				else '其他固定资产'
+				end) rowName,
+				sum(a.FAVALUE) value
+			from t_fixedasset_basic a,t_base_classification b
+			where a.faclassification = b.class_code
+				and a.status in (1,5)
+				and a.scraptime <![CDATA[<]]> #{endDate}
+				and a.scraptime <![CDATA[>]]> #{startDate}
+			group by b.class_name)
+		group by rowName
+		union
+		select
+	       (case 
+			when a.fadfu=1 then '自用'
+			when a.fadfu=2 then '出租出借'
+			else '其他用途'
+			end) as rowName,
+	      sum(a.FAVALUE) value
+	    from t_fixedasset_basic a
+	    where  a.status in (1,5)
+	    	and a.scraptime <![CDATA[<]]> #{endDate}
+			and a.scraptime <![CDATA[>]]> #{startDate}
+	    group by a.fadfu
+	</select>
+	
+	
+	<select id="allPropertyFirst" resultType="com.device.business.report.bean.CellBean">
+		select
+			sum(a.FAVALUE) value
+		from t_fixedasset_basic a
+		where a.faaccountdate <![CDATA[<]]> #{lastDate}
+			and a.status in (2,3,4)
+	</select>
+	
+</mapper>

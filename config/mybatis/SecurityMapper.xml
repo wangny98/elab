@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.login.dao.mapper.SecurityMapper">
+
+	<!-- 根据ID查询单个用户信息 -->
+	<select id="getUserByAccount" parameterType="string"
+		resultType="com.device.business.login.bean.UserBean">
+		select 
+			su.id,su.department_id as departmentId ,su.account,su.fullname,su.alias,su.phone,su.mobilphone,su.email,su.zipcode,
+			su.address,su.sex,su.state,su.remark,su.creator_id,su.creator_name,su.create_time,su.deleteflag,su.securitylevel,(case when sud.identitytype=4 then 1 else 0 end) as isfromad  
+		from T_System_User su
+		left join T_SYSTEM_USERIDENTITY sud on sud.user_id = su.id  
+		where su.ACCOUNT = #{account} and su.deleteflag=1
+	</select>
+	
+</mapper>

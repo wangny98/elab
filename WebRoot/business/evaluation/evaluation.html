@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet"	href="../../component/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/layoutit.css">
+    <link rel="stylesheet"	href="../../component/jquery-ui-1.9.2/css/jquery-ui-1.9.2.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/bootstrap-combined.min.css">
+
+    <script src="../../component/jquery-1.8.3.min.js"></script>
+    <script src="../../component/jquery/jquery-ui.min.js"></script>
+    <script src="../../component/jquery.jqprint-0.3.js"></script>
+	<script src="../../component/util.js"></script>
+    <script src="../../component/bootstrap/bootstrap.js"></script>
+    
+    <script src="../../component/angularjs/angular.js"></script>
+    <script src="../../component/layer/layer.js"></script>
+
+
+    <title></title>
+    <style>
+  	  .row-fluid {
+  	    background-color: #FFFFFF;
+  	    width: 100%;
+  	  }
+  	  .row {
+    	margin-bottom: 10px;
+  	  }
+  	  
+  	  input, textarea, .uneditable-input {
+		width: 120px;
+	  }
+	  .printBorder {
+        padding:8px;
+        border:1px solid #000000;
+        margin:auto;text-align:center
+      }
+      .table>tbody>tr>th{
+      	padding:0px;
+        border:1px solid #000000;
+        text-align:center;
+        margin:0px;
+      }
+      .table>tbody>tr>th>input{
+	    margin-top: 2px;
+	    height: 20px;
+	    margin-bottom: 2px;
+      }
+      
+      .panel{
+      	padding:5px;
+      	border:2px solid #000000;
+      }
+  	</style>
+</head>
+<body style="" ng-app="evaluationApp" ng-controller="evaluationCtrl">
+
+  <div class="panel" style="margin-left: 20px;margin-right: 20px;">
+  	<div class="container-fluid">
+	  	<div class="span12">
+           <div class="row">
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">桩型:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record1.pileModel">
+               </div>
+             </div>
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">设计水泥用量:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record1.cementDensity">
+                 <span class="input-group-addon">kg/m</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+               <div class="input-group">
+                 <span class="input-group-addon">设计桩长:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record1.pilePlanLength">
+               	 <span class="input-group-addon">m</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+	        	<div class="btn-group" style="float:right" role="group" aria-label="...">
+			      <button type="button" class="btn btn-default"  ng-click="modifyEval(record1)">保存</button>
+			    </div>
+             </div>
+           </div>
+	   	</div>
+   	</div>
+   	<div class="container-fluid">
+	    <div class="row" style="text-align:center">
+		     <div class="col-lg-6">
+		       <table class="table" style="margin:auto;text-align:center">
+		          <tbody>
+		          	<tr>
+		              <th style="margin:auto;text-align:center" colspan="4">桩长评分标准	({{record1.lengthScore}})分</th>
+		            </tr>
+		            <tr>
+		              <th>序号</th>
+		              <th colspan="2" style="text-align:center">桩长偏差(%)</th>
+		              <th>得分</th>
+		            </tr>
+		            <tr ng-repeat="entity in record1.entires|entityFilter:1">
+		              <th class="printBorder" >{{$index+1}}</th>
+		              <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.pileLengthMore" /></th>
+		              <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.pileLengthLess" /></th>
+		              <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+		              <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+		            </tr>
+		           </tbody>
+		         </table>
+		        </div>
+		     <div class="col-lg-6">
+	       <table class="table" style="margin:auto;text-align:center">
+	          <tbody>
+	          	<tr>
+	              <th style="margin:auto;text-align:center" colspan="4">水泥用量评分标准	({{record1.cementScore}})分</th>
+	            </tr>
+	            <tr>
+	              <th>序号</th>
+	              <th colspan="2" style="text-align:center">总灰量偏差(%)</th>
+	              <th>得分</th>
+	            </tr>
+	            <tr ng-repeat="entity in record1.entires|entityFilter:2">
+	              <th class="printBorder" >{{$index+1}}</th>
+	              <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.cementMore" /></th>
+	              <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.cementLess" /></th>
+	              <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	              <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+	            </tr>
+	           </tbody>
+	         </table>
+	        </div>
+	    </div>
+       	<div class="row" style="text-align:center">
+	     	<div class="col-lg-6">
+		       	<table class="table" style="margin:auto;text-align:center">
+		          	<tbody>
+			          	<tr>
+			              <th style="margin:auto;text-align:center" colspan="4">垂直度评分标准	({{record1.leanScore}})分</th>
+			            </tr>
+			            <tr>
+			              <th>序号</th>
+			              <th colspan="2" style="text-align:center">垂直度(%)</th>
+			              <th>得分</th>
+			            </tr>
+			            <tr ng-repeat="entity in record1.entires|entityFilter:3">
+			             	<th class="printBorder" >{{$index+1}}</th>
+			              	<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.leanMore" /></th>
+			              	<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.leanLess" /></th>
+			             	<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+			             	<button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+			            </tr>
+	          	 	</tbody>
+	         	</table>
+	        </div>
+    </div>
+       </div>
+  </div>
+  
+  <div class="panel" style="margin-left: 20px;margin-right: 20px;">
+  	<div class="container-fluid">
+	  	<div class="span12">
+           <div class="row">
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">桩型:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record2.pileModel">
+               </div>
+             </div>
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">设计水泥用量:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record2.cementDensity">
+                 <span class="input-group-addon">kg/m</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+               <div class="input-group">
+                 <span class="input-group-addon">桩长大于:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record2.pileLengthMore">
+               	 <span class="input-group-addon">m</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+               <div class="input-group">
+                 <span class="input-group-addon">电流值大于:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record2.electricMore">
+               	 <span class="input-group-addon">A</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+	        	<div class="btn-group" style="float:right" role="group" aria-label="...">
+			      <button type="button" class="btn btn-default"  ng-click="modifyEval(record2)">保存</button>
+			    </div>
+             </div>
+           </div>
+
+	   	</div>
+   	</div>
+   	<div class="container-fluid">
+	      <div class="row" style="text-align:center">
+		      <div class="col-lg-6">
+		        <table class="table" style="margin:auto;text-align:center">
+		           <tbody>
+		           	<tr>
+		               <th style="margin:auto;text-align:center" colspan="5">桩长评分标准</th>
+		             </tr>
+		             <tr>
+		               <th>序号</th>
+		               <th>桩长</th>
+		               <th colspan="2" style="text-align:center">电流值/A</th>
+		               <th>得分</th>
+		             </tr>
+		             <tr ng-repeat="entity in record2.entires|entityFilter:1">
+	               	   <th class="printBorder" >{{$index+1}}</th>
+	               	   <th class="printBorder" ><span>></span><input type="text" name="name" value="" ng-model="entity.pileLengthLess" /></th>
+		               <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.electricMore" /></th>
+		               <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.electricLess" /></th>
+	               	   <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	               	   <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+	               	 </tr>
+		            </tbody>
+		        </table>
+	          </div>
+	          <div class="col-lg-6">
+		        <table class="table" style="margin:auto;text-align:center">
+		           <tbody>
+		           	<tr>
+		               <th style="margin:auto;text-align:center" colspan="4">水泥用量评分标准</th>
+		             </tr>
+		             <tr>
+		               <th>序号</th>
+		               <th colspan="2" style="text-align:center">总灰量偏差(%)</th>
+		               <th>得分</th>
+		             </tr>
+		             <tr ng-repeat="entity in record2.entires|entityFilter:2">
+	               	   	<th class="printBorder" >{{$index+1}}</th>
+	              		<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.cementMore" /></th>
+	              		<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.cementLess" /></th>
+	              		<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	               	   <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+	               	 </tr>
+		            </tbody>
+		          </table>
+	          </div>
+	      </div>
+	      <div class="row" style="text-align:center">
+		      <div class="col-lg-6">
+		        <table class="table" style="margin:auto;text-align:center">
+		           <tbody>
+		           	<tr>
+		               <th style="margin:auto;text-align:center" colspan="4">垂直度评分标准</th>
+		             </tr>
+		             <tr>
+		               <th>序号</th>
+		               <th colspan="2" style="text-align:center">垂直度(%)</th>
+		               <th>得分</th>
+		             </tr>
+		             <tr ng-repeat="entity in record2.entires|entityFilter:3">
+	               	   	<th class="printBorder" >{{$index+1}}</th>
+		               	<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.leanMore" /></th>
+						<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.leanLess" /></th>
+						<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	               	   <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+	               	 </tr>
+		            </tbody>
+		          </table>
+	          </div>
+	      </div>
+       	</div>
+  </div>
+  
+  <div class="panel" style="margin-left: 20px;margin-right: 20px;">
+  	<div class="container-fluid">
+	  	<div class="span12">
+           <div class="row">
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">桩型:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record3.pileModel">
+               </div>
+             </div>
+             <div class="col-lg-2">
+               <div class="input-group">
+                 <span class="input-group-addon">扩大头桩长:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record3.upPlanLength">
+                 <span class="input-group-addon">m</span>
+               </div>
+             </div>
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">设计水泥用量:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record3.upCementDensity">
+               	 <span class="input-group-addon">kg/m</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+               <div class="input-group">
+                 <span class="input-group-addon">下部桩长: </span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record3.downPlanLength">
+               	 <span class="input-group-addon">m</span>
+               </div>
+             </div>
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">设计水泥用量: </span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record3.downCementDensity">
+               	 <span class="input-group-addon">kg/m</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+	        	<div class="btn-group" style="float:right" role="group" aria-label="...">
+			      <button type="button" class="btn btn-default"  ng-click="modifyEval(record3)">保存</button>
+			    </div>
+             </div>
+           </div>
+	   	</div>
+   	</div>
+   	<div class="container-fluid">
+      <div class="row" style="text-align:center">
+	      <div class="col-lg-6">
+	        <table class="table" style="margin:auto;text-align:center">
+	           <tbody>
+	           	<tr>
+	               <th style="margin:auto;text-align:center" colspan="4">桩长评分标准</th>
+	             </tr>
+	             <tr>
+	               <th>序号</th>
+	               <th colspan="2" style="text-align:center">桩长偏差(%)</th>
+	               <th>得分</th>
+	             </tr>
+	             <tr ng-repeat="entity in record3.entires|entityFilter:1">
+               	   <th class="printBorder" >{{$index+1}}</th>
+	               <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.pileLengthMore" /></th>
+	               <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.pileLengthLess" /></th>
+               	   <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	               	   <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+               	 </tr>
+	            </tbody>
+	          </table>
+          </div>
+          <div class="col-lg-6">
+	        <table class="table" style="margin:auto;text-align:center">
+	           <tbody>
+	           	<tr>
+	               <th style="margin:auto;text-align:center" colspan="4">水泥用量评分标准</th>
+	             </tr>
+	             <tr>
+	               <th>序号</th>
+	               <th colspan="2" style="text-align:center">总灰量偏差(%)</th>
+	               <th>得分</th>
+	             </tr>
+	             <tr ng-repeat="entity in record3.entires|entityFilter:2">
+               	   	<th class="printBorder" >{{$index+1}}</th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.cementMore" /></th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.cementLess" /></th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	               	   <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+               	 </tr>
+	            </tbody>
+	          </table>
+          </div>
+      </div>
+      	  <div class="row" style="text-align:center">
+	      <div class="col-lg-6">
+	        <table class="table" style="margin:auto;text-align:center">
+	           <tbody>
+	           	<tr>
+	               <th style="margin:auto;text-align:center" colspan="4">垂直度评分标准</th>
+	             </tr>
+	             <tr>
+	               <th>序号</th>
+	               <th colspan="2" style="text-align:center">垂直度(%)</th>
+	               <th>得分</th>
+	             </tr>
+	             <tr ng-repeat="entity in record3.entires|entityFilter:3">
+               	   	<th class="printBorder" >{{$index+1}}</th>
+	               	<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.leanMore" /></th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.leanLess" /></th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	               	   <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+               	 </tr>
+	            </tbody>
+	          </table>
+          </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="panel" style="margin-left: 20px;margin-right: 20px;">
+  	<div class="container-fluid">
+	  	<div class="span12">
+           <div class="row">
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">桩型:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record4.pileModel">
+               </div>
+             </div>
+             <div class="col-lg-2">
+               <div class="input-group">
+                 <span class="input-group-addon">扩大头桩长:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record4.upPlanLength">
+                 <span class="input-group-addon">m</span>
+               </div>
+             </div>
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">设计水泥用量:</span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record4.upCementDensity">
+               	 <span class="input-group-addon">kg/m</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+               <div class="input-group">
+                 <span class="input-group-addon">下部桩长大于: </span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record4.downPlanLength">
+               	 <span class="input-group-addon">m</span>
+               </div>
+             </div>
+             <div class="col-lg-3">
+               <div class="input-group">
+                 <span class="input-group-addon">设计水泥用量: </span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record4.downCementDensity">
+               	 <span class="input-group-addon">kg/m</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+               <div class="input-group">
+                 <span class="input-group-addon">电流值大于: </span>
+                 <input type="text" class="form-control" style="height: 30px;" ng-model="record4.electricMore">
+               	 <span class="input-group-addon">A</span>
+               </div>
+             </div>
+             <div class="col-lg-2">
+	        	<div class="btn-group" style="float:right" role="group" aria-label="...">
+			      <button type="button" class="btn btn-default"  ng-click="modifyEval(record4)">保存</button>
+			    </div>
+             </div>
+           </div>
+
+	   	</div>
+   	</div>
+  	<div class="container-fluid">
+      <div class="row" style="text-align:center">
+	      <div class="col-lg-6">
+	        <table class="table" style="margin:auto;text-align:center">
+	           <tbody>
+	           	<tr>
+	               <th style="margin:auto;text-align:center" colspan="5">桩长评分标准</th>
+	             </tr>
+	             <tr>
+	               <th>序号</th>
+	               <th>下部桩长</th>
+	               <th colspan="2" style="text-align:center">电流值/A</th>
+	               <th>得分</th>
+	             </tr>
+	             <tr ng-repeat="entity in record4.entires|entityFilter:1">
+               	   <th class="printBorder" >{{$index+1}}</th>
+               	   <th class="printBorder" ><span>></span><input type="text" name="name" value="" ng-model="entity.pileLengthLess" /></th>
+	               <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.electricMore" /></th>
+	               <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.electricLess" /></th>
+               	   <th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	               	   <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+               	 </tr>
+	            </tbody>
+	          </table>
+          </div>
+          <div class="col-lg-6">
+	        <table class="table" style="margin:auto;text-align:center">
+	           <tbody>
+	           	<tr>
+	               <th style="margin:auto;text-align:center" colspan="4">水泥用量评分标准</th>
+	             </tr>
+	             <tr>
+	               <th>序号</th>
+	               <th colspan="2" style="text-align:center">总灰量偏差(%)</th>
+	               <th>得分</th>
+	             </tr>
+	             <tr ng-repeat="entity in record4.entires|entityFilter:2">
+               	   	<th class="printBorder" >{{$index+1}}</th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.cementMore" /></th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.cementLess" /></th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	               	   <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+               	 </tr>
+	            </tbody>
+	          </table>
+          </div>
+      </div>
+      <div class="row" style="text-align:center">
+	      <div class="col-lg-6">
+	        <table class="table" style="margin:auto;text-align:center">
+	           <tbody>
+	           	<tr>
+	               <th style="margin:auto;text-align:center" colspan="4">垂直度评分标准</th>
+	             </tr>
+	             <tr>
+	               <th>序号</th>
+	               <th colspan="2" style="text-align:center">垂直度(%)</th>
+	               <th>得分</th>
+	             </tr>
+	             <tr ng-repeat="entity in record4.entires|entityFilter:3">
+               	   	<th class="printBorder" >{{$index+1}}</th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.leanMore" /></th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.leanLess" /></th>
+					<th class="printBorder" ><input type="text" name="name" value="" ng-model="entity.score" />
+	               	   <button type="button" class="btn btn-default"  ng-click="modifyEntity(entity)">保存</button></th>
+               	 </tr>
+	            </tbody>
+	          </table>
+          </div>
+      </div>
+    </div>
+  </div>
+  <script src="evaluationApp.js"></script>
+</body>
+</html>

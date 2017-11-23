@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.recordManager.dao.mapper.RecordControlListMapper">
+	<select id="query" parameterType="string" resultType="com.device.business.recordManager.bean.RecordControlListBean">
+		select
+			id,
+			examine_date,
+			cx_date,
+			gq_record,
+			td_record,
+			xz_record,
+			cx_user,
+			qkqs,
+			delete_flag
+		from t_record_controlList
+		where delete_flag=1
+		<if test="searchName!=null and searchName!='' ">and record_name like #{searchName}</if>
+	</select>
+	
+	<select id="load" parameterType="string" resultType="com.device.business.recordManager.bean.RecordControlListBean">
+		select
+			id,
+			examine_date,
+			cx_date,
+			gq_record,
+			td_record,
+			xz_record,
+			cx_user,
+			qkqs,
+			delete_flag
+		from t_record_controlList
+		where id = #{id}
+	</select>
+	
+	<select id="count" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_record_controlList
+		where  delete_flag=1  
+		<if test="searchName!=null and searchName!='' ">and name like #{searchName}</if>
+	</select>
+	
+	<insert id="add" parameterType="com.device.business.recordManager.bean.RecordControlListBean" statementType="PREPARED">
+		insert into t_record_controlList
+		(
+			id,
+			examine_date,
+			cx_date,
+			gq_record,
+			td_record,
+			xz_record,
+			cx_user,
+			qkqs,
+			delete_flag
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.examine_date},
+			#{bean.cx_date},
+			#{bean.gq_record},
+			#{bean.td_record},
+			#{bean.xz_record},
+			#{bean.cx_user},
+			#{bean.qkqs},
+			#{bean.delete_flag}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.device.business.recordManager.bean.RecordControlListBean" statementType="PREPARED">
+		update t_record_controlList set
+			examine_date = #{bean.examine_date},
+				cx_date = #{bean.cx_date},
+					gq_record = #{bean.gq_record},
+						td_record = #{bean.td_record},
+							xz_record = #{bean.xz_record},
+								cx_user = #{bean.cx_user},
+									qkqs = #{bean.qkqs}
+		where id = #{bean.id}
+	</update>
+	
+	<delete id="delete" parameterType="string" statementType="PREPARED">
+		delete from t_record_controlList where id =#{id}
+	</delete>
+</mapper>

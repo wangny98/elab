@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.device.business.docManager.dao.mapper.ContentManagerMapper">
+		
+		<select id="listContentNode" resultType="com.device.business.docManager.bean.ContentNodeBean">
+			select
+				id,
+				parentID parentId,
+				typeID typeId,
+				name,
+				name text,
+				name qtip,
+				remark,
+				creator_id creatorId,
+				creator_name creatorName,
+				creator_time creatorTime
+			from t_dir_template
+			where typeID in ${typeIds}
+			and deleteFlag=1
+		</select>
+		
+		<select id="infoContentNode" resultType="com.device.business.docManager.bean.ContentNodeBean">
+			select
+				id,
+				parentID parentId,
+				typeID typeId,
+				name,
+				path,
+				remark,
+				creator_id creatorId,
+				creator_name creatorName,
+				creator_time creatorTime
+			from t_dir_template
+			where id=#{id}
+			and deleteFlag=1
+		</select>
+		
+		<select id="queryNodeByPath" resultType="com.device.business.docManager.bean.ContentNodeBean">
+			select
+				id,
+				parentID parentId,
+				typeID typeId,
+				name,
+				remark,
+				creator_id creatorId,
+				creator_name creatorName,
+				creator_time creatorTime
+			from t_dir_template
+			where path=#{path}
+			and deleteFlag=1
+		</select>
+		
+		<insert id="addContentNode" parameterType="com.device.business.docManager.bean.ContentBean"
+			statementType="PREPARED">
+			insert into t_dir_template
+			(
+				id,
+				parentID,
+				typeID,
+				name,
+				path,
+				remark,
+				creator_id,
+				creator_name,
+				creator_time,
+				deleteFlag
+			)
+			values
+			(
+				#{bean.id},
+				#{bean.parentId},
+				#{bean.typeId},
+				#{bean.name},
+				#{bean.path},
+				#{bean.remark},
+				#{bean.creatorId},
+				#{bean.creatorName},
+				#{bean.creatorTime},
+				1
+			)
+		</insert>
+		
+		<update id="updContentNode" statementType="PREPARED">
+			update t_dir_template
+				set name = #{bean.name},
+							remark = #{bean.remark}
+			where id=#{bean.id}
+		</update>
+		
+		
+		<delete id="delContentNode" statementType="PREPARED">
+			delete from t_dir_template where id=#{id}
+		</delete>
+		
+</mapper>

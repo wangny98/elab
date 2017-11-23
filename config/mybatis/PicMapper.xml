@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.showManage.dao.mapper.PicMapper">
+	<select id="query" parameterType="string" resultType="com.device.business.showManage.bean.PicBean">
+		select
+			id,
+			show_id,
+			pic_descript,
+			pic_name,
+			pic_path
+		from t_show_pic
+		<if test="searchName!=null and searchName!='' ">where pic_name like #{searchName}</if>
+	</select>
+	
+	<select id="count" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_show_pic 
+		<if test="searchName!=null and searchName!='' ">where pic_name like #{searchName}</if>
+	</select>
+	
+	<select id="load" parameterType="string" resultType="com.device.business.showManage.bean.PicBean">
+		select
+			id,
+			show_id,
+			pic_descript,
+			pic_name,
+			pic_path
+		from t_show_pic
+		where id = #{id}
+	</select>
+	
+	<insert id="add" parameterType="com.device.business.showManage.bean.PicBean" statementType="PREPARED">
+		insert into t_show_pic
+		(
+			id,
+			show_id,
+			pic_descript,
+			pic_name,
+			pic_path
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.show_id},
+			#{bean.pic_descript},
+			#{bean.pic_name},
+			#{bean.pic_path}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.device.business.showManage.bean.PicBean" statementType="PREPARED">
+		update t_show_pic set
+				show_id = #{bean.show_id},
+					pic_descript = #{bean.pic_descript},
+						pic_name = #{bean.pic_name},
+							pic_path = #{bean.pic_path}
+		where id = #{bean.id} 
+	</update>
+	
+	<delete id="delete" parameterType="string" statementType="PREPARED">
+		delete from t_show_pic where id =#{id}
+	</delete>
+</mapper>

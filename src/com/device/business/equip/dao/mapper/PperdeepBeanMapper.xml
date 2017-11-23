@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.device.business.equip.dao.mapper.PperdeepBeanMapper" >
+  <resultMap id="BaseResultMap" type="com.device.business.equip.bean.PperdeepBean" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="zid" property="zid" jdbcType="INTEGER" />
+    <result column="Pile_Number" property="pileNumber" jdbcType="VARCHAR" />
+    <result column="Pile_Deep" property="pileDeep" jdbcType="DECIMAL" />
+    <result column="Liquid_Cement_Weight" property="liquidCementWeight" jdbcType="DECIMAL" />
+    <result column="Cement_Weight" property="cementWeight" jdbcType="DECIMAL" />
+    <result column="Power_Inside" property="powerInside" jdbcType="DECIMAL" />
+    <result column="Power_Outside" property="powerOutside" jdbcType="DECIMAL" />
+    <result column="Front_Back_Angle" property="frontBackAngle" jdbcType="DECIMAL" />
+    <result column="Left_Right_Angle" property="leftRightAngle" jdbcType="DECIMAL" />
+    <result column="Squareness" property="squareness" jdbcType="DECIMAL" />
+    <result column="Speed" property="speed" jdbcType="SMALLINT" />
+    <result column="Pile_Machine_Number" property="pileMachineNumber" jdbcType="VARCHAR" />
+    <result column="Mix_Station_Number" property="mixStationNumber" jdbcType="VARCHAR" />
+    <result column="Create_Time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="Change_Time" property="changeTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, zid, Pile_Number, Pile_Deep, Liquid_Cement_Weight, Cement_Weight, Power_Inside, 
+    Power_Outside, Front_Back_Angle, Left_Right_Angle, Squareness, Speed, Pile_Machine_Number, 
+    Mix_Station_Number, Create_Time, Change_Time
+  </sql>
+  <select id="selectMachineInfo" resultType="java.util.HashMap">
+	  SELECT
+			c.Project_Name,
+			c.Section_Name,
+			b.Equipment_Name,
+			b.Equipment_Code,
+			a.Pile_Number
+		FROM
+			t_luding_pile_perdeep_info a,
+			t_luding_pile_equipment b,
+			t_luding_section_info c
+		WHERE
+			b.Section_ID = c.Section_ID
+		AND a.Pile_Machine_Number = b.Equipment_Code
+		AND a.Pile_Number = #{Pile_Number}
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.device.business.equip.bean.PperdeepBeanExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_luding_pile_perdeep_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  
+  <select id="selectByABS" resultMap="BaseResultMap" parameterType="com.device.business.equip.bean.PperdeepBeanExample" >
+    select
+    	ABS(pile_deep)	Pile_Deep,
+    	sum(Cement_Weight)  Cement_Weight,
+    	max(Power_Inside) Power_Inside,
+    	max(Power_Outside) Power_Outside
+    from t_luding_pile_perdeep_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    group by ABS(pile_deep)
+      order by ABS(pile_deep) DESC
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_luding_pile_perdeep_info
+    where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select 
+    	<include refid="Base_Column_List" />
+    from t_luding_pile_perdeep_info
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_luding_pile_perdeep_info
+    where id = #{id}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.device.business.equip.bean.PperdeepBeanExample" >
+    delete from t_luding_pile_perdeep_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.device.business.equip.bean.PperdeepBean" >
+    insert into t_luding_pile_perdeep_info (id, zid, Pile_Number, Pile_Deep, Liquid_Cement_Weight, Cement_Weight, 
+      Power_Inside, Power_Outside, Front_Back_Angle, Left_Right_Angle, Squareness, 
+      Speed, Pile_Machine_Number, Mix_Station_Number, Create_Time, Change_Time
+      )
+    values (#{id}, #{zid}, #{pileNumber}, #{pileDeep}, #{liquidCementWeight}, #{cementWeight}, 
+      #{powerInside}, #{powerOutside}, #{frontBackAngle}, #{leftRightAngle}, #{squareness}, 
+      #{speed}, #{pileMachineNumber}, #{mixStationNumber}, #{createTime}, #{changeTime}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.device.business.equip.bean.PperdeepBean" >
+    insert into t_luding_pile_perdeep_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="zid != null" >
+        zid,
+      </if>
+      <if test="pileNumber != null" >
+        Pile_Number,
+      </if>
+      <if test="pileDeep != null" >
+        Pile_Deep,
+      </if>
+      <if test="liquidCementWeight != null" >
+        Liquid_Cement_Weight,
+      </if>
+      <if test="cementWeight != null" >
+        Cement_Weight,
+      </if>
+      <if test="powerInside != null" >
+        Power_Inside,
+      </if>
+      <if test="powerOutside != null" >
+        Power_Outside,
+      </if>
+      <if test="frontBackAngle != null" >
+        Front_Back_Angle,
+      </if>
+      <if test="leftRightAngle != null" >
+        Left_Right_Angle,
+      </if>
+      <if test="squareness != null" >
+        Squareness,
+      </if>
+      <if test="speed != null" >
+        Speed,
+      </if>
+      <if test="pileMachineNumber != null" >
+        Pile_Machine_Number,
+      </if>
+      <if test="mixStationNumber != null" >
+        Mix_Station_Number,
+      </if>
+      <if test="createTime != null" >
+        Create_Time,
+      </if>
+      <if test="changeTime != null" >
+        Change_Time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id},
+      </if>
+      <if test="zid != null" >
+        #{zid},
+      </if>
+      <if test="pileNumber != null" >
+        #{pileNumber},
+      </if>
+      <if test="pileDeep != null" >
+        #{pileDeep},
+      </if>
+      <if test="liquidCementWeight != null" >
+        #{liquidCementWeight},
+      </if>
+      <if test="cementWeight != null" >
+        #{cementWeight},
+      </if>
+      <if test="powerInside != null" >
+        #{powerInside},
+      </if>
+      <if test="powerOutside != null" >
+        #{powerOutside},
+      </if>
+      <if test="frontBackAngle != null" >
+        #{frontBackAngle},
+      </if>
+      <if test="leftRightAngle != null" >
+        #{leftRightAngle},
+      </if>
+      <if test="squareness != null" >
+        #{squareness},
+      </if>
+      <if test="speed != null" >
+        #{speed},
+      </if>
+      <if test="pileMachineNumber != null" >
+        #{pileMachineNumber},
+      </if>
+      <if test="mixStationNumber != null" >
+        #{mixStationNumber},
+      </if>
+      <if test="createTime != null" >
+        #{createTime},
+      </if>
+      <if test="changeTime != null" >
+        #{changeTime},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.device.business.equip.bean.PperdeepBeanExample" resultType="java.lang.Integer" >
+    select count(*) from t_luding_pile_perdeep_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_luding_pile_perdeep_info
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id},
+      </if>
+      <if test="record.zid != null" >
+        zid = #{record.zid},
+      </if>
+      <if test="record.pileNumber != null" >
+        Pile_Number = #{record.pileNumber},
+      </if>
+      <if test="record.pileDeep != null" >
+        Pile_Deep = #{record.pileDeep},
+      </if>
+      <if test="record.liquidCementWeight != null" >
+        Liquid_Cement_Weight = #{record.liquidCementWeight},
+      </if>
+      <if test="record.cementWeight != null" >
+        Cement_Weight = #{record.cementWeight},
+      </if>
+      <if test="record.powerInside != null" >
+        Power_Inside = #{record.powerInside},
+      </if>
+      <if test="record.powerOutside != null" >
+        Power_Outside = #{record.powerOutside},
+      </if>
+      <if test="record.frontBackAngle != null" >
+        Front_Back_Angle = #{record.frontBackAngle},
+      </if>
+      <if test="record.leftRightAngle != null" >
+        Left_Right_Angle = #{record.leftRightAngle},
+      </if>
+      <if test="record.squareness != null" >
+        Squareness = #{record.squareness},
+      </if>
+      <if test="record.speed != null" >
+        Speed = #{record.speed},
+      </if>
+      <if test="record.pileMachineNumber != null" >
+        Pile_Machine_Number = #{record.pileMachineNumber},
+      </if>
+      <if test="record.mixStationNumber != null" >
+        Mix_Station_Number = #{record.mixStationNumber},
+      </if>
+      <if test="record.createTime != null" >
+        Create_Time = #{record.createTime},
+      </if>
+      <if test="record.changeTime != null" >
+        Change_Time = #{record.changeTime},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_luding_pile_perdeep_info
+    set id = #{record.id},
+      zid = #{record.zid},
+      Pile_Number = #{record.pileNumber},
+      Pile_Deep = #{record.pileDeep},
+      Liquid_Cement_Weight = #{record.liquidCementWeight},
+      Cement_Weight = #{record.cementWeight},
+      Power_Inside = #{record.powerInside},
+      Power_Outside = #{record.powerOutside},
+      Front_Back_Angle = #{record.frontBackAngle},
+      Left_Right_Angle = #{record.leftRightAngle},
+      Squareness = #{record.squareness},
+      Speed = #{record.speed},
+      Pile_Machine_Number = #{record.pileMachineNumber},
+      Mix_Station_Number = #{record.mixStationNumber},
+      Create_Time = #{record.createTime},
+      Change_Time = #{record.changeTime}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.device.business.equip.bean.PperdeepBean" >
+    update t_luding_pile_perdeep_info
+    <set >
+      <if test="zid != null" >
+        zid = #{zid},
+      </if>
+      <if test="pileNumber != null" >
+        Pile_Number = #{pileNumber},
+      </if>
+      <if test="pileDeep != null" >
+        Pile_Deep = #{pileDeep},
+      </if>
+      <if test="liquidCementWeight != null" >
+        Liquid_Cement_Weight = #{liquidCementWeight},
+      </if>
+      <if test="cementWeight != null" >
+        Cement_Weight = #{cementWeight},
+      </if>
+      <if test="powerInside != null" >
+        Power_Inside = #{powerInside},
+      </if>
+      <if test="powerOutside != null" >
+        Power_Outside = #{powerOutside},
+      </if>
+      <if test="frontBackAngle != null" >
+        Front_Back_Angle = #{frontBackAngle},
+      </if>
+      <if test="leftRightAngle != null" >
+        Left_Right_Angle = #{leftRightAngle},
+      </if>
+      <if test="squareness != null" >
+        Squareness = #{squareness},
+      </if>
+      <if test="speed != null" >
+        Speed = #{speed},
+      </if>
+      <if test="pileMachineNumber != null" >
+        Pile_Machine_Number = #{pileMachineNumber},
+      </if>
+      <if test="mixStationNumber != null" >
+        Mix_Station_Number = #{mixStationNumber},
+      </if>
+      <if test="createTime != null" >
+        Create_Time = #{createTime},
+      </if>
+      <if test="changeTime != null" >
+        Change_Time = #{changeTime},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.device.business.equip.bean.PperdeepBean" >
+    update t_luding_pile_perdeep_info
+    set zid = #{zid},
+      Pile_Number = #{pileNumber},
+      Pile_Deep = #{pileDeep},
+      Liquid_Cement_Weight = #{liquidCementWeight},
+      Cement_Weight = #{cementWeight},
+      Power_Inside = #{powerInside},
+      Power_Outside = #{powerOutside},
+      Front_Back_Angle = #{frontBackAngle},
+      Left_Right_Angle = #{leftRightAngle},
+      Squareness = #{squareness},
+      Speed = #{speed},
+      Pile_Machine_Number = #{pileMachineNumber},
+      Mix_Station_Number = #{mixStationNumber},
+      Create_Time = #{createTime},
+      Change_Time = #{changeTime}
+    where id = #{id}
+  </update>
+</mapper>

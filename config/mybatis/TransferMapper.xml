@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.transferManager.dao.mapper.TransferMapper">
+
+	<select id="query" parameterType="string"
+		resultType="com.device.business.transferManager.bean.TransferBean">
+		select
+		   id,
+		   org_id,
+		   transfer_no,
+		   org_unit,
+		   department,
+		   user_id,
+		   user_name,
+		   change_value,
+		   change_way,
+		   change_time,
+		   change_reason,
+		   remark,
+		   state,
+		   creator_id,
+		   creator_name,
+		   create_time,
+		   deleteflag
+		from t_property_transfer
+		where  deleteflag=1 and state in ${states}  
+		<if test="searchName!=null and searchName!='' ">and transfer_no like #{searchName}</if>
+	</select>
+	
+	<select id="count" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_property_transfer
+		where  deleteflag=1 and state in ${states}  
+		<if test="searchName!=null and searchName!='' ">and transfer_no like #{searchName}</if>
+	</select>
+	
+	<insert id="add" parameterType="com.device.business.transferManager.bean.TransferBean" statementType="PREPARED">
+		insert into t_property_transfer
+		(
+		   id,
+		   transfer_no,
+		   org_id,
+		   org_unit,
+		   department,
+		   user_id,
+		   user_name,
+		   change_value,
+		   change_way,
+		   change_time,
+		   change_reason,
+		   remark,
+		   state,
+		   creator_id,
+		   creator_name,
+		   create_time,
+		   deleteflag
+		)
+		values
+		(
+		   #{bean.id},
+		   #{bean.transfer_no},
+		   #{bean.org_id},
+		   #{bean.org_unit},
+		   #{bean.department},
+		   #{bean.user_id},
+		   #{bean.user_name},
+		   #{bean.change_value},
+		   #{bean.change_way},
+		   #{bean.change_time},
+		   #{bean.change_reason},
+		   #{bean.remark},
+		   1,
+		   #{bean.creator_id},
+		   #{bean.creator_name},
+		   #{bean.create_time},
+		   1
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.device.business.transferManager.bean.TransferBean" statementType="PREPARED">
+		update t_property_transfer
+			set property_id = #{bean.property_id},
+					transfer_no = #{bean.transfer_no},
+						property_name = #{bean.property_name},
+							org_id =  #{bean.org_id},
+								department = #{bean.department},
+									user_id = #{bean.user_id},
+										user_name = #{bean.user_name},
+											change_value = #{bean.change_value},
+												change_way =  #{bean.change_way},
+													change_time = #{bean.change_time},
+														property_no =  #{bean.property_no},
+															change_reason =  #{bean.change_reason},
+																remark =  #{bean.remark}
+		where id=#{bean.id}
+	</update>
+	
+	<delete id="delete" parameterType="string" statementType="PREPARED">
+		delete from t_property_transfer where id =#{id}
+	</delete>
+	
+	<select id="load"  parameterType="string"
+		resultType="com.device.business.transferManager.bean.TransferBean">
+		select
+		   id,
+		   transfer_no,
+		   property_id,
+		   property_name,
+		   org_id,
+		   org_unit,
+		   department,
+		   user_id,
+		   user_name,
+		   change_value,
+		   change_way,
+		   change_time,
+		   property_no,
+		   change_reason,
+		   state,
+		   remark,
+		   creator_id,
+		   creator_name,
+		   create_time,
+		   deleteflag
+		from t_property_transfer
+		where id= #{id}
+	</select>
+	
+	<insert id="addUnion" parameterType="string" statementType="PREPARED">
+		insert into t_transfer_union
+		(
+			transfer_id,
+			table_name,
+			property_id
+		)
+		values
+		(
+			#{transfer_id},
+			#{table_name},
+			#{property_id}
+		)
+	</insert>
+	
+	<delete id="delunion" parameterType="string" statementType="PREPARED">
+		delete from t_transfer_union 
+		where transfer_id=#{transfer_id} and property_id = #{property_id}
+	</delete>
+	<!-- ///////////////////////////////////////////////////////////////////////////////// -->
+	<select id="listBaseProperty" parameterType="string" 
+		resultType="com.device.business.transferManager.bean.BasePropertyBean">
+		select id,fanumber,faname,faclassification,faUseAge,1 tableType from T_FIXEDASSET_BASIC a 
+		where status in (1,3)
+		<if test="searchName!=null and searchName!='' ">and faname like #{searchName}</if>
+		<!-- union all
+		select id,fanumber,faname,faclassification,faUseAge,2 tableType from T_FIXEDASSET_INSTRUMENT b 
+		where status in (1,3)
+		<if test="searchName!=null and searchName!='' ">and faname like #{searchName}</if>
+		union all
+		select id,fanumber,faname,faclassification,faUseAge,3 tableType from T_FIXEDASSET_HOUSEHOLD c 
+		where status in (1,3)
+		<if test="searchName!=null and searchName!='' ">and faname like #{searchName}</if> -->
+	</select>
+	
+	<select id="countBaseProperty" parameterType="string" resultType="Integer">
+		select
+		count(a.id)
+		from 
+		(
+		select id from T_FIXEDASSET_BASIC a where status<![CDATA[<>]]>2 <if test="searchName!=null and searchName!='' ">and faname like #{searchName}</if>
+		<!-- union all
+		select id from T_FIXEDASSET_INSTRUMENT b where status<![CDATA[<>]]>2 <if test="searchName!=null and searchName!='' ">and faname like #{searchName}</if>
+		union all
+		select id from T_FIXEDASSET_HOUSEHOLD c where status<![CDATA[<>]]>2 <if test="searchName!=null and searchName!='' ">and faname like #{searchName}</if> -->
+		)a
+	</select>
+	
+	<select id="getPropertyConcat" parameterType="string" resultType="string">
+		select
+		property_id
+		from t_transfer_union
+		where transfer_id=#{transfer_id}
+	</select>
+	
+	<select id="getPropertyConcatAll" parameterType="string" resultType="string">
+		select
+		property_id
+		from t_transfer_union
+		where transfer_id=#{transfer_id}
+	</select>
+	
+	
+	<select id="getCheckBaseProperty" parameterType="string" resultType="com.device.business.transferManager.bean.BasePropertyBean">
+		select id,faname,faclassification,1 tableType from T_FIXEDASSET_BASIC a where id in ${ids}<!-- 
+		union all
+		select id,faname,faclassification,2 tableType from T_FIXEDASSET_INSTRUMENT b where id in ${ids}
+		union all
+		select id,faname,faclassification,3 tableType from T_FIXEDASSET_HOUSEHOLD c where id in ${ids} -->
+	</select>
+	
+	<select id="countCheckBaseProperty" parameterType="string" resultType="Integer">
+		select
+			count(property_id)
+		from t_transfer_union
+		where transfer_id=#{transfer_id}
+	</select>
+	<!-- ///////////////////////////////////////////////////////////////////////////////// -->
+	<update id="updateTransferState" parameterType="string" statementType="PREPARED">
+		update t_property_transfer set state=#{state}
+			where id =#{transfer_id}
+	</update>
+	
+	
+	
+	<update id="updateExamineInfo" statementType="PREPARED">
+		update t_property_transfer set EXAMINE_TIME=#{date},
+				EXAMINE_name=#{name}
+		where id =#{transfer_id}
+	</update>
+	
+	<update id="updatePropertyStatue4Basic" parameterType="string" statementType="PREPARED">
+		update T_FIXEDASSET_BASIC set status=#{status} 
+			where id in ${ids}
+	</update>
+	
+	<update id="updatePropertyStatue4Instr" parameterType="string" statementType="PREPARED">
+		update t_fixedasset_instrument  set status=#{status} 
+			where id in ${ids}
+	</update>
+	
+	<update id="updatePropertyStatue4House" parameterType="string" statementType="PREPARED">
+		update t_fixedasset_household    set status=#{status} 
+			where id in ${ids}
+	</update>
+</mapper>

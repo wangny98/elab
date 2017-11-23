@@ -1,0 +1,307 @@
+<html>
+<head>
+<title>后台管理系统...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="ext/resources/css/ext-all.css" rel="stylesheet"
+	type="text/css" />
+<link href="style/css/icon.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="ext/adapter/ext/ext-base-debug.js"></script>
+<script type="text/javascript" src="ext/ext-all-debug.js"></script>
+<script type="text/javascript" src="ext/ext-lang-zh_cn.js"></script>
+<script type="text/javascript" src="ext/ext-basex.js"></script>
+<script type="text/javascript">
+	function okClick() {
+		//document.usersForm.submit();
+		var name = document.getElementById("userName").value;
+		var pass = document.getElementById("userPassword").value;
+		//console.info("old : ",window.location.href);
+		//window.location.href=window.location.href.replace(".jsp",".html");
+		var isSuccess = false;
+		Ext.Ajax.request({
+			url : 'resource/security/validate?userName=' + name
+					+ '&userPassword=' + pass,
+			method : 'GET',
+			async : false,
+			success : function(response) {
+				var json = Ext.util.JSON.decode(response.responseText);
+
+				if (json.retcode == 101) {
+					Ext.Msg.alert('错误', '用户不存在...');
+				}
+				if (json.retcode == 102) {
+					Ext.Msg.alert('错误', '密码错误..');
+				}
+
+				if (json.success == true) {
+					isSuccess = true;
+				}
+			},
+			failure : function(response) {
+			}
+		});
+		if (isSuccess == true) {
+			var temp = window.location.href.split("/");
+			var ind = temp.length;
+			if (temp[ind] == "login.html")
+				window.location.href = window.location.href.replace("login",
+						"index");
+			else
+				window.location.href = "index.html";
+		}
+	}
+</script>
+</head>
+<body text="#000000" leftmargin="0" topmargin="0"
+	class="ext-webkit ext-chrome" id="ext-gen3">
+	<table id="bgTable" width="1000" height="600" border="0" align="center"
+		cellpadding="0" cellspacing="0"
+		background="style/images/luding/login.jpg"
+		style="width: 1440px; margin-top: 0px;">
+
+		<tbody>
+			<tr>
+				<td>
+					<form action="resource/security/validate?method=post"
+						name="usersForm" focus="userName" style="margin-top: 384px;">
+
+						<div style="padding-left: 440px; padding-top: 0px;">
+							<div
+								style="padding-left: 70px; padding-top: 0px; width: 0px; margin-bottom: 0px;">
+								<input id="userName" type="text" name="userName"
+									style="background-color: #ffffff; width: 412; height: 52; border-radius: 6px;font-size:30px"
+									size="17">
+							</div>
+							<div style="height: 14px;"></div>
+							<div
+								style="padding-left: 70px; padding-top: 8px; margin-top: 0px;">
+								<input id="userPassword" type="password" name="userPassword"
+									style="background-color: #ffffff; width: 412; height: 52; border-radius: 6px; border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px;font-size:30px"
+									size="17">
+							</div>
+							<br>
+							<div
+								style="padding-left: 408px; width: 2px; height: 52px; border: 0; cursor: hand; margin-left: 77px; margin-top: 53px;"
+								onclick="okClick()"></div>
+						</div>
+					</form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+	<div class="x-window-proxy" id="ext-gen14" style="display: none;"></div>
+	<div class="ext-el-mask" id="ext-gen15"
+		style="display: none; width: 1708px; height: 642px; z-index: 9000;"></div>
+	<div class="x-shadow" id="ext-gen38"
+		style="z-index: 9002; left: 786px; top: 277px; width: 136px; height: 94px; display: none;">
+		<div class="xst">
+			<div class="xstl"></div>
+			<div class="xstc" style="width: 124px;"></div>
+			<div class="xstr"></div>
+		</div>
+		<div class="xsc" style="height: 82px;">
+			<div class="xsml"></div>
+			<div class="xsmc" style="width: 124px;"></div>
+			<div class="xsmr"></div>
+		</div>
+		<div class="xsb">
+			<div class="xsbl"></div>
+			<div class="xsbc" style="width: 124px;"></div>
+			<div class="xsbr"></div>
+		</div>
+	</div>
+	<div id="ext-comp-1006" class=" x-window x-window-plain x-window-dlg"
+		style="position: absolute; z-index: 9003; visibility: hidden; left: -10000px; top: -10000px; width: 127px; display: block;">
+		<div class="x-window-tl">
+			<div class="x-window-tr">
+				<div class="x-window-tc">
+					<div class="x-window-header x-unselectable x-window-draggable"
+						id="ext-gen4">
+						<div class="x-tool x-tool-close" id="ext-gen10"
+							style="display: block;">&nbsp;</div>
+						<span class="x-window-header-text" id="ext-gen16">错误</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="x-window-bwrap" id="ext-gen5">
+			<div class="x-window-ml">
+				<div class="x-window-mr">
+					<div class="x-window-mc" id="ext-gen9">
+						<div class="x-window-body" id="ext-gen6"
+							style="width: 95px; height: auto;">
+							<div id="ext-gen26">
+								<div class="ext-mb-icon x-hidden" id="ext-gen27"></div>
+								<div class="ext-mb-content">
+									<span class="ext-mb-text" id="ext-gen28">用户不存在...</span><br>
+									<div class="ext-mb-fix-cursor">
+										<input type="text" class="ext-mb-input" id="ext-gen29"
+											style="display: none;">
+										<textarea class="ext-mb-textarea" id="ext-gen30"
+											style="display: none;"></textarea>
+									</div>
+								</div>
+								<div class="x-progress-wrap x-hide-display" id="ext-comp-1007">
+									<div class="x-progress-inner">
+										<div class="x-progress-bar" id="ext-gen32"
+											style="height: 16px; width: 0px;">
+											<div class="x-progress-text x-hidden" id="ext-gen33"
+												style="z-index: 99; width: 0px;">
+												<div id="ext-gen35" style="width: 381px; height: 18px;">&nbsp;</div>
+											</div>
+										</div>
+										<div class="x-progress-text x-progress-text-back"
+											id="ext-gen34">
+											<div id="ext-gen36" style="width: 381px; height: 18px;">&nbsp;</div>
+										</div>
+									</div>
+								</div>
+								<div class="x-clear" id="ext-gen37"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="x-window-bl" id="ext-gen8">
+				<div class="x-window-br">
+					<div class="x-window-bc">
+						<div class="x-window-footer x-panel-btns" id="ext-gen7"
+							style="width: 105px;">
+							<div id="ext-comp-1005"
+								class="x-panel-fbar x-small-editor x-toolbar-layout-ct"
+								style="width: auto;">
+								<table cellspacing="0" class="x-toolbar-ct">
+									<tbody>
+										<tr>
+											<td class="x-toolbar-left" align="center"><table
+													cellspacing="0">
+													<tbody>
+														<tr class="x-toolbar-left-row">
+															<td class="x-toolbar-cell" id="ext-gen17"><table
+																	id="ext-comp-1001" cellspacing="0"
+																	class="x-btn x-btn-noicon" style="width: 75px;">
+																	<tbody class="x-btn-small x-btn-icon-small-left">
+																		<tr>
+																			<td class="x-btn-tl"><i>&nbsp;</i></td>
+																			<td class="x-btn-tc"></td>
+																			<td class="x-btn-tr"><i>&nbsp;</i></td>
+																		</tr>
+																		<tr>
+																			<td class="x-btn-ml"><i>&nbsp;</i></td>
+																			<td class="x-btn-mc"><em class=""
+																				unselectable="on"><button type="button"
+																						id="ext-gen18" class=" x-btn-text">确定</button></em></td>
+																			<td class="x-btn-mr"><i>&nbsp;</i></td>
+																		</tr>
+																		<tr>
+																			<td class="x-btn-bl"><i>&nbsp;</i></td>
+																			<td class="x-btn-bc"></td>
+																			<td class="x-btn-br"><i>&nbsp;</i></td>
+																		</tr>
+																	</tbody>
+																</table></td>
+															<td class="x-toolbar-cell x-hide-offsets" id="ext-gen19"><table
+																	id="ext-comp-1002" cellspacing="0"
+																	class="x-btn  x-btn-noicon" style="width: 75px;">
+																	<tbody class="x-btn-small x-btn-icon-small-left">
+																		<tr>
+																			<td class="x-btn-tl"><i>&nbsp;</i></td>
+																			<td class="x-btn-tc"></td>
+																			<td class="x-btn-tr"><i>&nbsp;</i></td>
+																		</tr>
+																		<tr>
+																			<td class="x-btn-ml"><i>&nbsp;</i></td>
+																			<td class="x-btn-mc"><em class=""
+																				unselectable="on"><button type="button"
+																						id="ext-gen20" class=" x-btn-text">是</button></em></td>
+																			<td class="x-btn-mr"><i>&nbsp;</i></td>
+																		</tr>
+																		<tr>
+																			<td class="x-btn-bl"><i>&nbsp;</i></td>
+																			<td class="x-btn-bc"></td>
+																			<td class="x-btn-br"><i>&nbsp;</i></td>
+																		</tr>
+																	</tbody>
+																</table></td>
+															<td class="x-toolbar-cell x-hide-offsets" id="ext-gen21"><table
+																	id="ext-comp-1003" cellspacing="0"
+																	class="x-btn  x-btn-noicon" style="width: 75px;">
+																	<tbody class="x-btn-small x-btn-icon-small-left">
+																		<tr>
+																			<td class="x-btn-tl"><i>&nbsp;</i></td>
+																			<td class="x-btn-tc"></td>
+																			<td class="x-btn-tr"><i>&nbsp;</i></td>
+																		</tr>
+																		<tr>
+																			<td class="x-btn-ml"><i>&nbsp;</i></td>
+																			<td class="x-btn-mc"><em class=""
+																				unselectable="on"><button type="button"
+																						id="ext-gen22" class=" x-btn-text">否</button></em></td>
+																			<td class="x-btn-mr"><i>&nbsp;</i></td>
+																		</tr>
+																		<tr>
+																			<td class="x-btn-bl"><i>&nbsp;</i></td>
+																			<td class="x-btn-bc"></td>
+																			<td class="x-btn-br"><i>&nbsp;</i></td>
+																		</tr>
+																	</tbody>
+																</table></td>
+															<td class="x-toolbar-cell x-hide-offsets" id="ext-gen23"><table
+																	id="ext-comp-1004" cellspacing="0"
+																	class="x-btn  x-btn-noicon" style="width: 75px;">
+																	<tbody class="x-btn-small x-btn-icon-small-left">
+																		<tr>
+																			<td class="x-btn-tl"><i>&nbsp;</i></td>
+																			<td class="x-btn-tc"></td>
+																			<td class="x-btn-tr"><i>&nbsp;</i></td>
+																		</tr>
+																		<tr>
+																			<td class="x-btn-ml"><i>&nbsp;</i></td>
+																			<td class="x-btn-mc"><em class=""
+																				unselectable="on"><button type="button"
+																						id="ext-gen24" class=" x-btn-text">取消</button></em></td>
+																			<td class="x-btn-mr"><i>&nbsp;</i></td>
+																		</tr>
+																		<tr>
+																			<td class="x-btn-bl"><i>&nbsp;</i></td>
+																			<td class="x-btn-bc"></td>
+																			<td class="x-btn-br"><i>&nbsp;</i></td>
+																		</tr>
+																	</tbody>
+																</table></td>
+														</tr>
+													</tbody>
+												</table></td>
+											<td class="x-toolbar-right" align="right"><table
+													cellspacing="0" class="x-toolbar-right-ct">
+													<tbody>
+														<tr>
+															<td><table cellspacing="0">
+																	<tbody>
+																		<tr class="x-toolbar-right-row"></tr>
+																	</tbody>
+																</table></td>
+															<td><table cellspacing="0">
+																	<tbody>
+																		<tr class="x-toolbar-extras-row"></tr>
+																	</tbody>
+																</table></td>
+														</tr>
+													</tbody>
+												</table></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="x-clear" id="ext-gen12"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<a href="#" class="x-dlg-focus" tabindex="-1" id="ext-gen13">&nbsp;</a>
+	</div>
+</body>
+
+</html>

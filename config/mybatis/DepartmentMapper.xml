@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.systemSet.dao.mapper.DepartmentMapper">
+	<select id="listDepartment" resultType="com.device.business.systemSet.bean.DepartmentBean">
+		select
+			id,
+			depart_name,
+			depart_code
+		from T_BASE_DEPARTMENT
+		where depart_name like #{name} and deleteflag=1
+	</select>
+	
+	<select id="getDepartment" resultType="com.device.business.systemSet.bean.DepartmentBean">
+		select
+			id,
+			depart_name,
+			depart_code
+		from T_BASE_DEPARTMENT
+		where id like #{id} and deleteflag=1
+	</select>
+	
+	<insert id="addDepartment" statementType="PREPARED">
+		insert into T_BASE_DEPARTMENT
+		(
+			id,
+			depart_name,
+			depart_code,
+			deleteflag
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.depart_name},
+			#{bean.depart_code},
+			1
+		)
+	</insert>
+	
+	<update id="updDepartment" statementType="PREPARED">
+		update T_BASE_DEPARTMENT
+			set depart_name = #{bean.depart_name},
+					depart_code = #{bean.depart_code}
+		where id = #{bean.id}
+	</update>
+	
+	<update id="delDepartment" statementType="PREPARED">
+		update T_BASE_DEPARTMENT
+			set deleteflag = 2
+		where id = #{id}
+	</update>
+	
+	<select id="getNodes" resultType="com.device.business.organizationManage.bean.OrgTreeBean">
+		select
+			a.id,
+			a.depart_code+' '+a.depart_name text,
+			b.parent_id parent,
+			2 type
+		from T_BASE_DEPARTMENT a,t_base_union b
+		where a.id = b.child_id
+	</select>
+</mapper>

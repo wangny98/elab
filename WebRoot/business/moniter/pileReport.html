@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet"	href="../../component/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/layoutit.css">
+    <link rel="stylesheet"	href="../../component/jquery-ui-1.9.2/css/jquery-ui-1.9.2.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/bootstrap-combined.min.css">
+    <link rel="stylesheet"	href="../../component/bootstrap/bootstrap-datetimepicker.css">
+
+    <script src="../../component/jquery-1.8.3.min.js"></script>
+    <script src="../../component/jquery/jquery-ui.min.js"></script>
+    <script src="../../component/jquery.jqprint-0.3.js"></script>
+	<script src="../../component/util.js"></script>
+    <script src="../../component/bootstrap/bootstrap.js"></script>
+    <script src="../../component/bootstrap/bootstrap-datetimepicker.js"></script>
+    <script src="../../component/bootstrap/bootstrap-datetimepicker.zh-CN.js"></script>
+    
+    <script src="../../component/angularjs/angular.js"></script>
+    <script src="../../component/layer/layer.js"></script>
+
+
+    <title></title>
+    <style>
+  	  .row-fluid {
+  	    background-color: #FFFFFF;
+  	    width: 100%;
+  	  }
+      .table th {
+          font-weight: normal;
+      }
+
+      .printBorder {
+        padding:8px;
+        border:1px solid #000000;
+        margin:auto;text-align:center
+      }
+
+    </style>
+</head>
+<body style="" ng-app="pileReport" ng-controller="pileReportCtrl">
+  <div class="panel" style="margin-left: 20px;margin-right: 20px;">
+  	<div class="row">
+              <div class="col-lg-2">
+                <div class="input-group">
+                  <span class="input-group-addon" style="height:30px">标段：</span>
+                  <select ng-model="queryParam.sectionNumber" style="width:120px;margin-bottom: 0px;">
+                  	<option value=""></option>
+                    <option ng-repeat="section in allSection" value="section">{{section.value1}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <div class="input-group">
+                  <span class="input-group-addon">桩机：</span>
+                  <select ng-model="queryParam.pileDriverNumber" style="width:120px;margin-bottom: 0px;">
+                  	<option value=""></option>
+                    <option ng-repeat="obj in allPileEquip" value="obj.key1">{{obj.value1}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="input-group">
+                  <span class="input-group-addon">大于</span>
+                  	<div style="height: 20px;"  class="controls input-append date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input2">
+	                    <input id="start" size="16" ng-model="queryParam.startTime" style="height: 30px;" type="text">
+	                    <span style="height: 30px;" class="add-on"><i class="icon-remove"></i></span>
+						<span style="height: 30px;" class="add-on"><i class="icon-th"></i></span>
+	                </div>
+					<input type="hidden" id="dtp_input2" value="" /><br/>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="input-group">
+                  <span class="input-group-addon">小于</span>
+                  	<div style="height: 20px;" class="controls input-append date form_date" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input2">
+	                    <input id="end" size="16" ng-model="queryParam.endTime" style="height: 30px;" type="text">
+	                    <span style="height: 30px;" class="add-on"><i class="icon-remove"></i></span>
+						<span style="height: 30px;" class="add-on"><i class="icon-th"></i></span>
+	                </div>
+					<input type="hidden" id="dtp_input2" value="" /><br/>
+                </div>
+              </div>
+
+			  <div class="col-lg-1">
+	              <div class="input-group">
+	                <div class="btn-group" style="float:right" role="group" aria-label="...">
+				      <button type="button" class="btn btn-default"  ng-click="load()">查询</button>
+				    </div>
+				  </div>
+              </div>
+              <div class="col-lg-1">
+	              <div class="input-group">
+	                <div class="btn-group" style="float:right" role="group" aria-label="...">
+				      <button type="button" class="btn btn-default"  onclick="printAll()">打印</button>
+				    </div>
+				  </div>
+              </div>
+    </div>
+  	<script>
+  	$('.form_date').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+    });
+  	</script>
+    <!-- <div class="btn-group" style="float:right" role="group" aria-label="...">
+      <button type="button" class="btn btn-default"  onclick="printAll()">Print</button>
+    </div> -->
+   	<div id ="ddd">
+	    <div class="container-fluid" ng-repeat="records in pages">
+	      <div class="row " style="text-align:center"><h4>水泥搅拌桩现场施工记录表</h4></div>
+	      <div class="row" style="text-align:center">
+	        <table class="table" style="margin:auto;text-align:center">
+	           <tbody>
+	             <tr>
+	               <th style="text-align:right" >工程名称：</th>
+	               <th style="text-align:left" colspan="2"><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	               <th style="text-align:right" >施工单位：</th>
+	               <th style="text-align:left" colspan="2"><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	               <th style="text-align:right" >监理单位：</th>
+	               <th style="text-align:left" colspan="2"><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	               <th style="text-align:right" >施工时间：</th>
+	               <th style="text-align:left" colspan="2"><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	             </tr>
+	             <tr>
+	
+	               <th style="text-align:right" >桩机编号：</th>
+	               <th style="text-align:left" ><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	               <th style="text-align:right" >机械类型：</th>
+	               <th style="text-align:left" ><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	               <th style="text-align:right" >设计桩长(m)：</th>
+	               <th style="text-align:left" ><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	           	   <th style="text-align:right" >桩径(mm)：</th>
+	               <th style="text-align:left" ><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	               <th style="text-align:right" >设计桩距(m)：</th>
+	               <th style="text-align:left" ><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	               <th style="text-align:right" >水灰比：</th>
+	               <th style="text-align:left" ><U>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</U></th>
+	             </tr>
+	            </tbody>
+	          </table>
+	      </div>
+	      <div class="row" style="text-align:center"  >
+	        <table class="table" border="1">
+	           <tbody>
+	             <tr>
+	               <th class="printBorder" rowspan="2">序号</th>
+	               <th class="printBorder" rowspan="2">桩号</th>
+	               <th class="printBorder" style="text-align:center" colspan="2">成桩时间</th>
+	               <th class="printBorder" rowspan="2">施工桩长(m)</th>
+	               <th class="printBorder" rowspan="2">下转速度</br>(m/min)</th>
+	               <th class="printBorder" rowspan="2">提钻速度</br>(m/min)</th>
+	               <th class="printBorder" rowspan="2">总喷浆量(L)</th>
+	               <th class="printBorder" rowspan="2">水泥用量(Kg)</th>
+	               <th class="printBorder" rowspan="2">喷浆时间(s)</th>
+	               <th class="printBorder" rowspan="2">最大内电流(A)</th>
+	               <th class="printBorder" rowspan="2">最大外电流(A)</th>
+	               <th class="printBorder" rowspan="2">垂直度</th>
+	             </tr>
+	             <tr>
+	             	  <th class="printBorder">开始时间</th>
+	                <th class="printBorder">结束时间</th>
+	             </tr>
+	             <tr ng-repeat="record in records">
+	               <th class="printBorder" >{{$index+1}}</th>
+	               <th class="printBorder" >{{record.pileNumber}}</th>
+	               <th class="printBorder" >{{record.startTime}}</th>
+	               <th class="printBorder" >{{record.endTime}}</th>
+	               <th class="printBorder" >{{record.pileLength}}</th>
+	               <th class="printBorder" >{{record.maxDownSpeed}}</th>
+	               <th class="printBorder" >{{record.maxUpSpeed}}</th>
+	               <th class="printBorder" >{{record.totalLiquid}}</th>
+	               <th class="printBorder" >{{record.totalCement}}</th>
+	               <th class="printBorder" >{{record.gunitingSecond}}</th>
+	               <th class="printBorder" >{{record.maxInsidePower}}</th>
+	               <th class="printBorder" >{{record.maxOutsidePower}}</th>
+	               <th class="printBorder" >{{record.maxLean}}</th>
+	             </tr>
+	            </tbody>
+	          </table>
+	          <table class="table" style="margin:auto;text-align:center">
+	           <tbody>
+	             <tr>
+	               <th style="text-align:left"  colspan="2">记录：</th>
+	               <th style="text-align:left"  colspan="2">技术员：</th>
+	               <th style="text-align:left"  colspan="2">现场旁站：</th>
+	               <th style="text-align:left"  colspan="2">监理：</th>
+	               <th style="text-align:left"  colspan="2">日期：</th></tr>
+	           <tbody>
+	          </table>
+	         
+	        </div>
+	    </div>
+  	</div>
+  </div>
+  <script>
+    function printAll(){
+      $("#ddd").jqprint();
+    }
+    
+    var app = angular.module('pileReport', []);
+    
+    app.controller('pileReportCtrl', function($scope,$http,$q) {
+    	
+    	
+    	
+    	$scope.queryParam = {
+    			sectionNumber:"",
+    			pileDriverNumber:"",
+    			startTime:"",
+    			endTime:new Date().Format("yyyy-MM-dd")
+    	}
+    	
+    	$http({
+	        method:"POST",
+	        url:"/elab/resource/pileManager/reportSearchKV",
+	        params:{}
+	      }).success(function(data, status, headers, config){
+	    	  $scope.allSection = data.allSection;
+	    	  $scope.allPileEquip = data.allPileEquip;
+	      });
+    	
+    	
+    	$scope.load = function(){
+    		
+    		var start = $("#start").val();
+    		var end = $("#end").val();
+    		$scope.queryParam.startTime = start;
+    		$scope.queryParam.endTime = end;
+    	      var deferred = $q.defer();
+    	      $http({
+    	        method:"POST",
+    	        url:"/elab/resource/pileManager/searchAll",
+    	        params:$scope.queryParam/* {
+    	        	startTime:'2016-12-15'
+    	        } */
+    	      }).success(function(data, status, headers, config){
+    	    	  $scope.pages=[]
+    	          var records=[];
+    	    	  
+    	    	  var startDate,endDate=0;
+    	    	  for(var i=0;i<data.pile.length;i++){
+    	    		  var record = data.pile[i];
+    	    		  if(record.startTime<startDate){startDate = record.startTime};
+    	    		  if(record.startTime>endDate){endDate = record.startTime};
+    	    		  
+    	    		  if(record.startTime){
+    	    			  record.startTime= new Date(record.startTime).Format("yyyy-MM-dd hh:mm:ss");  
+	    			  }
+	    			  if(record.endTime){
+	    				  record.endTime= new Date(record.endTime).Format("yyyy-MM-dd hh:mm:ss");  
+	    			  }
+    	    		  records.push(record)
+    	    		  if((i+1)%15==0){
+    	    			  $scope.pages.push(records);
+    	    			  records=[];
+    	    		  }
+    	    	  }
+    	    	  if(data.pile.length<15){
+    	    		  $scope.pages.push(records);
+    	    	  }
+    	    	  
+    	    	  var startStr = new Date(startDate).Format("yyyy-MM-dd");  
+    	    	  //console.log($scope.pages);
+    	          //$scope.records = angular.copy(data.pile);
+    	          
+    	      }).error(function(data, status, headers, config){
+    	          //alert("获取数据失败");
+    	      })
+    	    }
+    	
+    	$scope.load();
+    	$scope.queryParam = {
+    			sectionNumber:"",
+    			pileDriverNumber:"",
+    			startTime:"",
+    			endTime:new Date().Format("yyyy-MM-dd")
+    	}
+    });
+  </script>
+</body>
+</html>

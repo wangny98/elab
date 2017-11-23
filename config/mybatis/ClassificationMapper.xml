@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.device.business.classificationManager.dao.mapper.ClassificationMapper">
+	
+	<select id="queryClassification" parameterType="String"
+		resultType="com.device.business.classificationManager.bean.ClassificationBean">
+		select
+			id,
+			class_code,
+			class_name,
+			class_short,
+			class_level,
+			remark,
+			creator_id,
+			creator_name,
+			create_time,
+			deleteflag
+		from t_base_classification
+		where deleteflag=1
+	</select>
+	
+	<select id="countClassification" parameterType="String"
+		resultType="Integer">
+		select
+			count(id)
+		from t_base_classification
+		where  deleteflag=1
+	</select>
+	
+	<insert id="addClassification" statementType="PREPARED"
+		parameterType="com.device.business.classificationManager.bean.ClassificationBean">
+		insert into t_base_classification
+			(
+				id,
+				class_code,
+				class_name,
+				class_short,
+				class_level,
+				remark,
+				creator_id,
+				creator_name,
+				create_time,
+				deleteflag
+			)
+		values
+			(
+				#{bean.id},
+				#{bean.class_code},
+				#{bean.class_name},
+				#{bean.class_short},
+				#{bean.class_level},
+				#{bean.remark},
+				#{bean.creator_id},
+				#{bean.creator_name},
+				#{bean.create_time},
+				1
+			)
+	</insert>
+	
+	<insert id="addClaUnion"  statementType="PREPARED">
+		insert into t_base_class_union
+			(
+				id,
+				parent_id,
+				child_id
+			)
+		values
+			(
+				#{id},
+				#{parent_id},
+				#{child_id}
+			)
+	</insert>
+	
+	<update id="updateClassification" statementType="PREPARED"
+		parameterType="com.device.business.classificationManager.bean.ClassificationBean">
+		update t_base_classification
+			set 
+				class_code=#{bean.class_code},
+					class_name=#{bean.class_name},
+						class_short=#{bean.class_short},
+								class_level=#{bean.class_level},
+												remark=#{bean.remark}
+		where id=#{bean.id}
+	</update>
+	
+	<select id="loadClassification" parameterType="String" 
+		resultType="com.device.business.classificationManager.bean.ClassificationBean">
+		select
+			id,
+			class_code,
+			class_name,
+			class_short,
+			class_level,
+			remark,
+			creator_id,
+			creator_name,
+			create_time,
+			deleteflag
+		from t_base_classification
+		where id = #{id} 
+		and deleteflag=1
+	</select>
+	
+	<update id="deleteClassification" parameterType="String" 
+		statementType="PREPARED">
+		update t_base_classification
+			set deleteflag=2
+		where  id = #{id}
+	</update>
+	
+	<delete id="deleteClaUnion" statementType="PREPARED">
+		delete from t_base_class_union where child_id=#{id}
+	</delete>
+	
+	<select id="listAllTreeNode" resultType="com.device.business.classificationManager.bean.ClassTreeBean">
+		select 
+			a.id,
+			b.parent_id parent,
+			a.class_name text,
+			a.class_level type
+		from t_base_classification a,t_base_class_union b
+		where a.id=b.child_id
+		and a.deleteflag=1
+	</select>
+	
+	<select id="queryClassCode" parameterType="String" resultType="String">
+		select 
+			class_code
+		from t_base_classification
+		where class_name = #{id} and deleteflag=1
+	</select>
+	
+</mapper>

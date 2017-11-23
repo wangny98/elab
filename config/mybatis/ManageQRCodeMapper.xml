@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.manageQRCode.dao.mapper.manageQRCodeMapper">
+	<insert id="generateQRCode" parameterType="com.device.business.manageQRCode.bean.manageQRCodeBean" statementType="PREPARED">  
+   		INSERT INTO t_asset_qrcode (  
+        	ID, ASSET_ID, QRCODE, STATE, DESCRIPTION, CREATE_DATE)
+    	VALUES (  
+        	#{id},#{asset_id},#{qrcode},
+        	#{state},#{description},#{create_date}
+        	)  
+	</insert>
+	
+	<delete id="deleteQRCode" statementType="PREPARED" parameterType="string">
+		delete 
+		from t_asset_qrcode t 
+		where asset_id = #{bean}
+	</delete>
+	
+	<select id="isExist" parameterType="string" resultType="Integer">
+		select
+			count(*) 
+		from t_asset_qrcode
+		where asset_id = #{fanumber}
+	</select>
+	
+	<select id="getQRCode" parameterType="string"
+		resultType="com.device.business.manageQRCode.bean.manageQRCodeBean">
+		select * from t_asset_qrcode q where q.asset_id = #{id}
+	</select>
+	
+</mapper>

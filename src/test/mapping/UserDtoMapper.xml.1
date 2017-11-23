@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="test.dao.UserDtoMapper" >
+  <resultMap id="BaseResultMap" type="test.model.UserDto" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="Pile_Number" property="pileNumber" jdbcType="VARCHAR" />
+    <result column="Start_Time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="End_Time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="Pile_Length" property="pileLength" jdbcType="DECIMAL" />
+    <result column="Guniting_Second" property="gunitingSecond" jdbcType="SMALLINT" />
+    <result column="Total_Liquid" property="totalLiquid" jdbcType="DECIMAL" />
+    <result column="Total_Cement" property="totalCement" jdbcType="DECIMAL" />
+    <result column="Max_Down_Speed" property="maxDownSpeed" jdbcType="DECIMAL" />
+    <result column="Max_Up_Speed" property="maxUpSpeed" jdbcType="DECIMAL" />
+    <result column="Max_Inside_Power" property="maxInsidePower" jdbcType="DECIMAL" />
+    <result column="Max_Outside_Power" property="maxOutsidePower" jdbcType="DECIMAL" />
+    <result column="Max_Lean" property="maxLean" jdbcType="DECIMAL" />
+    <result column="Guniting_Begin_Time" property="gunitingBeginTime" jdbcType="TIMESTAMP" />
+    <result column="Guniting_End_Time" property="gunitingEndTime" jdbcType="TIMESTAMP" />
+    <result column="Pile_Driver_Number" property="pileDriverNumber" jdbcType="VARCHAR" />
+    <result column="Create_Time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="Change_Time" property="changeTime" jdbcType="TIMESTAMP" />
+    <result column="Section_Number" property="sectionNumber" jdbcType="TINYINT" />
+    <result column="xmid" property="xmid" jdbcType="TINYINT" />
+    <result column="zjid" property="zjid" jdbcType="INTEGER" />
+    <result column="Enlarge_Top" property="enlargeTop" jdbcType="DECIMAL" />
+    <result column="Enlarge_Bottom" property="enlargeBottom" jdbcType="DECIMAL" />
+    <result column="Enlarge_Height" property="enlargeHeight" jdbcType="DECIMAL" />
+    <result column="t_yl" property="tYl" jdbcType="TINYINT" />
+    <result column="t_cxs" property="tCxs" jdbcType="DECIMAL" />
+    <result column="t_jxs" property="tJxs" jdbcType="DECIMAL" />
+    <result column="sjzc" property="sjzc" jdbcType="DECIMAL" />
+    <result column="zhl" property="zhl" jdbcType="DECIMAL" />
+    <result column="zjl" property="zjl" jdbcType="DECIMAL" />
+    <result column="sj_zc" property="sjZc" jdbcType="DECIMAL" />
+    <result column="sj_hl" property="sjHl" jdbcType="DECIMAL" />
+    <result column="sj_jl" property="sjJl" jdbcType="DECIMAL" />
+    <result column="upid" property="upid" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, Pile_Number, Start_Time, End_Time, Pile_Length, Guniting_Second, Total_Liquid, 
+    Total_Cement, Max_Down_Speed, Max_Up_Speed, Max_Inside_Power, Max_Outside_Power, 
+    Max_Lean, Guniting_Begin_Time, Guniting_End_Time, Pile_Driver_Number, Create_Time, 
+    Change_Time, Section_Number, xmid, zjid, Enlarge_Top, Enlarge_Bottom, Enlarge_Height, 
+    t_yl, t_cxs, t_jxs, sjzc, zhl, zjl, sj_zc, sj_hl, sj_jl, upid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_luding_pile_info
+    where id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_luding_pile_info
+    where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="test.model.UserDto" >
+    insert into t_luding_pile_info (id, Pile_Number, Start_Time, End_Time, Pile_Length, Guniting_Second, 
+      Total_Liquid, Total_Cement, Max_Down_Speed, Max_Up_Speed, Max_Inside_Power, 
+      Max_Outside_Power, Max_Lean, Guniting_Begin_Time, Guniting_End_Time, Pile_Driver_Number, 
+      Create_Time, Change_Time, Section_Number, xmid, zjid, Enlarge_Top, 
+      Enlarge_Bottom, Enlarge_Height, t_yl, t_cxs, t_jxs, sjzc, zhl, 
+      zjl, sj_zc, sj_hl, sj_jl, upid)
+    values (#{id}, #{pileNumber}, #{startTime}, #{endTime}, #{pileLength}, #{gunitingSecond}, 
+      #{totalLiquid}, #{totalCement}, #{maxDownSpeed}, #{maxUpSpeed}, #{maxInsidePower}, 
+      #{maxOutsidePower}, #{maxLean}, #{gunitingBeginTime}, #{gunitingEndTime}, #{pileDriverNumber}, 
+      #{createTime}, #{changeTime}, #{sectionNumber}, #{xmid}, #{zjid}, #{enlargeTop}, 
+      #{enlargeBottom}, #{enlargeHeight}, #{tYl}, #{tCxs}, #{tJxs}, #{sjzc}, #{zhl}, 
+      #{zjl}, #{sjZc}, #{sjHl}, #{sjJl}, #{upid})
+  </insert>
+  <insert id="insertSelective" parameterType="test.model.UserDto" >
+    insert into t_luding_pile_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="pileNumber != null" >
+        Pile_Number,
+      </if>
+      <if test="startTime != null" >
+        Start_Time,
+      </if>
+      <if test="endTime != null" >
+        End_Time,
+      </if>
+      <if test="pileLength != null" >
+        Pile_Length,
+      </if>
+      <if test="gunitingSecond != null" >
+        Guniting_Second,
+      </if>
+      <if test="totalLiquid != null" >
+        Total_Liquid,
+      </if>
+      <if test="totalCement != null" >
+        Total_Cement,
+      </if>
+      <if test="maxDownSpeed != null" >
+        Max_Down_Speed,
+      </if>
+      <if test="maxUpSpeed != null" >
+        Max_Up_Speed,
+      </if>
+      <if test="maxInsidePower != null" >
+        Max_Inside_Power,
+      </if>
+      <if test="maxOutsidePower != null" >
+        Max_Outside_Power,
+      </if>
+      <if test="maxLean != null" >
+        Max_Lean,
+      </if>
+      <if test="gunitingBeginTime != null" >
+        Guniting_Begin_Time,
+      </if>
+      <if test="gunitingEndTime != null" >
+        Guniting_End_Time,
+      </if>
+      <if test="pileDriverNumber != null" >
+        Pile_Driver_Number,
+      </if>
+      <if test="createTime != null" >
+        Create_Time,
+      </if>
+      <if test="changeTime != null" >
+        Change_Time,
+      </if>
+      <if test="sectionNumber != null" >
+        Section_Number,
+      </if>
+      <if test="xmid != null" >
+        xmid,
+      </if>
+      <if test="zjid != null" >
+        zjid,
+      </if>
+      <if test="enlargeTop != null" >
+        Enlarge_Top,
+      </if>
+      <if test="enlargeBottom != null" >
+        Enlarge_Bottom,
+      </if>
+      <if test="enlargeHeight != null" >
+        Enlarge_Height,
+      </if>
+      <if test="tYl != null" >
+        t_yl,
+      </if>
+      <if test="tCxs != null" >
+        t_cxs,
+      </if>
+      <if test="tJxs != null" >
+        t_jxs,
+      </if>
+      <if test="sjzc != null" >
+        sjzc,
+      </if>
+      <if test="zhl != null" >
+        zhl,
+      </if>
+      <if test="zjl != null" >
+        zjl,
+      </if>
+      <if test="sjZc != null" >
+        sj_zc,
+      </if>
+      <if test="sjHl != null" >
+        sj_hl,
+      </if>
+      <if test="sjJl != null" >
+        sj_jl,
+      </if>
+      <if test="upid != null" >
+        upid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id},
+      </if>
+      <if test="pileNumber != null" >
+        #{pileNumber},
+      </if>
+      <if test="startTime != null" >
+        #{startTime},
+      </if>
+      <if test="endTime != null" >
+        #{endTime},
+      </if>
+      <if test="pileLength != null" >
+        #{pileLength},
+      </if>
+      <if test="gunitingSecond != null" >
+        #{gunitingSecond},
+      </if>
+      <if test="totalLiquid != null" >
+        #{totalLiquid},
+      </if>
+      <if test="totalCement != null" >
+        #{totalCement},
+      </if>
+      <if test="maxDownSpeed != null" >
+        #{maxDownSpeed},
+      </if>
+      <if test="maxUpSpeed != null" >
+        #{maxUpSpeed},
+      </if>
+      <if test="maxInsidePower != null" >
+        #{maxInsidePower},
+      </if>
+      <if test="maxOutsidePower != null" >
+        #{maxOutsidePower},
+      </if>
+      <if test="maxLean != null" >
+        #{maxLean},
+      </if>
+      <if test="gunitingBeginTime != null" >
+        #{gunitingBeginTime},
+      </if>
+      <if test="gunitingEndTime != null" >
+        #{gunitingEndTime},
+      </if>
+      <if test="pileDriverNumber != null" >
+        #{pileDriverNumber},
+      </if>
+      <if test="createTime != null" >
+        #{createTime},
+      </if>
+      <if test="changeTime != null" >
+        #{changeTime},
+      </if>
+      <if test="sectionNumber != null" >
+        #{sectionNumber},
+      </if>
+      <if test="xmid != null" >
+        #{xmid},
+      </if>
+      <if test="zjid != null" >
+        #{zjid},
+      </if>
+      <if test="enlargeTop != null" >
+        #{enlargeTop},
+      </if>
+      <if test="enlargeBottom != null" >
+        #{enlargeBottom},
+      </if>
+      <if test="enlargeHeight != null" >
+        #{enlargeHeight},
+      </if>
+      <if test="tYl != null" >
+        #{tYl},
+      </if>
+      <if test="tCxs != null" >
+        #{tCxs},
+      </if>
+      <if test="tJxs != null" >
+        #{tJxs},
+      </if>
+      <if test="sjzc != null" >
+        #{sjzc},
+      </if>
+      <if test="zhl != null" >
+        #{zhl},
+      </if>
+      <if test="zjl != null" >
+        #{zjl},
+      </if>
+      <if test="sjZc != null" >
+        #{sjZc},
+      </if>
+      <if test="sjHl != null" >
+        #{sjHl},
+      </if>
+      <if test="sjJl != null" >
+        #{sjJl},
+      </if>
+      <if test="upid != null" >
+        #{upid},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="test.model.UserDto" >
+    update t_luding_pile_info
+    <set >
+      <if test="pileNumber != null" >
+        Pile_Number = #{pileNumber},
+      </if>
+      <if test="startTime != null" >
+        Start_Time = #{startTime},
+      </if>
+      <if test="endTime != null" >
+        End_Time = #{endTime},
+      </if>
+      <if test="pileLength != null" >
+        Pile_Length = #{pileLength},
+      </if>
+      <if test="gunitingSecond != null" >
+        Guniting_Second = #{gunitingSecond},
+      </if>
+      <if test="totalLiquid != null" >
+        Total_Liquid = #{totalLiquid},
+      </if>
+      <if test="totalCement != null" >
+        Total_Cement = #{totalCement},
+      </if>
+      <if test="maxDownSpeed != null" >
+        Max_Down_Speed = #{maxDownSpeed},
+      </if>
+      <if test="maxUpSpeed != null" >
+        Max_Up_Speed = #{maxUpSpeed},
+      </if>
+      <if test="maxInsidePower != null" >
+        Max_Inside_Power = #{maxInsidePower},
+      </if>
+      <if test="maxOutsidePower != null" >
+        Max_Outside_Power = #{maxOutsidePower},
+      </if>
+      <if test="maxLean != null" >
+        Max_Lean = #{maxLean},
+      </if>
+      <if test="gunitingBeginTime != null" >
+        Guniting_Begin_Time = #{gunitingBeginTime},
+      </if>
+      <if test="gunitingEndTime != null" >
+        Guniting_End_Time = #{gunitingEndTime},
+      </if>
+      <if test="pileDriverNumber != null" >
+        Pile_Driver_Number = #{pileDriverNumber},
+      </if>
+      <if test="createTime != null" >
+        Create_Time = #{createTime},
+      </if>
+      <if test="changeTime != null" >
+        Change_Time = #{changeTime},
+      </if>
+      <if test="sectionNumber != null" >
+        Section_Number = #{sectionNumber},
+      </if>
+      <if test="xmid != null" >
+        xmid = #{xmid},
+      </if>
+      <if test="zjid != null" >
+        zjid = #{zjid},
+      </if>
+      <if test="enlargeTop != null" >
+        Enlarge_Top = #{enlargeTop},
+      </if>
+      <if test="enlargeBottom != null" >
+        Enlarge_Bottom = #{enlargeBottom},
+      </if>
+      <if test="enlargeHeight != null" >
+        Enlarge_Height = #{enlargeHeight},
+      </if>
+      <if test="tYl != null" >
+        t_yl = #{tYl},
+      </if>
+      <if test="tCxs != null" >
+        t_cxs = #{tCxs},
+      </if>
+      <if test="tJxs != null" >
+        t_jxs = #{tJxs},
+      </if>
+      <if test="sjzc != null" >
+        sjzc = #{sjzc},
+      </if>
+      <if test="zhl != null" >
+        zhl = #{zhl},
+      </if>
+      <if test="zjl != null" >
+        zjl = #{zjl},
+      </if>
+      <if test="sjZc != null" >
+        sj_zc = #{sjZc},
+      </if>
+      <if test="sjHl != null" >
+        sj_hl = #{sjHl},
+      </if>
+      <if test="sjJl != null" >
+        sj_jl = #{sjJl},
+      </if>
+      <if test="upid != null" >
+        upid = #{upid},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="test.model.UserDto" >
+    update t_luding_pile_info
+    set Pile_Number = #{pileNumber},
+      Start_Time = #{startTime},
+      End_Time = #{endTime},
+      Pile_Length = #{pileLength},
+      Guniting_Second = #{gunitingSecond},
+      Total_Liquid = #{totalLiquid},
+      Total_Cement = #{totalCement},
+      Max_Down_Speed = #{maxDownSpeed},
+      Max_Up_Speed = #{maxUpSpeed},
+      Max_Inside_Power = #{maxInsidePower},
+      Max_Outside_Power = #{maxOutsidePower},
+      Max_Lean = #{maxLean},
+      Guniting_Begin_Time = #{gunitingBeginTime},
+      Guniting_End_Time = #{gunitingEndTime},
+      Pile_Driver_Number = #{pileDriverNumber},
+      Create_Time = #{createTime},
+      Change_Time = #{changeTime},
+      Section_Number = #{sectionNumber},
+      xmid = #{xmid},
+      zjid = #{zjid},
+      Enlarge_Top = #{enlargeTop},
+      Enlarge_Bottom = #{enlargeBottom},
+      Enlarge_Height = #{enlargeHeight},
+      t_yl = #{tYl},
+      t_cxs = #{tCxs},
+      t_jxs = #{tJxs},
+      sjzc = #{sjzc},
+      zhl = #{zhl},
+      zjl = #{zjl},
+      sj_zc = #{sjZc},
+      sj_hl = #{sjHl},
+      sj_jl = #{sjJl},
+      upid = #{upid}
+    where id = #{id}
+  </update>
+</mapper>

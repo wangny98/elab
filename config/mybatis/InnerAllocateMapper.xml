@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.innerAllocate.dao.mapper.InnerAllocateMapper">
+	<select id="queryInnerAllocate" parameterType="com.device.business.innerAllocate.bean.InnerAllocateBean"
+		resultType="com.device.business.innerAllocate.bean.InnerAllocateBean">
+		select t.id alloc_id, t.asset_id, t.alloc_reason, t.alloc_depart, t.faname,
+			t.alloc_memo, t.alloc_user, t.alloc_holder, t.alloc_value, 
+			t.verifyer,to_char(t.verify_date, 'yyyy-mm-dd') verify_date, t.applyer,to_char(t.apply_date, 'yyyy-mm-dd') apply_date,
+			t.alloc_type,to_char(t.alloc_date, 'yyyy-mm-dd') alloc_date,  t.status 
+		from 
+			t_inner_allocate t
+		where 
+			1 = 1
+		<if test="id != null and id != ''">
+     		and id = #{id}
+    	</if>
+    	<if test="alloc_depart != null and alloc_depart != ''">
+     		and alloc_depart = #{alloc_depart}
+    	</if>
+    	<if test="alloc_type != null and alloc_type != ''">
+     		and alloc_type = #{alloc_type}
+    	</if>
+    	<if test="status != null and status != ''">
+     		and status = #{status}
+    	</if>
+    	<if test="asdate != null and asdate != ''">
+			and alloc_date >= to_date(#{asdate},'yyyy-mm-dd hh24:mi:ss') 
+			and to_date(#{aedate},'yyyy-mm-dd hh24:mi:ss') >= alloc_date  
+     	</if>
+     	<if test="alloc_user != null and alloc_user != ''">
+     		and alloc_user like #{alloc_user}
+    	</if>
+    	<if test="alloc_holder != null and alloc_holder != ''">
+     		and alloc_holder like #{alloc_holder}
+    	</if>
+	</select>
+	
+	<select id="countInnerAllocate" parameterType="com.device.business.innerAllocate.bean.InnerAllocateBean"
+		resultType="Integer">
+		select
+			count(*) 
+		from (
+			select t.id, t.asset_id, t.alloc_reason, t.alloc_depart,
+			t.alloc_memo, t.alloc_user, t.alloc_holder, t.alloc_value, 
+			t.verifyer, t.verify_date,  t.applyer,t.apply_date,
+			t.alloc_type, t.alloc_date, t.status 
+			from t_inner_allocate t
+		where 
+			1 = 1
+		<if test="id != null and id != ''">
+     		and id = #{id}
+    	</if>
+    	<if test="alloc_depart != null and alloc_depart != ''">
+     		and alloc_depart = #{alloc_depart}
+    	</if>
+    	<if test="alloc_type != null and alloc_type != ''">
+     		and alloc_type = #{alloc_type}
+    	</if>
+    	<if test="status != null and status != ''">
+     		and status = #{status}
+    	</if>
+    	<if test="asdate != null and asdate != ''">
+			and apply_date >= to_date(#{asdate},'yyyy-mm-dd hh24:mi:ss') 
+			and to_date(#{aedate},'yyyy-mm-dd hh24:mi:ss') >= apply_date  
+     	</if>
+     	<if test="alloc_user != null and alloc_user != ''">
+     		and alloc_user like #{alloc_user}
+    	</if>
+    	<if test="alloc_holder != null and alloc_holder != ''">
+     		and alloc_holder like #{alloc_holder}
+    	</if>
+     	)
+	</select>
+	
+	<insert id="insertInnerAllocate" parameterType="com.device.business.innerAllocate.element.InnerAllocateApplyElement" statementType="PREPARED">  
+   		INSERT INTO t_inner_allocate (  
+        	ID,ASSET_ID, ALLOC_REASON, ALLOC_DEPART,
+        	ALLOC_MEMO, ALLOC_USER, ALLOC_HOLDER,
+        	ALLOC_VALUE, ALLOC_TYPE, ALLOC_DATE,
+			STATUS,faname,remark
+        	  )
+    	VALUES (  
+        	#{alloc_id},#{fanumber},#{alloc_reason},#{alloc_depart},
+        	#{alloc_memo},#{alloc_user},#{alloc_holder},
+        	#{alloc_value},#{alloc_type},#{alloc_date},
+        	1,#{faname},#{innerAllocRemark}
+        	)  
+	</insert>
+	
+	<update id="updateInnerAllocate" parameterType="com.device.business.innerAllocate.element.InnerAllocateApplyElement" statementType="PREPARED">
+		update t_inner_allocate
+			set 
+				ASSET_ID = #{fanumber}, ALLOC_REASON = #{alloc_reason}, ALLOC_DEPART = #{alloc_depart},
+        		ALLOC_MEMO = #{alloc_memo}, ALLOC_USER = #{alloc_user}, ALLOC_HOLDER = #{alloc_holder},
+        		ALLOC_VALUE = #{alloc_value}, ALLOC_TYPE = #{alloc_type}, faname = #{faname},
+        		remark = #{innerAllocRemark}
+		where id=#{alloc_id}
+	</update>
+	
+	<update id="submitInnerAllocate" parameterType="com.device.business.innerAllocate.element.InnerAllocateApplyElement" statementType="PREPARED">
+		update t_inner_allocate
+			set 
+				status = #{status},
+				apply_date = #{apply_date},
+				applyer = #{applyer}
+		where id=#{alloc_id}
+	</update>
+	
+	<update id="verifyInnerAllocate" parameterType="com.device.business.innerAllocate.element.InnerAllocateApplyElement" statementType="PREPARED">
+		update t_inner_allocate
+			set 
+				status = #{status},
+				verify_date = #{verify_date},
+				verifyer = #{verifyer}
+		where id=#{alloc_id}
+	</update>
+	
+	<insert id="insertInnerLink" parameterType="com.device.business.innerAllocate.bean.LinkBean" statementType="PREPARED">  
+   		INSERT INTO t_inner_link (  
+        	id,
+        	applyid,
+        	fanumber
+        	  )
+    	VALUES (  
+        	#{id},
+        	#{applyid},
+        	#{fanumber}
+        	)  
+	</insert>
+	
+	<delete id="deleteInnerLink" statementType="PREPARED" parameterType="string">
+		delete 
+		from t_inner_link t 
+		where applyid like #{id}
+	</delete>
+	
+	<select id="queryInnerAllocateID" 
+		resultType="string">
+		select * from(select 
+			id 
+		from t_inner_allocate
+		where ASSET_ID like #{fanumber}
+    	order by id desc) 
+    	where rownum =1
+	</select>
+	
+	<select id="queryInnerAllocateAssetID" 
+		resultType="string">
+		select 
+			asset_id 
+		from t_inner_allocate
+		where id like #{id}
+	</select>
+	
+	<delete id="deleteInnerAllocate" statementType="PREPARED" parameterType="string">
+		delete 
+		from t_inner_allocate t 
+		where id like #{id}
+	</delete>
+	
+	<select id="queryAllocAsset" parameterType="com.device.business.innerAllocate.bean.InnerAllocateBean"
+	resultType="com.device.business.assetManage.bean.AssetBean">
+		select
+		b.fanumber , b.id, b.faclassification, fagnumber, b.faname,
+		famodel, famanufacturer, faamount, fauom, b.fafnum,
+		fameasure,to_char(faarrivedate, 'yyyy-mm-dd') faarrivedate, to_char(faaccountdate, 'yyyy-mm-dd') faaccountdate , fauseage, fadeprection,
+		fafr, fatov, favalue, fagm, fadfu,
+		fausestate, fadept, fauser, faremarks, status,
+		DEVICETYPE, CPUTYPE, CLOCKSPEED, RAM, HARDDISK,
+		MONITOR, KEYBOARD, MOUSE,
+		HTEL, HCONTRACT, HWUYE, HQUALITY, HSTRUCTURE,
+		to_char(HCOMPLETEDATE, 'yyyy-mm-dd') HCOMPLETEDATE,HTYPE, HSIZE, HLANDSIZE, HPURPOSE,
+		HLANDPROPERTY,HEATTYPE, HBLAYER, HLAYER, HCQNUM,
+		HFORM, HNAME, HBSIZE,
+		CARVALIDATEM2,CARTYPE, MILEAGE, CARFRAME,to_char(CARPDATE, 'yyyy-mm-dd') CARPDATE,
+		to_char(CAREXPIREDDATE, 'yyyy-mm-dd') CAREXPIREDDATE,to_char(CARUPDATEDATE, 'yyyy-mm-dd') CARUPDATEDATE, 
+		CARSEAT, OILTYPE, CARCC,
+		CARVALIDATEM1,CARENGINE, CARNUM,
+		FAPOF,FABUYER,FACONTRACT,FASUPPLIER,
+		FASUPPLIERTEL,to_char(FAPDATE, 'yyyy-mm-dd') FAPDATE,FAINVOICENUMBER,
+		FAADN,FAREPORT,
+		to_char(CHECKDATE, 'yyyy-mm-dd') CHECKDATE,CHECKER,c.FAFNUM cfafnum,to_char(ALLCOVERDATE, 'yyyy-mm-dd') ALLCOVERDATE,CHECKRESULT,
+		FAAREA,CHECKREMARK,
+		to_char(FAFIRSTMEASURE, 'yyyy-mm-dd') FAFIRSTMEASURE, RETESTPERIOD,to_char(LASTTESTDATE, 'yyyy-mm-dd') LASTTESTDATE,
+		a.id alloc_id, a.alloc_reason, a.alloc_depart, a.alloc_type,to_char(a.alloc_date, 'yyyy-mm-dd') alloc_date,
+		a.alloc_memo, a.alloc_user, a.alloc_holder, a.alloc_value, a.remark innerAllocRemark
+		from
+		t_fixedasset_basic b 
+		left join t_fixedasset_computer d on b.FANUMBER = d.FANUMBER 
+		left join t_fixedasset_house h on b.FANUMBER=h.FANUMBER
+		left join t_fixedasset_vehicle v on b.FANUMBER = v.FANUMBER
+		left join t_fixedasset_purchase p on b.fanumber = p.fanumber
+		left join t_fixedasset_check c on b.fanumber = c.fanumber 
+		left join t_inner_allocate a on b.fanumber = a.asset_id
+		where 1=1 
+		<if test="id != null and id != ''">
+     		and id = #{id}
+    	</if>
+    	<if test="alloc_depart != null and alloc_depart != ''">
+     		and alloc_depart = #{alloc_depart}
+    	</if>
+    	<if test="alloc_type != null and alloc_type != ''">
+     		and alloc_type = #{alloc_type}
+    	</if>
+    	<if test="status != null and status != ''">
+     		and status = #{status}
+    	</if>
+    	<if test="asdate != null and asdate != ''">
+			and alloc_date >= to_date(#{asdate},'yyyy-mm-dd hh24:mi:ss') 
+			and to_date(#{aedate},'yyyy-mm-dd hh24:mi:ss') >= alloc_date  
+     	</if>
+     	<if test="alloc_user != null and alloc_user != ''">
+     		and alloc_user like #{alloc_user}
+    	</if>
+    	<if test="alloc_holder != null and alloc_holder != ''">
+     		and alloc_holder like #{alloc_holder}
+    	</if>
+	</select>
+	
+	<select id="countAllocAsset" parameterType="com.device.business.innerAllocate.bean.InnerAllocateBean"
+	resultType="java.lang.Integer">
+		select
+			count(*)
+		from 
+		(
+			select
+		b.fanumber , b.id, faclassification, fagnumber, faname,
+		famodel, famanufacturer, faamount, fauom, b.fafnum,
+		fameasure,to_char(faarrivedate, 'yyyy-mm-dd') faarrivedate, to_char(faaccountdate, 'yyyy-mm-dd') faaccountdate , fauseage, fadeprection,
+		fafr, fatov, favalue, fagm, fadfu,
+		fausestate, fadept, fauser, faremarks, status,
+		DEVICETYPE, CPUTYPE, CLOCKSPEED, RAM, HARDDISK,
+		MONITOR, KEYBOARD, MOUSE,
+		HTEL, HCONTRACT, HWUYE, HQUALITY, HSTRUCTURE,
+		to_char(HCOMPLETEDATE, 'yyyy-mm-dd') HCOMPLETEDATE,HTYPE, HSIZE, HLANDSIZE, HPURPOSE,
+		HLANDPROPERTY,HEATTYPE, HBLAYER, HLAYER, HCQNUM,
+		HFORM, HNAME, HBSIZE,
+		CARVALIDATEM2,CARTYPE, MILEAGE, CARFRAME,to_char(CARPDATE, 'yyyy-mm-dd') CARPDATE,
+		to_char(CAREXPIREDDATE, 'yyyy-mm-dd') CAREXPIREDDATE,to_char(CARUPDATEDATE, 'yyyy-mm-dd') CARUPDATEDATE, 
+		CARSEAT, OILTYPE, CARCC,
+		CARVALIDATEM1,CARENGINE, CARNUM,
+		FAPOF,FABUYER,FACONTRACT,FASUPPLIER,
+		FASUPPLIERTEL,to_char(FAPDATE, 'yyyy-mm-dd') FAPDATE,FAINVOICENUMBER,
+		FAADN,FAREPORT,
+		to_char(CHECKDATE, 'yyyy-mm-dd') CHECKDATE,CHECKER,c.FAFNUM cfafnum,to_char(ALLCOVERDATE, 'yyyy-mm-dd') ALLCOVERDATE,CHECKRESULT,
+		FAAREA,CHECKREMARK,
+		to_char(FAFIRSTMEASURE, 'yyyy-mm-dd') FAFIRSTMEASURE, RETESTPERIOD,to_char(LASTTESTDATE, 'yyyy-mm-dd') LASTTESTDATE,
+		a.alloc_reason, a.alloc_depart, a.alloc_type,to_char(a.alloc_date, 'yyyy-mm-dd') alloc_date,
+		a.alloc_memo, a.alloc_user, a.alloc_holder, a.alloc_value, a.remark
+		from
+		t_fixedasset_basic b 
+		left join t_fixedasset_computer d on b.FANUMBER = d.FANUMBER 
+		left join t_fixedasset_house h on b.FANUMBER=h.FANUMBER
+		left join t_fixedasset_vehicle v on b.FANUMBER = v.FANUMBER
+		left join t_fixedasset_purchase p on b.fanumber = p.fanumber
+		left join t_fixedasset_check c on b.fanumber = c.fanumber 
+		left join t_inner_allocate a on b.fanumber = a.asset_id
+		where 1=1 
+		<if test="id != null and id != ''">
+     		and id = #{id}
+    	</if>
+    	<if test="alloc_depart != null and alloc_depart != ''">
+     		and alloc_depart = #{alloc_depart}
+    	</if>
+    	<if test="alloc_type != null and alloc_type != ''">
+     		and alloc_type = #{alloc_type}
+    	</if>
+    	<if test="status != null and status != ''">
+     		and status = #{status}
+    	</if>
+    	<if test="asdate != null and asdate != ''">
+			and alloc_date >= to_date(#{asdate},'yyyy-mm-dd hh24:mi:ss') 
+			and to_date(#{aedate},'yyyy-mm-dd hh24:mi:ss') >= alloc_date  
+     	</if>
+     	<if test="alloc_user != null and alloc_user != ''">
+     		and alloc_user like #{alloc_user}
+    	</if>
+    	<if test="alloc_holder != null and alloc_holder != ''">
+     		and alloc_holder like #{alloc_holder}
+    	</if>
+     	)
+	</select>
+	
+	<select id="isAllocExist" 
+		resultType="int">
+		select 
+			count(*) 
+		from t_inner_allocate
+		where id = #{id}
+	</select>
+	
+</mapper>

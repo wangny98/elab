@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.device.business.moniter.dao.mapper.PileMoniterBeanMapper" >
+  <resultMap id="BaseResultMap" type="com.device.business.moniter.bean.PileMoniterBean" >
+    <result column="ID" property="id" jdbcType="BIGINT" />
+    <result column="Pile_Driver_Number" property="pileDriverNumber" jdbcType="VARCHAR" />
+    <result column="Pile_Number" property="pileNumber" jdbcType="VARCHAR" />
+    <result column="Pile_Length" property="pileLength" jdbcType="DECIMAL" />
+    <result column="Start_Time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="Guniting_Second" property="gunitingSecond" jdbcType="INTEGER" />
+    <result column="Total_Liquid" property="totalLiquid" jdbcType="DECIMAL" />
+    <result column="Total_Cement" property="totalCement" jdbcType="DECIMAL" />
+    <result column="Density" property="density" jdbcType="DECIMAL" />
+    <result column="Average_Liquid" property="averageLiquid" jdbcType="DECIMAL" />
+    <result column="Average_Cement" property="averageCement" jdbcType="DECIMAL" />
+    <result column="Max_Speed" property="maxSpeed" jdbcType="DECIMAL" />
+    <result column="Max_Inside_Power" property="maxInsidePower" jdbcType="DECIMAL" />
+    <result column="Max_Outside_Power" property="maxOutsidePower" jdbcType="DECIMAL" />
+    <result column="Max_Lean" property="maxLean" jdbcType="DECIMAL" />
+    <result column="Deepth" property="deepth" jdbcType="DECIMAL" />
+    <result column="Speed" property="speed" jdbcType="DECIMAL" />
+    <result column="Flow" property="flow" jdbcType="DECIMAL" />
+    <result column="Front_Back_Angle" property="frontBackAngle" jdbcType="DECIMAL" />
+    <result column="Left_Right_Angle" property="leftRightAngle" jdbcType="DECIMAL" />
+    <result column="Outside_Power" property="outsidePower" jdbcType="DECIMAL" />
+    <result column="Inside_Power" property="insidePower" jdbcType="DECIMAL" />
+    <result column="Lean" property="lean" jdbcType="DECIMAL" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="select" resultMap="BaseResultMap">
+  	SELECT
+		d.jlid ID,
+		d.jh Pile_Driver_Number,
+		d.zh Pile_Number,
+		c.zc Pile_Length,
+		c.addsj Start_Time,
+		d.pjsj Guniting_Second,
+		d.ljjl Total_Liquid,
+		d.ljhl Total_Cement,
+		d.md Density,
+		c.zs Max_Speed,
+		c.wdl Max_Outside_Power,
+		c.ndl Max_Inside_Power,
+		CASE WHEN c.qhqj>c.zyqj then c.qhqj else c.zyqj end  as Max_Lean, 
+		d.sd Deepth,
+		d.zs Speed,
+		d.ll Flow,
+		d.qhqj Front_Back_Angle,
+		d.zyqj Left_Right_Angle,
+		d.ndl Inside_Power,
+		d.wdl Outside_Power,
+		d.czd Lean,
+		d.tz status
+	FROM
+		(
+			SELECT
+				b.jrbm,
+				MAX (a.jlid) id,
+				MAX (zs) zs,
+				MAX(ABS(sd)) zc,
+				MAX (wdl) wdl,
+				MAX (ndl) ndl,
+				MAX (qhqj) qhqj,
+				MAX (zyqj) zyqj,
+				MIN(a.addsj) addsj,
+				MAX (pjsj) pjsj
+			FROM
+				(
+					SELECT
+						TOP 3000 *
+					FROM
+						gjjl
+					ORDER BY
+						jlid DESC
+				) a,
+				zj b
+			WHERE
+				a.jh = b.jrbm
+			AND b.jjfl = '双向搅拌桩机'
+			AND b.yxzt = '在线'
+			GROUP BY
+				b.jrbm
+		) c,
+		gjjl d
+	WHERE
+		c.id = d.jlid
+	<if test="pileDriverNumber != null">
+	and d.jh = #{pileDriverNumber}
+	</if>
+	ORDER BY
+		d.jh
+  </select>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.showManage.dao.mapper.ScienceShowMapper">
+	<select id="query" parameterType="string" resultType="com.device.business.showManage.bean.ScienceShowBean">
+		select
+			id,
+			title,
+			descript,
+			creator_name,
+			create_time,
+			delete_flag
+		from t_show_science
+		where delete_flag=1
+		<if test="searchName!=null and searchName!='' ">and title like #{searchName}</if>
+	</select>
+	
+	<select id="count" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_show_science
+		where  delete_flag=1  
+		<if test="searchName!=null and searchName!='' ">and title like #{searchName}</if>
+	</select>
+	
+	<select id="load" parameterType="string" resultType="com.device.business.showManage.bean.ScienceShowBean">
+		select
+			id,
+			title,
+			descript,
+			creator_name,
+			create_time,
+			delete_flag
+		from t_show_science
+		where id = #{id}
+	</select>
+	
+	<insert id="add" parameterType="com.device.business.showManage.bean.ScienceShowBean" statementType="PREPARED">
+		insert into t_show_science
+		(
+			id,
+			title,
+			descript,
+			creator_name,
+			create_time,
+			delete_flag
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.title},
+			#{bean.descript},
+			#{bean.creator_name},
+			#{bean.create_time},
+			#{bean.delete_flag}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.device.business.showManage.bean.ScienceShowBean" statementType="PREPARED">
+		update t_show_science set
+			title = #{bean.title},
+				descript = #{bean.descript}
+		where id = #{bean.id}
+	</update>
+	
+	<delete id="delete" parameterType="string" statementType="PREPARED">
+		delete from t_show_science where id =#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.report.dao.mapper.PropertyReport2Mapper">
+	<!--  -->
+	<select id="propertyChange1" resultType="com.device.business.report.bean.CellBean">
+		select
+			'年初固定资产' rowName,
+			sum(a.FAVALUE) value
+		from t_fixedasset_basic a,t_base_classification b
+		where a.faclassification = b.class_code
+		and a.faaccountdate <![CDATA[<]]> #{lastDate}
+		and a.status in (1,2,3,4)
+		<if test="className != null and className != ''">and b.class_short = #{className}</if>
+	</select>
+	
+	<select id="propertyChange2" resultType="com.device.business.report.bean.CellBean">
+		select
+			'年初固定资产' rowName,
+			count(a.id) value
+		from t_fixedasset_basic a,t_base_classification b
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[<]]> #{lastDate}
+		and b.class_short = #{className}
+	</select>
+	
+	<select id="propertyChange3" resultType="com.device.business.report.bean.CellBean">
+		select
+			'年初固定资产' rowName,
+			sum(a.FAVALUE) value
+		from t_fixedasset_basic a,t_base_classification b
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[<]]> #{lastDate}
+		and b.class_short not in ${classNames}
+	</select>
+	
+	
+	<select id="propertyChange4" resultType="com.device.business.report.bean.CellBean">
+		select
+			'年初固定资产' rowName,
+			count(a.id) value
+		from t_fixedasset_basic a,t_base_classification b
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[<]]> #{lastDate}
+		and b.class_short not in ${classNames}
+	</select>
+	
+	<select id="propertyChange5" resultType="com.device.business.report.bean.CellBean">
+		select
+			'本年度增加固定资产' rowName,
+			sum(a.FAVALUE)+0 value
+		from t_fixedasset_basic a,t_base_classification b
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		<if test="className != null and className != ''">and b.class_short = #{className}</if>
+	</select>
+	
+	<select id="propertyChange6" resultType="com.device.business.report.bean.CellBean">
+		select
+			'本年度增加固定资产' rowName,
+			sum(a.FAVALUE) value
+		from t_fixedasset_basic a,t_base_classification b
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		and b.class_short not in ${classNames}
+	</select>
+	
+	<select id="propertyChange7" resultType="com.device.business.report.bean.CellBean">
+		select
+			'本年度增加固定资产' rowName,
+			count(a.id) value
+		from t_fixedasset_basic a,t_base_classification b
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		and b.class_short = #{className}
+	</select>
+	
+	<select id="propertyChange8" resultType="com.device.business.report.bean.CellBean">
+		select
+			'本年度增加固定资产' rowName,
+			count(a.id) value
+		from t_fixedasset_basic a,t_base_classification b
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		and b.class_short not in ${classNames}
+	</select>
+	
+	<select id="propertyChange9" resultType="com.device.business.report.bean.CellBean">
+		select
+			c.attr_value rowName,
+			sum(a.FAVALUE) value
+		from t_fixedasset_basic a,t_base_classification b,T_BASE_DICTIONARY c
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		and c.attr_name='取得方式'
+		and a.fagm = c.attr_key
+		<if test="className != null and className != ''">and b.class_short = #{className}</if>
+		group by c.attr_value
+	</select>
+	
+	<select id="propertyChange10" resultType="com.device.business.report.bean.CellBean">
+		select
+			c.attr_value rowName,
+			sum(a.FAVALUE) value
+		from t_fixedasset_basic a,t_base_classification b,T_BASE_DICTIONARY c
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		and c.attr_name='取得方式'
+		and a.fagm = c.attr_key
+		and b.class_short not in ${classNames}
+		group by c.attr_value
+	</select>
+	
+	<select id="propertyChange11" resultType="com.device.business.report.bean.CellBean">
+		select
+			c.attr_value rowName,
+			count(a.id) value
+		from t_fixedasset_basic a,t_base_classification b,T_BASE_DICTIONARY c
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		and c.attr_name='取得方式'
+		and a.fagm = c.attr_key
+		and b.class_short = #{className}
+		group by c.attr_value
+	</select>
+	
+	<select id="propertyChange111" resultType="com.device.business.report.bean.CellBean">
+		select
+			c.attr_value rowName,
+			count(a.id) value
+		from t_fixedasset_basic a,t_base_classification b,T_BASE_DICTIONARY c
+		where a.faclassification = b.class_code
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		and c.attr_name='取得方式'
+		and a.fagm = c.attr_key
+		and b.class_short not in ${classNames}
+		group by c.attr_value
+	</select>
+	
+	<select id="propertyChange12" resultType="com.device.business.report.bean.CellBean">
+		select
+			'年初固定资产' rowName,
+			sum(to_number(b.hlandsize)) value
+		from t_fixedasset_basic a,T_FIXEDASSET_HOUSE b
+		where a.id = b.id 
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[<]]> #{lastDate}
+	</select>
+	
+
+	<select id="propertyChange13" resultType="com.device.business.report.bean.CellBean">
+		select
+			'本年度增加固定资产' rowName,
+			sum(to_number(b.hlandsize)) value
+		from t_fixedasset_basic a,T_FIXEDASSET_HOUSE b
+		where a.id = b.id 
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+	</select>
+	
+	<select id="propertyChange14" resultType="com.device.business.report.bean.CellBean">
+		select
+			c.attr_value rowName,
+			sum(to_number(b.hlandsize)) value
+		from t_fixedasset_basic a,T_FIXEDASSET_HOUSE b,T_BASE_DICTIONARY c
+		where a.id = b.id 
+		and a.status in (1,2,3,4)
+		and c.attr_name='取得方式'
+		and a.fagm = c.attr_key
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		group by c.attr_value
+	</select>
+	
+	<select id="propertyChange15" resultType="com.device.business.report.bean.CellBean">
+		select
+			'年初固定资产' rowName,
+			sum(to_number(b.hsize)) value
+		from t_fixedasset_basic a,T_FIXEDASSET_HOUSE b
+		where a.id = b.id 
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[<]]> #{lastDate}
+	</select>
+	
+
+	<select id="propertyChange16" resultType="com.device.business.report.bean.CellBean">
+		select
+			'本年度增加固定资产' rowName,
+			sum(to_number(b.hsize)) value
+		from t_fixedasset_basic a,T_FIXEDASSET_HOUSE b
+		where a.id = b.id 
+		and a.status in (1,2,3,4)
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+	</select>
+	
+	<select id="propertyChange17" resultType="com.device.business.report.bean.CellBean">
+		select
+			c.attr_value rowName,
+			sum(to_number(b.hsize)) value
+		from t_fixedasset_basic a,T_FIXEDASSET_HOUSE b,T_BASE_DICTIONARY c
+		where a.id = b.id 
+		and a.status in (1,2,3,4)
+		and c.attr_name='取得方式'
+		and a.fagm = c.attr_key
+		and a.faaccountdate <![CDATA[>]]> #{startDate}
+		and a.faaccountdate <![CDATA[<]]> #{endDate}
+		group by c.attr_value
+	</select>
+	
+	<select id="propertyChange18" resultType="com.device.business.report.bean.CellBean">
+		select
+			'报废' rowName,
+			sum(c.FAVALUE) value
+		from t_property_scrap a,t_scrap_union b,t_fixedasset_basic c
+		where a.state=8 
+		and a.id = b.scrap_id
+		and b.property_id = c.id
+		and c.scraptime <![CDATA[>]]> #{startDate}
+		and c.scraptime <![CDATA[<]]> #{endDate}
+	</select>
+	
+	<select id="propertyChange19" resultType="com.device.business.report.bean.CellBean">
+		select
+			'报废' rowName,
+			sum(d.hlandsize) value
+		from t_property_scrap a,t_scrap_union b,t_fixedasset_basic c,T_FIXEDASSET_HOUSE d
+		where a.state=8 
+		and a.id = b.scrap_id
+		and b.property_id = c.id
+		and c.id = d.id
+		and a.apply_time <![CDATA[>]]> #{startDate}
+		and a.apply_time <![CDATA[<]]> #{endDate}
+	</select>
+	
+	<select id="propertyChange20" resultType="com.device.business.report.bean.CellBean">
+		select
+			'报废' rowName,
+			sum(d.hsize) value
+		from t_property_scrap a,t_scrap_union b,t_fixedasset_basic c,T_FIXEDASSET_HOUSE d
+		where a.state=8 
+		and a.id = b.scrap_id
+		and b.property_id = c.id
+		and c.id = d.id
+		and a.apply_time <![CDATA[>]]> #{startDate}
+		and a.apply_time <![CDATA[<]]> #{endDate}
+	</select>
+	
+	<select id="propertyChange21" resultType="com.device.business.report.bean.CellBean">
+		select
+			'报废' rowName,
+			count(c.id) value
+		from t_property_scrap a,t_scrap_union b,t_fixedasset_basic c,t_base_classification d
+		where a.state=8 
+		and a.id = b.scrap_id
+		and b.property_id = c.id
+		and a.apply_time <![CDATA[>]]> #{startDate}
+		and a.apply_time <![CDATA[<]]> #{endDate}
+		and c.faclassification = d.class_code
+		and d.class_short = #{name}
+	</select>
+	
+	<select id="propertyChange22" resultType="com.device.business.report.bean.CellBean">
+		select
+			'报废' rowName,
+			sum(c.FAVALUE) value
+		from t_property_scrap a,t_scrap_union b,t_fixedasset_basic c,t_base_classification d
+		where a.state=8 
+		and a.id = b.scrap_id
+		and b.property_id = c.id
+		and a.apply_time <![CDATA[>]]> #{startDate}
+		and a.apply_time <![CDATA[<]]> #{endDate}
+		and c.faclassification = d.class_code
+		and d.class_short = #{name}
+	</select>
+	
+	<select id="propertyChange23" resultType="com.device.business.report.bean.CellBean">
+		select
+			'报废' rowName,
+			count(c.id) value
+		from t_property_scrap a,t_scrap_union b,t_fixedasset_basic c,t_base_classification d
+		where a.state=8 
+		and a.id = b.scrap_id
+		and b.property_id = c.id
+		and c.scraptime <![CDATA[>]]> #{startDate}
+		and c.scraptime <![CDATA[<]]> #{endDate}
+		and c.faclassification = d.class_code
+		and d.class_short not in #{names}
+	</select>
+	
+	<select id="propertyChange24" resultType="com.device.business.report.bean.CellBean">
+		select
+			'报废' rowName,
+			sum(c.FAVALUE) value
+		from t_property_scrap a,t_scrap_union b,t_fixedasset_basic c,t_base_classification d
+		where a.state=8 
+		and a.id = b.scrap_id
+		and b.property_id = c.id
+		and a.apply_time <![CDATA[>]]> #{startDate}
+		and a.apply_time <![CDATA[<]]> #{endDate}
+		and c.faclassification = d.class_code
+		and d.class_short not in #{names}
+	</select>
+</mapper>
+	

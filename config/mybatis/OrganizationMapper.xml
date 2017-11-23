@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.device.business.organizationManage.dao.mapper.OrganizationMapper">
+	
+	<select id="queryOrganization" parameterType="String"
+		resultType="com.device.business.organizationManage.bean.OrganizationBean">
+		select
+			id,
+			org_code,
+			org_name,
+			org_short,
+			telephone,
+			org_level,
+			org_addr,
+			fax,
+			tele_addr,
+			remark,
+			creator_id,
+			creator_name,
+			create_time,
+			deleteflag
+		from t_base_organization
+		where org_name like #{searchName} 
+		and deleteflag=1
+	</select>
+	
+	<select id="countOrganization" parameterType="String"
+		resultType="Integer">
+		select
+			count(id)
+		from t_base_organization
+		where org_name like #{searchName} 
+		and deleteflag=1
+	</select>
+	
+	<insert id="addOrganization" statementType="PREPARED"
+		parameterType="com.device.business.organizationManage.bean.OrganizationBean">
+		insert into t_base_organization
+			(
+				id,
+				org_code,
+				org_name,
+				org_short,
+				telephone,
+				org_level,
+				org_addr,
+				fax,
+				tele_addr,
+				remark,
+				creator_id,
+				creator_name,
+				create_time,
+				deleteflag
+			)
+		values
+			(
+				#{bean.id},
+				#{bean.org_code},
+				#{bean.org_name},
+				#{bean.org_short},
+				#{bean.telephone},
+				#{bean.org_level},
+				#{bean.org_addr},
+				#{bean.fax},
+				#{bean.tele_addr},
+				#{bean.remark},
+				#{bean.creator_id},
+				#{bean.creator_name},
+				#{bean.create_time},
+				1
+			)
+	</insert>
+	
+	<insert id="addOrgUnion"  statementType="PREPARED">
+		insert into t_base_org_union
+			(
+				id,
+				parent_id,
+				child_id
+			)
+		values
+			(
+				#{id},
+				#{parent_id},
+				#{child_id}
+			)
+	</insert>
+	
+	<update id="updateOrganization" statementType="PREPARED"
+		parameterType="com.device.business.organizationManage.bean.OrganizationBean">
+		update t_base_organization
+			set 
+				org_code=#{bean.org_code},
+					org_name=#{bean.org_name},
+						org_short=#{bean.org_short},
+							telephone=#{bean.telephone},
+								org_level=#{bean.org_level},
+									org_addr=#{bean.org_addr},
+										fax=#{bean.fax},
+											tele_addr=#{bean.tele_addr},
+												remark=#{bean.remark}
+		where id=#{bean.id}
+	</update>
+	
+	<select id="loadOrganization" parameterType="String" 
+		resultType="com.device.business.organizationManage.bean.OrganizationBean">
+		select
+			id,
+			org_code,
+			org_name,
+			org_short,
+			telephone,
+			org_level,
+			org_addr,
+			fax,
+			tele_addr,
+			remark,
+			creator_id,
+			creator_name,
+			create_time,
+			deleteflag
+		from t_base_organization
+		where id = #{id}
+		and deleteflag=1
+	</select>
+	
+	<update id="deleteOrganization" parameterType="String" 
+		statementType="PREPARED">
+		update t_base_organization
+			set deleteflag=2
+		where  id = #{id}
+	</update>
+	
+	<delete id="deleteOrgUnion" statementType="PREPARED">
+		delete from t_base_org_union where child_id=#{id}
+	</delete>
+	
+	<select id="listAllTreeNode" resultType="com.device.business.organizationManage.bean.OrgTreeBean">
+		select 
+			a.id,
+			b.parent_id parent,
+			a.org_name text,
+			a.org_level type
+		from t_base_organization a,t_base_org_union b
+		where a.id=b.child_id
+		and a.deleteflag=1
+	</select>
+	
+	<select id="queryDeptCode" parameterType="String" resultType="String">
+		select 
+			org_code
+		from t_base_organization
+		where org_name = #{id} and deleteflag=1
+	</select>
+	
+</mapper>

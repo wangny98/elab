@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.userManage.dao.mapper.UserMapper">
+	<select id="queryUsers" parameterType="string"
+		resultType="com.device.business.userManage.bean.UserBean">
+		select
+	      u.id,
+	      u.account,
+	      u.fullname,
+	      u.alias,
+	      u.sex,
+	      u.position,
+	      u.department_id,
+	      u.org_id,
+	      u.state,
+	      u.remark,
+	      u.creator_id,
+	      u.creator_name,
+	      u.creator_time,
+	      u.deleteFlag,
+	      r.org_name departmentName
+	    from t_system_user u
+		left join t_base_organization r on(u.department_id = r.id)
+	    where u.fullname like	#{searchName}  and u.deleteflag=1
+	</select>
+	
+	
+	<select id="countUser" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_system_user
+		where fullname like	#{searchName}  and deleteflag=1
+	</select>
+	
+	<insert id="addUser" parameterType="com.device.business.userManage.bean.UserBean" statementType="PREPARED">
+		insert into t_system_user
+			(
+				id,
+				account,
+				password,
+				fullname,
+				alias,
+				sex,
+				position,
+				department_id,
+				org_id,
+				state,
+				remark,
+				creator_id,
+				creator_name,
+				creator_time,
+				deleteflag
+			)
+		values
+			(
+				#{bean.id},
+				#{bean.account},
+				#{bean.password},
+				#{bean.fullname},
+				#{bean.alias},
+				#{bean.sex},
+				#{bean.position},
+				#{bean.department_id},
+				#{bean.org_id},
+				#{bean.state},
+				#{bean.remark},
+				#{bean.creator_id},
+				#{bean.creator_name},
+				#{bean.creator_time},
+				1
+			)
+	</insert>
+	
+	<update id="updateUser" parameterType="com.device.business.userManage.bean.UserBean" statementType="PREPARED">
+		update t_system_user
+			set account = #{bean.account},
+					password = #{bean.password},
+						fullname = #{bean.fullname},
+							alias = #{bean.alias},
+								department_id = #{bean.department_id},
+									sex = #{bean.sex},
+										position = #{bean.position},
+											org_id = #{bean.org_id},
+												remark = #{bean.remark}
+		where id=#{bean.id}
+	</update>
+	
+	<select id="loadUser" parameterType="string"
+		resultType="com.device.business.userManage.bean.UserBean">
+		select
+			id,
+			account,
+			password,
+			fullname,
+			alias,
+			sex,
+			position,
+			department_id,
+			org_id,
+			state,
+			remark,
+			creator_id,
+			creator_name,
+			creator_time,
+			deleteFlag
+		from t_system_user 
+		where id =#{id}
+	</select>
+	
+	<delete id="deleteUser" parameterType="string" statementType="PREPARED">
+		delete from t_system_user where id =#{id}
+	</delete>
+	
+	<select id = "queryUserRoleAssign" parameterType="string"
+		resultType="com.device.business.roleManage.bean.RoleBean">
+		select
+			r.id,
+			r.name,
+			r.code,
+			r.type,
+			r.func_code,
+			r.remark,
+			(select count(ur.id) from t_system_user u,t_system_role_user ur where
+			u.id=#{id} and r.id=ur.role_id and u.deleteflag=1) isAssign
+		from t_system_role r
+		where r.deleteflag=1
+		order by isAssign
+	</select>
+	
+	<select id="isRoleUser" parameterType="string" resultType="Integer">
+		select
+			count(a.id)
+		from t_system_role_user a
+		where a.user_id =#{userId} and a.role_id=#{roleId} 
+	</select>
+	
+	<insert id="addRoleUser" parameterType="string" statementType="PREPARED">
+		insert into t_system_role_user
+		(
+			id,
+			user_id,
+			role_id
+		)
+		values
+		(
+			#{id},
+			#{userId},
+			#{roleId} 
+		)
+	</insert>
+	
+	<delete id="delRoleUser" parameterType="string" statementType="PREPARED">
+		delete from t_system_role_user where user_id=#{userId}
+	</delete>
+	
+	<select id="validateUser" resultType="com.device.business.userManage.bean.UserBean">
+	select
+			id,
+			account,
+			fullname,
+			password,
+			alias,
+			sex,
+			position,
+			department_id,
+			org_id,
+			state,
+			remark,
+			creator_id,
+			creator_name,
+			creator_time,
+			deleteFlag
+	from t_system_user
+	where account=#{username}
+	</select>
+</mapper>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="test.dao.SyslogsDtoMapper" >
+  <resultMap id="BaseResultMap" type="test.model.SyslogsDto" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="zid" property="zid" jdbcType="INTEGER" />
+    <result column="Pile_Number" property="pileNumber" jdbcType="VARCHAR" />
+    <result column="Pile_Deep" property="pileDeep" jdbcType="DECIMAL" />
+    <result column="Liquid_Cement_Weight" property="liquidCementWeight" jdbcType="DECIMAL" />
+    <result column="Cement_Weight" property="cementWeight" jdbcType="DECIMAL" />
+    <result column="Power_Inside" property="powerInside" jdbcType="DECIMAL" />
+    <result column="Power_Outside" property="powerOutside" jdbcType="DECIMAL" />
+    <result column="Front_Back_Angle" property="frontBackAngle" jdbcType="DECIMAL" />
+    <result column="Left_Right_Angle" property="leftRightAngle" jdbcType="DECIMAL" />
+    <result column="Squareness" property="squareness" jdbcType="DECIMAL" />
+    <result column="Speed" property="speed" jdbcType="SMALLINT" />
+    <result column="Pile_Machine_Number" property="pileMachineNumber" jdbcType="VARCHAR" />
+    <result column="Mix_Station_Number" property="mixStationNumber" jdbcType="VARCHAR" />
+    <result column="Create_Time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="Change_Time" property="changeTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, zid, Pile_Number, Pile_Deep, Liquid_Cement_Weight, Cement_Weight, Power_Inside, 
+    Power_Outside, Front_Back_Angle, Left_Right_Angle, Squareness, Speed, Pile_Machine_Number, 
+    Mix_Station_Number, Create_Time, Change_Time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_luding_pile_perdeep_info
+    where id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_luding_pile_perdeep_info
+    where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="test.model.SyslogsDto" >
+    insert into t_luding_pile_perdeep_info (id, zid, Pile_Number, Pile_Deep, Liquid_Cement_Weight, Cement_Weight, 
+      Power_Inside, Power_Outside, Front_Back_Angle, Left_Right_Angle, Squareness, 
+      Speed, Pile_Machine_Number, Mix_Station_Number, Create_Time, Change_Time
+      )
+    values (#{id}, #{zid}, #{pileNumber}, #{pileDeep}, #{liquidCementWeight}, #{cementWeight}, 
+      #{powerInside}, #{powerOutside}, #{frontBackAngle}, #{leftRightAngle}, #{squareness}, 
+      #{speed}, #{pileMachineNumber}, #{mixStationNumber}, #{createTime}, #{changeTime}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="test.model.SyslogsDto" >
+    insert into t_luding_pile_perdeep_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="zid != null" >
+        zid,
+      </if>
+      <if test="pileNumber != null" >
+        Pile_Number,
+      </if>
+      <if test="pileDeep != null" >
+        Pile_Deep,
+      </if>
+      <if test="liquidCementWeight != null" >
+        Liquid_Cement_Weight,
+      </if>
+      <if test="cementWeight != null" >
+        Cement_Weight,
+      </if>
+      <if test="powerInside != null" >
+        Power_Inside,
+      </if>
+      <if test="powerOutside != null" >
+        Power_Outside,
+      </if>
+      <if test="frontBackAngle != null" >
+        Front_Back_Angle,
+      </if>
+      <if test="leftRightAngle != null" >
+        Left_Right_Angle,
+      </if>
+      <if test="squareness != null" >
+        Squareness,
+      </if>
+      <if test="speed != null" >
+        Speed,
+      </if>
+      <if test="pileMachineNumber != null" >
+        Pile_Machine_Number,
+      </if>
+      <if test="mixStationNumber != null" >
+        Mix_Station_Number,
+      </if>
+      <if test="createTime != null" >
+        Create_Time,
+      </if>
+      <if test="changeTime != null" >
+        Change_Time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id},
+      </if>
+      <if test="zid != null" >
+        #{zid},
+      </if>
+      <if test="pileNumber != null" >
+        #{pileNumber},
+      </if>
+      <if test="pileDeep != null" >
+        #{pileDeep},
+      </if>
+      <if test="liquidCementWeight != null" >
+        #{liquidCementWeight},
+      </if>
+      <if test="cementWeight != null" >
+        #{cementWeight},
+      </if>
+      <if test="powerInside != null" >
+        #{powerInside},
+      </if>
+      <if test="powerOutside != null" >
+        #{powerOutside},
+      </if>
+      <if test="frontBackAngle != null" >
+        #{frontBackAngle},
+      </if>
+      <if test="leftRightAngle != null" >
+        #{leftRightAngle},
+      </if>
+      <if test="squareness != null" >
+        #{squareness},
+      </if>
+      <if test="speed != null" >
+        #{speed},
+      </if>
+      <if test="pileMachineNumber != null" >
+        #{pileMachineNumber},
+      </if>
+      <if test="mixStationNumber != null" >
+        #{mixStationNumber},
+      </if>
+      <if test="createTime != null" >
+        #{createTime},
+      </if>
+      <if test="changeTime != null" >
+        #{changeTime},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="test.model.SyslogsDto" >
+    update t_luding_pile_perdeep_info
+    <set >
+      <if test="zid != null" >
+        zid = #{zid},
+      </if>
+      <if test="pileNumber != null" >
+        Pile_Number = #{pileNumber},
+      </if>
+      <if test="pileDeep != null" >
+        Pile_Deep = #{pileDeep},
+      </if>
+      <if test="liquidCementWeight != null" >
+        Liquid_Cement_Weight = #{liquidCementWeight},
+      </if>
+      <if test="cementWeight != null" >
+        Cement_Weight = #{cementWeight},
+      </if>
+      <if test="powerInside != null" >
+        Power_Inside = #{powerInside},
+      </if>
+      <if test="powerOutside != null" >
+        Power_Outside = #{powerOutside},
+      </if>
+      <if test="frontBackAngle != null" >
+        Front_Back_Angle = #{frontBackAngle},
+      </if>
+      <if test="leftRightAngle != null" >
+        Left_Right_Angle = #{leftRightAngle},
+      </if>
+      <if test="squareness != null" >
+        Squareness = #{squareness},
+      </if>
+      <if test="speed != null" >
+        Speed = #{speed},
+      </if>
+      <if test="pileMachineNumber != null" >
+        Pile_Machine_Number = #{pileMachineNumber},
+      </if>
+      <if test="mixStationNumber != null" >
+        Mix_Station_Number = #{mixStationNumber},
+      </if>
+      <if test="createTime != null" >
+        Create_Time = #{createTime},
+      </if>
+      <if test="changeTime != null" >
+        Change_Time = #{changeTime},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="test.model.SyslogsDto" >
+    update t_luding_pile_perdeep_info
+    set zid = #{zid},
+      Pile_Number = #{pileNumber},
+      Pile_Deep = #{pileDeep},
+      Liquid_Cement_Weight = #{liquidCementWeight},
+      Cement_Weight = #{cementWeight},
+      Power_Inside = #{powerInside},
+      Power_Outside = #{powerOutside},
+      Front_Back_Angle = #{frontBackAngle},
+      Left_Right_Angle = #{leftRightAngle},
+      Squareness = #{squareness},
+      Speed = #{speed},
+      Pile_Machine_Number = #{pileMachineNumber},
+      Mix_Station_Number = #{mixStationNumber},
+      Create_Time = #{createTime},
+      Change_Time = #{changeTime}
+    where id = #{id}
+  </update>
+</mapper>

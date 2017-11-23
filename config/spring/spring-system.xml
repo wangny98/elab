@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
+	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+	<!-- <import resource="classpath:META-INF/cxf/cxf.xml"/>
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml"/> -->
+	
+	
+	
+	
+	<!-- 从配置文件 获取相关的配置信息,server.properties记录了可变的参数配置 -->
+	<bean id="projectPropertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:properties/server.xml
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="sqlServerDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        <property name="url" value="jdbc:sqlserver://jk.iih.cn:1433;database=wgj"/>
+        <property name="username" value="sa"/>
+        <property name="password" value="Luding123"/>
+        <property name="minIdle" value="15"/>
+        <property name="maxIdle" value="25"/>
+        <property name="maxActive" value="25"/>
+    </bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${dataSource.driverClassName}" />
+		<property name="url" value="${dataSource.url}" />
+		<property name="username" value="${dataSource.username}" />
+		<property name="password" value="${dataSource.password}" />
+		<property name="maxActive" value="25" />
+		<property name="maxIdle" value="25" />
+		<property name="minIdle" value="15" />
+		<property name="validationQuery" value="select * from t_system_user" />
+	</bean>
+	
+	<bean id="multipleDataSource" class="com.device.component.datasource.MultipleDataSource">
+        <property name="defaultTargetDataSource" ref="dataSource"/>
+        <property name="targetDataSources">
+            <map>
+                <entry key="mySqlDataSource" value-ref="dataSource"/>
+                <entry key="sqlServerDataSource" value-ref="sqlServerDataSource"/>
+            </map>
+        </property>
+    </bean>
+
+	
+	<!-- 设置SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="multipleDataSource" />
+		<property name="configLocation" value="classpath:mybatis/beanconfig.xml" />
+	</bean>
+	
+	 <!-- 定义事务进行方式 ，注解自动扫描 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="multipleDataSource" />
+	</bean>
+	<context:annotation-config />
+	<tx:annotation-driven />
+	
+	
+	
+	
+	<!-- scan for mappers and let them be autowired -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+			value="com.device.business.*.dao.mapper" />
+	</bean>
+	<!-- 自动扫描，加入Bean -->
+	<context:component-scan base-package="com.device"
+		use-default-filters="false">
+		<!-- 加入扫描Provider的过滤器，用于将异常处理的Provider全部加入进来 -->
+		<context:include-filter type="annotation"
+			expression="javax.ws.rs.ext.Provider" />
+		<!-- 加入Repository，仓库的逻辑处理层次 -->
+		<context:include-filter type="regex"
+			expression="com.device.business.*.dao.*" />
+		<!-- 加入Bean，仓库中使用的数据结构对象 -->
+		<!-- 加入Resource， 用于Restful WS的调用 -->
+		<context:include-filter type="regex"
+			expression="com.device.business.*.service.*" />
+		<context:include-filter type="regex"
+			expression="com.device.business.service.*" />
+		<context:include-filter type="regex"
+			expression="com.device.component.cache.*Cache*" />
+		
+		<context:include-filter type="regex"
+			expression="com.device.core.cache.Cache" />
+		<context:include-filter type="regex"
+			expression="com.device.util.PathHelper" />
+		<context:include-filter type="regex"
+			expression="com.device.filter.*" />
+		<context:include-filter type="regex"
+			expression="com.device.filter.URLAllowedFilter" />
+	</context:component-scan>
+	<bean id="springContextHolder" class="com.device.util.SpringContextHolder"
+		lazy-init="false"></bean>
+	
+	
+	<!-- 初始化加载 -->
+
+	<bean id="initServerProperties" class="com.device.component.listener.InitServerListener"
+		init-method="init"></bean> 
+		
+	<bean id="UserInfoCache" class="com.device.component.cache.UserInfoCache" scope="singleton">
+	</bean> 
+</beans>

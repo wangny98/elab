@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.device.business.tracker.dao.mapper.UseAuditMapper">
+	<resultMap id="UseAuditMap_ZH"
+		type="com.device.business.tracker.element.UseAuditElement">
+		<result property="operatorId" column="operator_id" />
+		<result property="operatorName" column="operator_name" />
+		<result property="operateTime" column="operate_time" />
+		<result property="operateSubject" column="operate_subject_ZH" />
+		<result property="operateContent" column="operate_content_ZH" />
+		<result property="ipAdrr" column="operate_IPAdrr" />
+	</resultMap>
+	<resultMap id="UseAuditMap_EN"
+		type="com.device.business.tracker.element.UseAuditElement">
+		<result property="operatorId" column="operator_id" />
+		<result property="operatorName" column="operator_name" />
+		<result property="operateTime" column="operate_time" />
+		<result property="operateSubject" column="operate_subject_EN" />
+		<result property="operateContent" column="operate_content_EN" />
+		<result property="ipAdrr" column="operate_IPAdrr" />
+	</resultMap>
+	
+	<!-- 所有的参数 -->
+	<sql id="UseAuditParams">
+		id,operator_id,operator_name,operate_time,operate_subject_ZH,operate_subject_EN,operate_content_ZH,operate_content_EN,operate_IPAdrr,docId
+	</sql>
+	
+	<!--按条件查询（带分页信息）-->
+	<select id="queryAudits_ZH"
+		parameterType="com.device.business.tracker.element.UseAuditElement"
+		resultMap="UseAuditMap_ZH">
+		select
+		<include refid="UseAuditParams" />
+		from T_Business_Usecondition where 1=1
+		<if test="operatorName!=null and operatorName!=''"> and operator_name like #{operatorName}</if>
+		<if test="operateSubject!=null and operateSubject!=''"> and operate_subject_ZH like #{operateSubject}</if>
+		<if test="operateContent!=null and operateContent!=''"> and operate_content_ZH like #{operateContent}</if>
+		<if test="startTime!=null and startTime!=''">
+			and operate_time <![CDATA[>=]]>
+			#{startTime} 
+		</if>
+		<if test="ipAdrr!=null and ipAdrr!=''"> and operate_IPAdrr like #{ipAdrr} </if>
+		<if test="endTime!=null and endTime!=''">and
+			operate_time <![CDATA[<=]]>#{endTime} 
+		</if>
+	</select>
+	<!--按条件查询（带分页信息）-->
+	<select id="countAudits_ZH"
+		parameterType="com.device.business.tracker.element.UseAuditElement"
+		resultType="Integer">
+		select count(1) from T_Business_Usecondition where 1=1
+		<if test="operatorName!=null and operatorName!=''"> and operator_name like #{operatorName}</if>
+		<if test="operateSubject!=null and operateSubject!=''"> and operate_subject_ZH like #{operateSubject}</if>
+		<if test="operateContent!=null and operateContent!=''"> and operate_content_ZH like #{operateContent}</if>
+		<if test="startTime!=null and startTime!=''">
+			and operate_time <![CDATA[>=]]>
+			#{startTime} 
+		</if>
+		<if test="ipAdrr!=null and ipAdrr!=''"> and operate_IPAdrr like #{ipAdrr} </if>
+		<if test="endTime!=null and endTime!=''">and
+			operate_time <![CDATA[<=]]>#{endTime} 
+		</if>
+	</select>
+	<!--按条件查询（带分页信息）-->
+	<select id="queryAudits_EN"
+		parameterType="com.device.business.tracker.element.UseAuditElement"
+		resultMap="UseAuditMap_EN">
+		select
+		<include refid="UseAuditParams" />
+		from T_Business_Usecondition where 1=1
+		<if test="operatorName!=null and operatorName!=''"> and operator_name like #{operatorName}</if>
+		<if test="operateSubject!=null and operateSubject!=''"> and operate_subject_EN like #{operateSubject}</if>
+		<if test="operateContent!=null and operateContent!=''"> and operate_content_EN like #{operateContent}</if>
+		<if test="startTime!=null and startTime!=''">
+			and operate_time <![CDATA[>=]]>
+			#{startTime} 
+		</if>
+		<if test="ipAdrr!=null and ipAdrr!=''"> and operate_IPAdrr like #{ipAdrr} </if>
+		<if test="endTime!=null and endTime!=''">and
+			operate_time <![CDATA[<=]]>#{endTime} 
+		</if>
+		ORDER by operate_time DESC
+	</select>
+	<!--按条件查询（带分页信息）-->
+	<select id="countAudits_EN"
+		parameterType="com.device.business.tracker.element.UseAuditElement"
+		resultType="Integer">
+		select count(1) from T_Business_Usecondition where 1=1
+		<if test="operatorName!=null and operatorName!=''"> and operator_name like #{operatorName}</if>
+		<if test="operateSubject!=null and operateSubject!=''"> and operate_subject_EN like #{operateSubject}</if>
+		<if test="operateContent!=null and operateContent!=''"> and operate_content_EN like #{operateContent}</if>
+		<if test="ipAdrr!=null and ipAdrr!=''"> and operate_IPAdrr like #{ipAdrr} </if>
+		<if test="startTime!=null and startTime!=''">
+			and operate_time <![CDATA[>=]]>
+			#{startTime} 
+		</if>
+		<if test="endTime!=null and endTime!=''">and
+			operate_time <![CDATA[<=]]>#{endTime} 
+		</if>
+	</select>
+	<!-- 添加业务操作 -->
+	<insert id="addAudit" statementType="PREPARED"
+		parameterType="com.device.business.tracker.bean.UseAuditBean">
+		insert into T_Business_Usecondition (
+		<include refid="UseAuditParams" />
+		) values
+		(#{id},#{operatorId},#{operatorName},#{operateTime},#{operateSubject_ZH},#{operateSubject_EN},#{operateContent_ZH},#{operateContent_EN},#{ipAdrr},#{docId}
+		)
+	</insert>
+	<!-- 根据主键获取业务操作(中文) -->
+	<select id="infoUseAuditById_ZH" parameterType="String"
+		resultType="com.device.business.tracker.element.UseAuditElement"> select id,operator_name as operatorName,operate_time as
+		operateTime,operate_subject_ZH as operateSubject,operate_content_ZH as
+		operateContent,operate_IPAdrr as ipAdrr from T_Business_Usecondition
+		where id=#{id}</select>
+	<!-- 根据主键获取业务操作(英文) -->
+	<select id="infoUseAuditById_EN" parameterType="String"
+		resultType="com.device.business.tracker.element.UseAuditElement"> select id,operator_name as operatorName,operate_time as
+		operateTime,operate_subject_EN as operateSubject,operate_content_EN as
+		operateContent ,operate_IPAdrr as ipAdrr from T_Business_Usecondition
+		where id=#{id}</select>
+	<!--  获取电子文档的业务操作(中文) -->
+	<select id="queryDocAuditLogs_ZH" parameterType="String"
+		resultType="com.device.business.tracker.element.UseAuditElement"> select id,operator_name as operatorName,operate_time as
+		operateTime,operate_subject_ZH as operateSubject,operate_content_ZH as
+		operateContent,operate_IPAdrr as ipAdrr from T_Business_Usecondition
+		where docId=#{docId} ORDER by operate_time DESC</select>
+	<!--获取电子文档的业务操作总数(中文) -->
+	<select id="countDocAuditLogs_ZH" parameterType="String"
+		resultType="Integer"> select count(1) from T_Business_Usecondition where
+		docId=#{docId}</select>
+</mapper>

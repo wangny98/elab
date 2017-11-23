@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.sampleManage.dao.mapper.SampleRegisterMapper">
+	
+	<select id="getDemoForAuthResult" parameterType="com.device.business.sampleManage.bean.DemoBean"
+		resultType="com.device.business.sampleManage.bean.DemoBean">
+		select 
+			d.id,d.basic_id,d.no,d.name,d.total,d.requirement,d.judge,
+			d.status,d.handletype,b.submit_no,a.pestname as authresult, a.authdate, a.verifyer,
+			a.verifydate, a.memo 
+		from 
+			T_BUSINESS_DEMO d,T_BUSINESS_BASICINFO b, T_BUSINESS_AUTH a
+		where 
+			d.basic_id = b.id and d.id = a.demo_id
+		<if test="id != null and id != ''">
+     		and d.basic_id = #{id} 
+    	</if>
+    	<if test="status != null and status != ''">
+     		and b.status = #{status} 
+    	</if>
+	</select>
+	
+	<select id="queryDemo" parameterType="com.device.business.sampleManage.bean.DemoBean"
+		resultType="com.device.business.sampleManage.bean.DemoBean">
+		select 
+			d.id,d.basic_id,d.no,d.name,d.total,d.requirement,d.memo,d.judge,
+			d.status,d.handletype,b.submit_no
+		from 
+			T_BUSINESS_DEMO d,T_BUSINESS_BASICINFO b, T_BUSINESS_AUTH a
+		where 
+			d.basic_id = b.id 
+		<if test="id != null and id != ''">
+     		and d.basic_id = #{id} 
+    	</if>
+    	<if test="status != null and status != ''">
+     		and b.status = #{status} 
+    	</if>
+	</select>
+	
+	<select id="countDemo" parameterType="com.device.business.sampleManage.bean.DemoBean"
+		resultType="Integer">
+		select 
+			count(d.id) 
+		from 
+			T_BUSINESS_DEMO d,T_BUSINESS_BASICINFO b
+		where 
+			d.basic_id = b.id 
+		<if test="id != null and id != ''">
+     		and d.basic_id = #{id} 
+    	</if>
+    	<if test="status != null and status != ''">
+     		and b.status = #{status} 
+    	</if>
+	</select>
+	
+	<select id="queryDemo2" parameterType="com.device.business.sampleManage.bean.BaseSample"
+		resultType="com.device.business.sampleManage.bean.DemoBean">
+		select 
+			d.id,d.basic_id,d.no,d.name,d.total,d.requirement,d.memo,d.judge,
+			d.status,d.handletype,b.submit_no
+		from 
+			T_BUSINESS_DEMO d,T_BUSINESS_BASICINFO b
+		where 
+			d.basic_id = b.id and b.status != 0 
+			and b.status != 1 and b.status != 2
+		<if test="id != null and id != ''">
+     		and b.id = #{id} 
+    	</if>
+    	<if test="no != null and no != ''">
+     		and d.no like #{no} 
+    	</if>
+    	<if test="demo_name != null and demo_name != ''">
+     		and d.name like #{demo_name} 
+    	</if>
+    	<if test="demo_status != null and demo_status != ''">
+     		and d.status = #{demo_status} 
+    	</if>
+    	<if test="submit_depart != null and submit_depart != ''">
+     		and b.submit_depart like #{submit_depart} 
+   		</if>
+   		<if test="submitter != null and submitter != ''">
+    		and b.submitter like #{submitter} 
+    	</if>
+    	<if test="verify_no != null and verify_no != ''">
+     		and b.verify_no like #{verify_no} 
+    	</if>
+    	<if test="submit_date != null and submit_date != ''">
+			and b.submit_date = #{submit_date} 
+     	</if>
+     	<if test="goods_name != null and goods_name != ''">
+     		and b.goods_name like #{goods_name} 
+    	</if>
+    	<if test="goods_type != null and goods_type != ''">
+     		and b.goods_type = #{goods_type} 
+   		</if>
+   		<if test="sample_region != null and sample_region != ''">
+    		and b.sample_region like #{sample_region} 
+    	</if>
+    	<if test="export_import != null and export_import != ''">
+     		and b.export_import like #{export_import} 
+    	</if>
+    	<if test="verify_type != null and verify_type != ''">
+			and b.verify_type = #{verify_type} 
+     	</if>
+     	<if test="status != null and status != ''">
+			and b.status = #{status} 
+     	</if>
+	</select>
+	
+	<select id="countDemo2" parameterType="com.device.business.sampleManage.bean.BaseSample"
+		resultType="Integer">
+		select 
+			count(d.id) 
+		from 
+			T_BUSINESS_DEMO d,T_BUSINESS_BASICINFO b
+		where 
+			d.basic_id = b.id and b.status != 0 
+			and b.status != 1 and b.status != 2
+		<if test="id != null and id != ''">
+     		and b.id = #{id} 
+    	</if>
+    	<if test="no != null and no != ''">
+     		and d.no like #{no} 
+    	</if>
+    	<if test="demo_name != null and demo_name != ''">
+     		and d.name like #{demo_name} 
+    	</if>
+    	<if test="demo_status != null and demo_status != ''">
+     		and d.status = #{demo_status} 
+    	</if>
+    	<if test="submit_depart != null and submit_depart != ''">
+     		and b.submit_depart like #{submit_depart} 
+   		</if>
+   		<if test="submitter != null and submitter != ''">
+    		and b.submitter like #{submitter} 
+    	</if>
+    	<if test="verify_no != null and verify_no != ''">
+     		and b.verify_no like #{verify_no} 
+    	</if>
+    	<if test="submit_date != null and submit_date != ''">
+			and b.submit_date = #{submit_date} 
+     	</if>
+     	<if test="goods_name != null and goods_name != ''">
+     		and b.goods_name like #{goods_name} 
+    	</if>
+    	<if test="goods_type != null and goods_type != ''">
+     		and b.goods_type = #{goods_type} 
+   		</if>
+   		<if test="sample_region != null and sample_region != ''">
+    		and b.sample_region like #{sample_region} 
+    	</if>
+    	<if test="export_import != null and export_import != ''">
+     		and b.export_import like #{export_import} 
+    	</if>
+    	<if test="verify_type != null and verify_type != ''">
+			and b.verify_type = #{verify_type} 
+     	</if>
+     	<if test="status != null and status != ''">
+			and b.status = #{status} 
+     	</if>
+	</select>
+	
+	<select id="checkSampleSubmit" parameterType="string"
+		resultType="Integer">
+		select 
+			count(*) 
+		from 
+			T_BUSINESS_DEMO
+		where 
+			basic_id = #{id}
+	</select>
+	
+	<insert id="insertDemo" parameterType="com.device.business.sampleManage.element.DemoElement" 
+	statementType="PREPARED">  
+   		INSERT INTO T_BUSINESS_DEMO (  
+   			id, 
+   			basic_id,
+   			no,
+   			name,
+   			total,
+   			requirement,
+   			memo,
+   			status,
+   			handletype
+        	  )
+    	VALUES (  
+        	#{id},
+        	#{basic_id},
+        	#{no},
+        	#{name},
+        	#{total},
+        	#{requirement},
+        	#{memo},
+        	0,
+        	0
+        	)  
+	</insert>
+	
+	<update id="updateDemo" parameterType="com.device.business.sampleManage.element.DemoElement" 
+	statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_DEMO 
+   		set 
+   			no = #{no},
+        	name = #{name},
+   			total = #{total},
+   			requirement = #{requirement},
+   			memo = #{memo}
+        where
+        	id =  #{id}
+	</update>
+	
+	<delete id="deleteDemo" statementType="PREPARED">
+		delete from T_BUSINESS_DEMO where id = #{id}
+	</delete>
+	
+	<delete id="deleteDemoBySampleID" statementType="PREPARED">
+		delete 
+		from 
+			T_BUSINESS_DEMO 
+		where
+			basic_id = #{id}
+	</delete>
+	
+	<update id="assignDemo" parameterType="com.device.business.sampleManage.element.DemoElement" 
+	statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_DEMO 
+   		set 
+   			judge = #{judge}
+        where
+        	id =  #{id}
+	</update>
+	
+	<update id="updateDemoStatus" parameterType="com.device.business.sampleManage.element.DemoElement" 
+	statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_DEMO 
+   		set 
+   			status = #{status}
+        where
+        	id =  #{id}
+	</update>
+	
+	<update id="updateDemoStatusByBasicID" parameterType="com.device.business.sampleManage.element.DemoElement" 
+	statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_DEMO 
+   		set 
+   			status = #{status}
+        where
+        	basic_id =  #{id}
+	</update>
+	
+	<update id="registerDestroy" parameterType="com.device.business.sampleManage.element.DemoElement" 
+	statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_DEMO 
+   		set 
+   			handletype = 1,
+   			destroyer = #{destroyer},
+   			destroydate = #{destroydate}
+        where
+        	id =  #{id}
+	</update>
+	
+	<select id="loadDestroy" parameterType="string"
+		resultType="com.device.business.sampleManage.bean.DemoBean">
+		select 
+			destroyer,destroydate
+		from 
+			T_BUSINESS_DEMO 
+		where 
+			id = #{id}
+	</select>
+	
+	<update id="registerReserve" parameterType="com.device.business.sampleManage.element.DemoElement" 
+	statementType="PREPARED">  
+   		update  
+   			T_BUSINESS_DEMO 
+   		set 
+   			handletype = 3,
+   			staytodate = #{staytodate}
+        where
+        	id =  #{id}
+	</update>
+	
+	<select id="loadReserve" parameterType="string"
+		resultType="com.device.business.sampleManage.bean.DemoBean">
+		select 
+			staytodate	
+		from 
+			T_BUSINESS_DEMO 
+		where 
+			id = #{id}
+	</select>
+	
+</mapper>

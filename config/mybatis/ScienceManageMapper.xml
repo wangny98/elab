@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.docManager.dao.mapper.ScienceManageMapper">
+
+	<insert id="add" statementType="PREPARED">
+		insert into t_doc_science
+		(
+			id,
+			name,
+			author_1,
+			author_2,
+			author_3,
+			org_name,
+			publication,
+			publication_time,
+			key_word
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.name},
+			#{bean.author_1},
+			#{bean.author_2},
+			#{bean.author_3},
+			#{bean.org_name},
+			#{bean.publication},
+			#{bean.publication_time},
+			#{bean.key_word}
+		)
+	</insert>
+	
+	<update id="update" statementType="PREPARED">
+		update t_doc_science set 
+			name = #{bean.name},
+				author_1 = #{bean.author_1},
+					author_2 = #{bean.author_2},
+						author_3 = #{bean.author_3},
+							org_name = #{bean.org_name},
+								publication = #{bean.publication},
+									publication_time = #{bean.publication_time},
+										key_word = #{bean.key_word}
+		where id = #{bean.id}
+	</update>
+	
+	<delete id="delete" statementType="PREPARED">
+		delete from t_doc_science where id= #{id}
+	</delete>
+	
+	<delete id="deleteMore" statementType="PREPARED">
+		delete from t_doc_science where id in (select id from t_dir_doc where dirId=#{dirId})
+	</delete>
+	
+	<select id="info" resultType="com.device.business.docManager.bean.ScienceBean">
+		select
+			id,
+			name,
+			author_1,
+			author_2,
+			author_3,
+			org_name,
+			publication,
+			publication_time,
+			key_word
+		from t_doc_science
+		where id= #{id}
+	</select>
+</mapper>

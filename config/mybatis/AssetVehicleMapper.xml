@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.assetManage.dao.mapper.AssetVehicleMapper">
+	<insert id="insertAssetVehicle" statementType="PREPARED" parameterType="com.device.business.assetManage.element.AssetElement" >  
+   		INSERT INTO t_fixedasset_vehicle (  
+        	ID, 
+        	FANUMBER, 
+        	CARVALIDATEM2,
+        	CARTYPE,
+        	MILEAGE,
+        	CARFRAME,
+        	CARPDATE,
+        	CAREXPIREDDATE,
+        	CARUPDATEDATE,
+        	CARSEAT,
+        	OILTYPE,
+        	CARCC,
+        	CARVALIDATEM1,
+        	CARENGINE,
+        	CARNUM
+        	  )
+    	VALUES (  
+        	#{id},  
+        	#{fanumber},  
+        	#{carvalidatem2},
+        	#{cartype},
+        	#{mileage},
+        	#{carframe},
+        	to_date(#{carpdate}, 'yyyy-mm-dd'),
+        	to_date(#{carexpireddate}, 'yyyy-mm-dd'),
+        	to_date(#{carupdatedate}, 'yyyy-mm-dd'),
+        	#{carseat},
+        	#{oiltype},
+        	#{carcc},
+        	#{carvalidatem1},
+        	#{carengine},
+        	#{carnum}
+        	)  
+	</insert>
+	
+	<update id="updateAssetVehicle" parameterType="com.device.business.assetManage.element.AssetElement" statementType="PREPARED">
+		update t_fixedasset_vehicle
+			set 
+			CARVALIDATEM2 = #{carvalidatem2},
+        	CARTYPE = #{cartype},
+        	MILEAGE = #{mileage},
+        	CARFRAME = #{carframe},
+        	CARPDATE = to_date(#{carpdate}, 'yyyy-mm-dd'),
+        	CAREXPIREDDATE = to_date(#{carexpireddate}, 'yyyy-mm-dd'),
+        	CARUPDATEDATE = to_date(#{carupdatedate}, 'yyyy-mm-dd'),
+        	CARSEAT = #{carseat},
+        	OILTYPE = #{oiltype},
+        	CARCC = #{carcc},
+        	CARVALIDATEM1 = #{carvalidatem1},
+        	CARENGINE = #{carengine},
+        	CARNUM = #{carnum}
+		where fanumber=#{fanumber}
+	</update>
+	
+	<delete id="deleteAssetVehicle" statementType="PREPARED" parameterType="string">
+		delete 
+		from t_fixedasset_vehicle t 
+		where fanumber in (#{ids}) 
+	</delete>
+	
+	<select id="isVehicleInfoExist" parameterType="string"
+		resultType="int">
+		select
+		count(*)
+		from t_fixedasset_vehicle 
+		where 
+		fanumber = #{fanumber}
+	</select>
+
+</mapper>

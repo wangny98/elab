@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.showManage.dao.mapper.CaseMapper">
+	<select id="query" parameterType="string" resultType="com.device.business.showManage.bean.CaseBean">
+		select
+			id,
+			name,
+			note,
+			create_time,
+			creator_name,
+			public_org,
+			public_time,
+			delete_flag
+		from t_show_case
+		where delete_flag=1
+		<if test="searchName!=null and searchName!='' ">and name like #{searchName}</if>
+	</select>
+	
+	<select id="load" parameterType="string" resultType="com.device.business.showManage.bean.CaseBean">
+		select
+			id,
+			name,
+			note,
+			create_time,
+			creator_name,
+			public_org,
+			public_time,
+			delete_flag
+		from t_show_case
+		where id = #{id}
+	</select>
+	
+	<select id="count" parameterType="string"
+		resultType="Integer">
+		select
+			count(id)
+		from t_show_case
+		where  delete_flag=1  
+		<if test="searchName!=null and searchName!='' ">and name like #{searchName}</if>
+	</select>
+	
+	<insert id="add" parameterType="com.device.business.showManage.bean.CaseBean" statementType="PREPARED">
+		insert into t_show_case
+		(
+			id,
+			name,
+			note,
+			create_time,
+			creator_name,
+			public_org,
+			public_time,
+			delete_flag
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.name},
+			#{bean.note},
+			#{bean.create_time},
+			#{bean.creator_name},
+			#{bean.public_org},
+			#{bean.public_time},
+			#{bean.delete_flag}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.device.business.showManage.bean.CaseBean" statementType="PREPARED">
+		update t_show_case set
+			name = #{bean.name},
+				note = #{bean.note},
+					public_org = #{bean.public_org},
+						public_time = #{bean.public_time}
+		where id = #{bean.id}
+	</update>
+	
+	<delete id="delete" parameterType="string" statementType="PREPARED">
+		delete from t_show_case where id =#{id}
+	</delete>
+</mapper>

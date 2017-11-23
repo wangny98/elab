@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.assetManage.dao.mapper.AssetHouseMapper">
+	<insert id="insertHouseAsset" statementType="PREPARED" parameterType="com.device.business.assetManage.element.AssetElement" >  
+   		INSERT INTO t_fixedasset_house (  
+        	ID,  
+        	FANUMBER,  
+        	HTEL,
+        	HCONTRACT,
+        	HWUYE,
+        	HQUALITY,
+        	HSTRUCTURE,
+        	HCOMPLETEDATE,
+        	HTYPE,
+        	HSIZE,
+        	HLANDSIZE,
+        	HPURPOSE,
+        	HLANDPROPERTY,
+        	HEATTYPE,
+        	HBLAYER,
+        	HLAYER,
+        	HCQNUM,
+        	HFORM,
+        	HNAME,
+        	HBSIZE
+        	  )
+    	VALUES (  
+        	#{id},  
+        	#{fanumber}, 
+        	#{htel},
+        	#{hcontract},
+        	#{hwuye},
+        	#{hquality},
+        	#{hstructure},
+        	to_date(#{hcompletedate}, 'yyyy-mm-dd'),
+        	#{htype},
+        	#{hsize},
+        	#{hlandsize},
+        	#{hpurpose},
+        	#{hlandproperty},
+        	#{heattype},
+        	#{hblayer},
+        	#{hlayer},
+        	#{hcqnum},
+        	#{hform},
+        	#{hname},
+        	#{hbsize}
+        	)  
+	</insert>
+	
+	<update id="updateHouseAsset" parameterType="com.device.business.assetManage.element.AssetElement" statementType="PREPARED">
+		update t_fixedasset_house
+			set 
+				HTEL = #{htel},HCONTRACT = #{hcontract},HWUYE = #{hwuye},HQUALITY = #{hquality},
+        		HSTRUCTURE = #{hstructure},HCOMPLETEDATE = to_date(#{hcompletedate}, 'yyyy-mm-dd'),HTYPE = #{htype},HSIZE = #{hsize},
+        		HLANDSIZE = #{hlandsize},HPURPOSE = #{hpurpose},HLANDPROPERTY = #{hlandproperty},HEATTYPE = #{heattype},
+        		HBLAYER = #{hblayer},HLAYER = #{hlayer},HCQNUM = #{hcqnum},HFORM = #{hform},
+        		HNAME = #{hname},HBSIZE = #{hbsize}
+		where fanumber=#{fanumber}
+	</update>
+	
+	<delete id="deleteHouseAsset" statementType="PREPARED" parameterType="string">
+		delete 
+		from t_fixedasset_house t 
+		where fanumber in (#{ids}) 
+	</delete>
+	
+	<select id="isHouseInfoExist" parameterType="string"
+		resultType="int">
+		select
+		count(*)
+		from t_fixedasset_house 
+		where 
+		fanumber = #{fanumber}
+	</select>
+	
+</mapper>

@@ -1,0 +1,137 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<title>extjs 日期时间</title>
+    <link rel="stylesheet" type="text/css" href="../resources/css/ext-all.css"/>
+    <link rel="stylesheet" type="text/css" href="datetime.css"></link>
+    <link rel="stylesheet" type="text/css" href="../ux/css/Spinner.css" />
+
+	<script type="text/javascript" src="../adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../ext-all.js"></script>
+    <!--<script type="text/javascript" src="./Ext.ux.DateTimeField_all.js"></script> -->
+    
+    <script type="text/javascript" src="./Ext.ux.DateTimeField.js"></script>
+    <script type="text/javascript" src="./Ext.ux.DateTimeMenu.js"></script>
+    <script type="text/javascript" src="./Ext.ux.DateTimePicker.js"></script>
+    <script type="text/javascript" src="../ux/datetime/Spinner.js"></script>
+    <script type="text/javascript" src="../ux/datetime/SpinnerField.js"></script>
+
+    <!-- 
+    <script type="text/javascript" src="Datetime.js"></script>-->
+</head>
+<body>
+    <script type="text/javascript">
+	Ext.onReady(function(){
+	    Ext.BLANK_IMAGE_URL="../resources/images/default/s.gif";
+
+		Ext.QuickTips.init();
+
+		// turn on validation errors beside the field globally
+		Ext.form.Field.prototype.msgTarget = 'side';
+
+		var simple = new Ext.FormPanel({
+			labelWidth: 75, // label settings here cascade unless overridden
+	//        frame:true,
+			title: 'Simple Form',
+			width: 350,
+			defaults: {width: 230},
+			defaultType: 'textfield',
+			items: [{
+					fieldLabel: 'First Name',
+					name: 'first',
+					allowBlank:false
+				},{
+					fieldLabel: 'Last Name',
+					name: 'last'
+				},{
+					fieldLabel: 'Company',
+					name: 'company'
+				}, {
+					fieldLabel: 'Email',
+					name: 'email',
+					vtype:'email'
+				}, new Ext.form.TimeField({
+					fieldLabel: 'Time',
+					name: 'time',
+					minValue: '8:00am',
+					maxValue: '6:00pm'
+				}),
+				new Ext.form.DateField({
+					fieldLabel: '日期',
+					name: 'planbegintime',
+					format:'Y-m-d'
+				}),
+				new Ext.form.DateTimeField({
+					fieldLabel: '时间',
+					name: 'planbegintime',
+					format:'Y-m-d H:i:s'
+				}),
+				new Ext.form.CompositeField({
+				    fieldLabel: 'aa',
+        			items:[
+            			{
+            			    xtype:'label', text: 'Hours:'
+            			}, {
+                            xtype: 'spinnerfield',
+                        	name: 'hour',
+                        	minValue: 0,
+                        	maxValue: 23,
+                        	width: 37,
+                        	enableKeyEvents: true,
+                        	allowDecimals: false,
+                            allowNegative: false,
+                        	accelerate: true,
+                        	listeners: {
+                                scope: this,
+                                keyup: function(field, e){
+                                    if (field.getValue() > 23){
+                                        e.stopEvent();
+                                        field.setValue(23);
+                                    }
+                                }
+                            }
+                        },  
+                        {
+                            xtype:'label', text: 'Minutes:'
+                        }, {
+                            xtype: 'spinnerfield',
+                        	name: 'min',
+                        	minValue: 0,
+                        	maxValue: 59,
+                        	width: 37,
+                        	enableKeyEvents: true,
+                        	allowDecimals: false,
+                            allowNegative: false,
+                        	accelerate: true,
+                        	listeners: {
+                                scope: this,
+                                keyup: function(field, e){
+                                    if (field.getValue() > 59){
+                                        e.stopEvent();
+                                        field.setValue(59);
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                })
+				],
+
+			buttons: [{
+				text: 'Save'
+			},{
+				text: 'Cancel'
+			}]
+		});
+
+		simple.render('form-ct');
+
+	 
+	});
+	</script>
+	<div id="form-ct" style="padding-top:3px;padding-left:3px;"></div>
+</body>
+</html>

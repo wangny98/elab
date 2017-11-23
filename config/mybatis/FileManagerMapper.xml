@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.docManager.dao.mapper.FileManagerMapper">
+	<insert id="addFile" statementType="PREPARED">
+		insert into t_dir_doc
+		(
+			id,
+			name,
+			path,
+			type,
+			dirId,
+			creatorId,
+			creatorName,
+			creatorTime
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.name},
+			#{bean.path},
+			#{bean.type},
+			#{bean.dirId},
+			#{bean.creatorId},
+			#{bean.creatorName},
+			#{bean.creatorTime}
+		)
+	</insert>
+	<select id="listFile" resultType="com.device.business.docManager.bean.FileBean">
+		select
+			id,
+			name,
+			path,
+			type,
+			creatorId,
+			creatorName,
+			creatorTime
+		from t_dir_doc
+		where type in ${types}
+		<if test="searchName!=null and searchName!='' ">and name like #{searchName}</if>
+		<if test="dirId!=null and dirId!='' ">and dirId = #{dirId}</if>
+	</select>
+	
+	<select id="countFile" resultType="java.lang.Integer">
+		select
+			count(id)
+		from t_dir_doc
+		where type in ${types}
+		<if test="searchName!=null and searchName!='' ">and name like #{searchName}</if>
+		<if test="dirId!=null and dirId!='' ">and dirId = #{dirId}</if>
+	</select>
+	
+	
+	<select id="getFile" resultType="com.device.business.docManager.bean.FileBean">
+		select
+			id,
+			name,
+			path,
+			type,
+			creatorId,
+			creatorName,
+			creatorTime
+		from t_dir_doc
+		where id=#{id}
+	</select>
+	
+	<delete id="delFile" statementType="PREPARED">
+		delete from t_dir_doc where id=#{id}
+	</delete>
+	
+	<delete id="delFiles" statementType="PREPARED">
+		delete from t_dir_doc where dirId=#{dirId}
+	</delete>
+	
+	<delete id="delSingleFile" statementType="PREPARED">
+		delete from t_dir_doc where id=#{id}
+	</delete>
+	
+	<update id="increasePreview" statementType="PREPARED">
+		update t_dir_doc set previewCount = previewCount+1
+			where id=#{id}
+	</update>
+	
+	<update id="increaseDownload" statementType="PREPARED">
+		update t_dir_doc set downloadCount = downloadCount+1
+			where id=#{id}
+	</update>
+</mapper>

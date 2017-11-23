@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.device.business.systemSet.dao.mapper.UnitMapper">
+	<select id="listUnit" parameterType="string" resultType="com.device.business.systemSet.bean.UnitBean">
+		select
+			id,
+			unit_name,
+			unit_charge_name,
+			property_charge_name,
+			write_name,
+			telephone,
+			unit_addr,
+			unit_code,
+			finance_code,
+			post_code,
+			unit_local,
+			unit_character,
+			unit_account,
+			unit_type,
+			last_year_code,
+			depart_classic_type,
+			report_reason,
+			report_type,
+			remark_code,
+			plait_date
+		from T_BASE_UNIT
+		where user_name like #{name} and deleteflag=1
+	</select>
+	
+	<select id="getUnit" parameterType="string" resultType="com.device.business.systemSet.bean.UnitBean">
+		select
+			id,
+			unit_name,
+			unit_charge_name,
+			property_charge_name,
+			write_name,
+			telephone,
+			unit_addr,
+			unit_code,
+			finance_code,
+			post_code,
+			unit_local,
+			unit_character,
+			unit_account,
+			unit_type,
+			last_year_code,
+			depart_classic_type,
+			report_reason,
+			report_type,
+			remark_code,
+			plait_date
+		from T_BASE_UNIT
+		where id like #{id} and deleteflag=1
+	</select>
+	
+	<insert id="addUnit" parameterType="com.device.business.systemSet.bean.UnitBean" statementType="PREPARED">
+		insert into T_BASE_UNIT
+		(
+			id,
+			unit_name,
+			unit_charge_name,
+			property_charge_name,
+			write_name,
+			telephone,
+			unit_addr,
+			unit_code,
+			finance_code,
+			post_code,
+			unit_local,
+			unit_character,
+			unit_account,
+			unit_type,
+			last_year_code,
+			depart_classic_type,
+			report_reason,
+			report_type,
+			remark_code,
+			plait_date,
+			deleteflag
+		)
+		values
+		(
+			#{bean.id},
+			#{bean.unit_name},
+			#{bean.unit_charge_name},
+			#{bean.property_charge_name},
+			#{bean.write_name},
+			#{bean.telephone},
+			#{bean.unit_addr},
+			#{bean.unit_code},
+			#{bean.finance_code},
+			#{bean.post_code},
+			#{bean.unit_local},
+			#{bean.unit_character},
+			#{bean.unit_account},
+			#{bean.unit_type},
+			#{bean.last_year_code},
+			#{bean.depart_classic_type},
+			#{bean.report_reason},
+			#{bean.report_type},
+			#{bean.remark_code},
+			#{bean.plait_date},
+			1
+		)
+	</insert>
+	
+	<update id="updUnit" statementType="PREPARED">
+		update T_BASE_UNIT
+			set unit_name = #{bean.unit_name},
+					unit_charge_name = #{bean.unit_charge_name},
+						property_charge_name = #{bean.property_charge_name},
+							write_name = #{bean.write_name},
+								telephone = #{bean.telephone},
+									unit_addr = #{bean.unit_addr},
+										unit_code = #{bean.unit_code},
+											finance_code = #{bean.finance_code},
+												post_code = #{bean.post_code},
+													unit_local = #{bean.unit_local},
+														unit_character = #{bean.unit_character},
+															unit_account = #{bean.unit_account},
+																unit_type = #{bean.unit_type},
+																	last_year_code = #{bean.last_year_code},
+																		depart_classic_type = #{bean.depart_classic_type},
+																			report_reason = #{bean.report_reason},
+																				report_type = #{bean.report_type},
+																					remark_code = #{bean.remark_code},
+																						plait_date = #{bean.plait_date}
+		where id=#{bean.id}
+	</update>
+	
+	<update id="delUnit" statementType="PREPARED">
+		update T_BASE_UNIT
+			set deleteflag=2
+		where id = #{id}
+	</update>
+	
+	<select id="getNodes" resultType="com.device.business.organizationManage.bean.OrgTreeBean">
+		select
+			a.id,
+			a.unit_code+' '+a.unit_name text,
+			b.parent_id parent,
+			1 type
+		from T_BASE_UNIT a,t_base_union b
+		where a.id = b.child_id
+	</select>
+</mapper>
