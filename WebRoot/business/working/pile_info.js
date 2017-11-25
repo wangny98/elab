@@ -360,21 +360,21 @@ dm.equip.pile.GridPanel = function() {
 	}, {
 		header : '评分',
 		dataIndex : "score",
-		width : 60,
+		width : 25,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	}, {
 		header : '评分结果',
 		dataIndex : "scoreMark",
-		width : 60,
+		width : 45,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	}, {
 		header : '开始时间',
 		dataIndex : "startTime",
-		width : 60,
+		width : 45,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}

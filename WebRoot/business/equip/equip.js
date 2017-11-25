@@ -180,7 +180,7 @@ Ext.extend(dm.pile.deep.GridPanel, Ext.grid.GridPanel, {
 	        cache:false,
 	        dataType:'json',
 	        success:function(data) {
-	        	console.info("data : ",data);
+	        	//console.info("data : ",data);
 	        	var down={deep:[],cementWeight:[],powerInside:[],powerOutside:[],speed:[]};
 				var up={deep:[],cementWeight:[],powerInside:[],powerOutside:[],speed:[]};
 				//var all={deep:[],cementWeight:[],powerInside:[],powerOutside:[]};
@@ -236,7 +236,7 @@ Ext.extend(dm.pile.deep.GridPanel, Ext.grid.GridPanel, {
 });
 
 var params = Ext.urlDecode(location.search.substring(1))
-console.info("params ",params);
+//console.info("params ",params);
 var pile_deep_grid = new dm.pile.deep.GridPanel(params.pileNumberParam);
 pile_deep_grid.loadData();
 
