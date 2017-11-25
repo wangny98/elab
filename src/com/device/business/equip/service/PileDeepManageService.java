@@ -54,10 +54,59 @@ public class PileDeepManageService {
 		Map<String, Object> machineInfo = new HashMap<String, Object>();
 		try{
 			down = pileDeepDao.selectByDown(pileNumber);
+			//System.out.println("original size:"+down.size()+" pile number:"+pileNumber);
+			//filter data: only show record of every 0.2 pile_deep
+			for(int i = 0 ; i < down.size() ; i++) {
+                //reset speed to less than 2.5
+                Short maxSpeed=249;
+                if(down.get(i).getSpeed()!=null) {
+                    //System.out.println("original speed:"+down.get(i).getSpeed());
+                    if (down.get(i).getSpeed()>=maxSpeed)
+                    {
+                       down.get(i).setSpeed(maxSpeed);
+                        //System.out.println("new speed:"+down.get(i).getSpeed());
+                    }
+                }
+				BigDecimal tPileDeep=down.get(i).getPileDeep();
+				BigDecimal ten=new BigDecimal("10");
+				tPileDeep=tPileDeep.multiply(ten);
+				int t=tPileDeep.intValue();
+				if(t%2!=0) down.remove(i);
+			}
+            //System.out.println("new size:"+down.size());
 
 			up = pileDeepDao.selectByUP(pileNumber);
+            //filter data: only show record of every 0.2 pile_deep
+            for(int i = 0 ; i < up.size() ; i++) {
+                //reset speed to less than 2.5
+                Short maxSpeed=249;
+                if(up.get(i).getSpeed()!=null) {
+                    if (up.get(i).getSpeed()>= maxSpeed) up.get(i).setSpeed(maxSpeed);
+                }
+                BigDecimal tPileDeep=up.get(i).getPileDeep();
+                BigDecimal ten=new BigDecimal("10");
+                tPileDeep=tPileDeep.multiply(ten);
+                int t=tPileDeep.intValue();
+                if(t%2!=0) up.remove(i);
+            }
+
 			machineInfo = pileDeepDao.selectMachineInfo(pileNumber);
+
 			absSum = pileDeepDao.selectByAbs(pileNumber);
+            //filter data: only show record of every 0.2 pile_deep
+            for(int i = 0 ; i < absSum.size() ; i++) {
+                //reset speed to less than 2.5
+                Short maxSpeed=249;
+                if(absSum.get(i).getSpeed()!=null) {
+                    if (absSum.get(i).getSpeed() >= maxSpeed) absSum.get(i).setSpeed(maxSpeed);
+                }
+                BigDecimal tPileDeep=absSum.get(i).getPileDeep();
+                BigDecimal ten=new BigDecimal("10");
+                tPileDeep=tPileDeep.multiply(ten);
+                int t=tPileDeep.intValue();
+                if(t%2!=0) absSum.remove(i);
+            }
+
 		}catch(Exception e){
 			e.printStackTrace();
 			response.setSuccess(false);
