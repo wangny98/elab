@@ -38,7 +38,7 @@ public class PileDao {
 		
 		if(!CommUtils.isNullOrBlank(element.getPileNumber()))
 			c.andPileNumberLike("%"+element.getPileNumber()+"%");
-		
+
 		if(!CommUtils.isNullOrBlank(element.getProjectId()))
 			c.andProjectIdEqualTo(element.getProjectId());
 		

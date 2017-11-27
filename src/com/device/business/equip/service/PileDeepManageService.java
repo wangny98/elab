@@ -33,6 +33,19 @@ public class PileDeepManageService {
 		List<PperdeepBean> all = new ArrayList<PperdeepBean>();
 		try{
 			all = pileDeepDao.selectByAll(pileNumber);
+
+            for(int i = 0 ; i < all.size() ; i++) {
+                //filter data: only show record of every 0.2 pile_deep
+                BigDecimal tPileDeep=all.get(i).getPileDeep();
+                BigDecimal ten=new BigDecimal("10");
+                tPileDeep=tPileDeep.multiply(ten);
+                int t=tPileDeep.intValue();
+
+                //System.out.println("pile deep:"+down.get(i).getPileDeep()+" t:"+t);
+                //filter out the negative pile deep data
+                if(t<0) all.remove(i);
+                else if(t%2!=0) all.remove(i);
+            }
 		}catch(Exception e){
 			e.printStackTrace();
 			response.setSuccess(false);
@@ -52,42 +65,54 @@ public class PileDeepManageService {
 		List<PperdeepBean> up = new ArrayList<PperdeepBean>();
 		List<PperdeepBean> absSum = new ArrayList<PperdeepBean>();
 		Map<String, Object> machineInfo = new HashMap<String, Object>();
+
+		Short maxSpeed=249;
+
 		try{
 			down = pileDeepDao.selectByDown(pileNumber);
 			//System.out.println("original size:"+down.size()+" pile number:"+pileNumber);
-			//filter data: only show record of every 0.2 pile_deep
+
 			for(int i = 0 ; i < down.size() ; i++) {
-                //reset speed to less than 2.5
-                Short maxSpeed=249;
-                if(down.get(i).getSpeed()!=null) {
-                    //System.out.println("original speed:"+down.get(i).getSpeed());
-                    if (down.get(i).getSpeed()>=maxSpeed)
-                    {
-                       down.get(i).setSpeed(maxSpeed);
-                        //System.out.println("new speed:"+down.get(i).getSpeed());
-                    }
-                }
+                //filter data: only show record of every 0.2 pile_deep
 				BigDecimal tPileDeep=down.get(i).getPileDeep();
 				BigDecimal ten=new BigDecimal("10");
 				tPileDeep=tPileDeep.multiply(ten);
 				int t=tPileDeep.intValue();
-				if(t%2!=0) down.remove(i);
+
+                System.out.println("pile deep:"+down.get(i).getPileDeep()+" t:"+t);
+                //filter out the negative pile deep data
+				if(t<0) down.remove(i);
+				 else if(t%2!=0) down.remove(i);
 			}
-            //System.out.println("new size:"+down.size());
+
+            for(int i = 0 ; i < down.size() ; i++) {
+                //System.out.println("original speed:"+up.get(i).getSpeed());
+                //reset speed to less than 2.5
+                if(down.get(i).getSpeed()!=null) {
+                    if (down.get(i).getSpeed()>= maxSpeed) down.get(i).setSpeed(maxSpeed);
+                    //System.out.println("new speed:"+up.get(i).getSpeed());
+                }
+            }
 
 			up = pileDeepDao.selectByUP(pileNumber);
+
             //filter data: only show record of every 0.2 pile_deep
             for(int i = 0 ; i < up.size() ; i++) {
-                //reset speed to less than 2.5
-                Short maxSpeed=249;
-                if(up.get(i).getSpeed()!=null) {
-                    if (up.get(i).getSpeed()>= maxSpeed) up.get(i).setSpeed(maxSpeed);
-                }
                 BigDecimal tPileDeep=up.get(i).getPileDeep();
                 BigDecimal ten=new BigDecimal("10");
                 tPileDeep=tPileDeep.multiply(ten);
                 int t=tPileDeep.intValue();
+                //System.out.println("orginal speed:"+up.get(i).getSpeed());
                 if(t%2!=0) up.remove(i);
+            }
+
+            for(int i = 0 ; i < up.size() ; i++) {
+                    //System.out.println("original speed:"+up.get(i).getSpeed());
+                    //reset speed to less than 2.5
+                    if(up.get(i).getSpeed()!=null) {
+                        if (up.get(i).getSpeed()>= maxSpeed) up.get(i).setSpeed(maxSpeed);
+                        //System.out.println("new speed:"+up.get(i).getSpeed());
+                    }
             }
 
 			machineInfo = pileDeepDao.selectMachineInfo(pileNumber);
@@ -95,16 +120,20 @@ public class PileDeepManageService {
 			absSum = pileDeepDao.selectByAbs(pileNumber);
             //filter data: only show record of every 0.2 pile_deep
             for(int i = 0 ; i < absSum.size() ; i++) {
-                //reset speed to less than 2.5
-                Short maxSpeed=249;
-                if(absSum.get(i).getSpeed()!=null) {
-                    if (absSum.get(i).getSpeed() >= maxSpeed) absSum.get(i).setSpeed(maxSpeed);
-                }
                 BigDecimal tPileDeep=absSum.get(i).getPileDeep();
                 BigDecimal ten=new BigDecimal("10");
                 tPileDeep=tPileDeep.multiply(ten);
                 int t=tPileDeep.intValue();
                 if(t%2!=0) absSum.remove(i);
+            }
+
+            for(int i = 0 ; i < up.size() ; i++) {
+                //System.out.println("original speed:"+up.get(i).getSpeed());
+                //reset speed to less than 2.5
+                if(absSum.get(i).getSpeed()!=null) {
+                    if (absSum.get(i).getSpeed()>= maxSpeed) absSum.get(i).setSpeed(maxSpeed);
+                    //System.out.println("new speed:"+up.get(i).getSpeed());
+                }
             }
 
 		}catch(Exception e){

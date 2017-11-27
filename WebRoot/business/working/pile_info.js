@@ -3,8 +3,10 @@ Ext.namespace('dm.equip.pile');
 /**
  * 主面板
  */
+var mainPanel;
 dm.equip.pile.MainPanel = function(projectRecord) {
-	var mainPanel = this;
+	mainPanel = this;
+	mainPanel.autoScroll = true;
 	mainPanel.gridPanel = new dm.equip.pile.GridPanel();
 	mainPanel.gridPanel.parent = mainPanel;
 	mainPanel.searchPanel = new dm.equip.pile.SearchPanel(mainPanel.gridPanel, projectRecord);
@@ -16,7 +18,7 @@ dm.equip.pile.MainPanel = function(projectRecord) {
 				layout : 'border',
 				baseCls : "x-plain",
 				closable : true,
-				items : [mainPanel.searchPanel, mainPanel.gridPanel, new dm.equip.pile.bottom()]
+				items : [mainPanel.searchPanel, mainPanel.gridPanel]
 			});
 	mainPanel.on('afterrender', function() {
 				// 加载表格数据
@@ -35,8 +37,9 @@ Ext.extend(dm.equip.pile.MainPanel, Ext.Panel, {});
 /**
  * 搜索面板
  */
+var searchPanel;
 dm.equip.pile.SearchPanel = function(grid,projectRecord) {
-	var searchPanel = this;
+	searchPanel = this;
 	searchPanel.grid = grid;
 	searchPanel.projectRecord=projectRecord;
 	//alert(projectRecord.data.projectId);
@@ -190,7 +193,7 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 							// labelWidth : 20,
 							fieldLabel : '桩机编号',
 							width : 150,
-							maxLength : 40,
+							maxLength : 50,
 							maxLengthText : '长度不能超过40'
 						}, {
 							id : 'pileNumber',
@@ -226,6 +229,27 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 							handler : function() {
 								searchPanel.grid.clearSearchCondition();
 							}
+						},{
+							iconCls : 'icon-print',
+							text : '打印',// '打印',
+							xtype : 'button',
+							// funcCode :
+							// DM.FUNCCODE.SYSTEMMONITOR_USECONDITION_RESET,
+							handler : function() {
+								var projectName = projectRecord.data.projectName;
+								var pileDriverNumber = Ext.getCmp("pileDriverNumber").getValue().trim();
+								var pileNumber = Ext.getCmp("pileNumber").getValue().trim();
+								var sectionName = Ext.getCmp("sectionId").getRawValue();
+								var startTime = dm.comm.comm_ConvertStringToDate(Ext.getCmp("startTime").getValue());
+								if(startTime == null){
+									startTime = '';
+								}
+						        var endTime = dm.comm.comm_ConvertStringToDate(Ext.getCmp("endTime").getValue());
+						        if(endTime == null){
+						        	endTime = '';
+								}
+								printGrid(projectName, sectionName, pileDriverNumber, pileNumber, startTime, endTime);
+							}
 						}]
 			}]
 		}]
@@ -258,11 +282,42 @@ Ext.extend(dm.equip.pile.SearchPanel, Ext.form.FormPanel, {
 			}
 		});
 
+var gridPanel;
+
+function printGrid(projectName, sectionName, pileDriverNumber, pileNumber, startTime, endTime){
+	
+	var myWindow = window.open('', '', 'width=1200,height=auto');
+	myWindow.document.write('<html><head>');
+	//myWindow.document.write('<title>' + 'Title' + '</title>');
+	myWindow.document.write('<link rel="Stylesheet" type="text/css" href="ext/resources/css/ext-all.css" />'); 
+	myWindow.document.write('<script type="text/javascript" src="component/bootstrap/bootstrap.js"></script>'); 
+	myWindow.document.write('</head><body>'); 
+	var searchConditions = '<div><span style="display:block;width:100%;text-align:center;">项目名称: ' + projectName + '</span> ';
+		//searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<br>';
+		searchConditions += '<span>桩机编号: ' + pileDriverNumber + '</span> ';
+		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>桩编号: ' + pileNumber + '</span>';
+		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>标段: ' + sectionName + '</span> ';
+		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>开始时间: ' + startTime + '</span> ';
+		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>结束时间: ' + endTime + '</span></div>';
+		searchConditions += '<div> &nbsp;&nbsp; </div>';
+	
+	myWindow.document.write(searchConditions); 
+	myWindow.document.write(gridPanel.body.dom.innerHTML); 
+	myWindow.document.write('</body></html>');
+	setTimeout(function() {myWindow.print();},3000);
+	//myWindow.print();
+	
+}
 /**
  * 列表面板
  */
 dm.equip.pile.GridPanel = function() {
-	var gridPanel = this;
+	gridPanel = this;
 	gridPanel.searchConditions = {
 		 pileDriverNumber : "",
 		 /*startTime : "",
@@ -270,6 +325,8 @@ dm.equip.pile.GridPanel = function() {
 		 pileNumber : '',
 		 sectionNumber : ''
 	};
+	gridPanel.autoHeight = true;
+	gridPanel.autoWidth = true;
 	// 勾选框
 	gridPanel.sm = new Ext.grid.CheckboxSelectionModel();
 	// 每页显示条数下拉选择框
@@ -343,59 +400,45 @@ dm.equip.pile.GridPanel = function() {
 							+ rowIndex;
 				}
 			}), gridPanel.sm, 
-	{
+	/*{
 		header : 'ID',
 		dataIndex : "id",
-		width : 40,
+		width : 48,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	}, {
+	},*/ {
 		header : '桩编号',
 		dataIndex : "pileNumber",
-		width : 40,
-		renderer : function(value) {
-			return dm.comm.comm_getTip(value);
-		}
-	}, {
-		header : '评分',
-		dataIndex : "score",
-		width : 25,
-		renderer : function(value) {
-			return dm.comm.comm_getTip(value);
-		}
-	}, {
-		header : '评分结果',
-		dataIndex : "scoreMark",
-		width : 45,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	}, {
 		header : '开始时间',
 		dataIndex : "startTime",
-		width : 45,
+		width : 65,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '结束时间',
 		dataIndex : "endTime",
-		width : 45,
+		width : 65,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '实际桩长(m)',
 		dataIndex : "pileLength",
-		width : 45,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '喷浆时间(s)',
 		dataIndex : "gunitingSecond",
-		width : 45,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
@@ -416,28 +459,28 @@ dm.equip.pile.GridPanel = function() {
 	},{
 		header : '提钻速度(cm/min)',
 		dataIndex : "maxUpSpeed",
-		width : 45,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '下钻速度(cm/min)',
 		dataIndex : "maxDownSpeed",
-		width : 45,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '最大内电流(A)',
 		dataIndex : "maxInsidePower",
-		width : 45,
+		width : 60,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '最大外电流(A)',
 		dataIndex : "maxOutsidePower",
-		width : 45,
+		width : 60,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
@@ -455,14 +498,28 @@ dm.equip.pile.GridPanel = function() {
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	},{
+	}, {
+     		header : '评分',
+     		dataIndex : "score",
+     		width : 25,
+     		renderer : function(value) {
+     			return dm.comm.comm_getTip(value);
+     		}
+     	}, {
+     		header : '评分结果',
+     		dataIndex : "scoreMark",
+     		width : 45,
+     		renderer : function(value) {
+     			return dm.comm.comm_getTip(value);
+     		}
+     	}/*,{
 		header : '上传时间',
 		dataIndex : "createTime",
-		width : 45,
+		width : 100,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	}
+	}*/
 	]);
 	// 分页工具栏
 	gridPanel.ProgressBar = new dm.object.ProgressBarPager();
