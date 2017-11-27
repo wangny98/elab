@@ -6,6 +6,7 @@
     <link rel="stylesheet"	href="../../component/bootstrap/layoutit.css">
     <link rel="stylesheet"	href="../../component/jquery-ui-1.9.2/css/jquery-ui-1.9.2.css">
     <link rel="stylesheet"	href="../../component/bootstrap/bootstrap-combined.min.css">
+	<link rel="stylesheet"	href="../../component/tablestyle/table-style.css">
 
     <script src="../../component/jquery-1.8.3.min.js"></script>
     <script src="../../component/jquery/jquery-ui.min.js"></script>
@@ -58,7 +59,8 @@
   <div class="panel" style="margin-left: 20px;margin-right: 20px;">
   	<div class="container-fluid">
 	  	<div class="span12">
-           <div class="row">
+           <!--<div class="row" style="background-color:#a4c6e4;">-->
+            <div class="row">
              <div class="col-lg-3">
                <div class="input-group">
                  <span class="input-group-addon">桩型:</span>
@@ -90,7 +92,7 @@
    	<div class="container-fluid">
 	    <div class="row" style="text-align:center">
 		     <div class="col-lg-6">
-		       <table class="table" style="margin:auto;text-align:center">
+		       <table id="table-style" class="table" style="margin:auto;text-align:center">
 		          <tbody>
 		          	<tr>
 		              <th style="margin:auto;text-align:center" colspan="4">桩长评分标准	({{record1.lengthScore}})分</th>
@@ -110,8 +112,9 @@
 		           </tbody>
 		         </table>
 		        </div>
+			<br>
 		     <div class="col-lg-6">
-	       <table class="table" style="margin:auto;text-align:center">
+	       <table id="table-style" class="table" style="margin:auto;text-align:center">
 	          <tbody>
 	          	<tr>
 	              <th style="margin:auto;text-align:center" colspan="4">水泥用量评分标准	({{record1.cementScore}})分</th>
@@ -132,9 +135,10 @@
 	         </table>
 	        </div>
 	    </div>
+        <br>
        	<div class="row" style="text-align:center">
 	     	<div class="col-lg-6">
-		       	<table class="table" style="margin:auto;text-align:center">
+                <table id="table-style" class="table" style="margin:auto;text-align:center">
 		          	<tbody>
 			          	<tr>
 			              <th style="margin:auto;text-align:center" colspan="4">垂直度评分标准	({{record1.leanScore}})分</th>
@@ -270,7 +274,8 @@
 	      </div>
        	</div>
   </div>
-  
+
+  <!--
   <div class="panel" style="margin-left: 20px;margin-right: 20px;">
   	<div class="container-fluid">
 	  	<div class="span12">
@@ -514,6 +519,8 @@
       </div>
     </div>
   </div>
+  -->
+
   <script src="evaluationApp.js"></script>
 </body>
 </html>

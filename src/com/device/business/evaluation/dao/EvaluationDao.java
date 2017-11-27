@@ -90,7 +90,7 @@ public class EvaluationDao {
 		score = lengthScore + cementScore + leanScore;
 		if (score < 60) {
 			//pileBrokenMapper.insert(broken);
-			return mapper.updatePileScore((int) score, "整体评分太低",4, pileId);
+			return mapper.updatePileScore((int) score, "整体评分低",4, pileId);
 		}
 
 		return mapper.updatePileScore((int) score, "",0, pileId);

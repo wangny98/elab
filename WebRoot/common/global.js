@@ -48,7 +48,7 @@ LTMS.GLOBAL.MODULE = [
 		jspath : ['business/equip/slurrySectionPerday.js','business/working/pile_info.js','systemSet/clearDateField.js']
 	},{
 		id : '221',
-		name : '打桩评估',
+		name : '单桩评分标准',
 		module : 'dm.evaluation.main.mainPanel',
 		jspath : ['business/evaluation/evaluation.js']
 	},{
