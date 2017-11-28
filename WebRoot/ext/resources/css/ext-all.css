@@ -2728,6 +2728,7 @@ a.x-grid3-hd-btn:hover {
 .x-pivotgrid .x-grid3-header-offset table {
     width: 100%;
     border-collapse: collapse;
+    border:1px;
 }
 
 .x-pivotgrid .x-grid3-header-offset table td {
@@ -2739,6 +2740,7 @@ a.x-grid3-hd-btn:hover {
     font-size: 11px;
     line-height: 13px;
     font-family: tahoma;
+    border:1px;
 }
 
 .x-pivotgrid .x-grid3-row-headers {
@@ -2750,6 +2752,7 @@ a.x-grid3-hd-btn:hover {
     height: 100%;
     width: 100%;
     border-collapse: collapse;
+    border:1px;
 }
 
 .x-pivotgrid .x-grid3-row-headers table td {
@@ -5878,6 +5881,7 @@ ul.x-tab-strip-bottom{
 .x-grid3-row {
     border-color:#ededed;
     border-top-color:#fff;
+    border:1px;
 }
 
 .x-grid3-row-alt{

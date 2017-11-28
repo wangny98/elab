@@ -125,7 +125,7 @@
     Total_Cement, Max_Down_Speed, Max_Up_Speed, Max_Inside_Power, Max_Outside_Power, 
     Max_Lean, Mix_Station_Number, Guniting_Begin_Time, Guniting_End_Time, Pile_Driver_Number, Create_Time, 
     Change_Time, Section_Number, Pile_Status, xmid, zjid, Enlarge_Top, Enlarge_Bottom, 
-    Enlarge_Height, t_yl, t_cxs, t_jxs, sjzc, zhl, zjl, sj_zc, sj_hl, sj_jl, upid,Score
+    Enlarge_Height, t_yl, t_cxs, t_jxs, sjzc, zhl, zjl, sj_zc, sj_hl, sj_jl, upid,Score,score_mark
   </sql>
   <select id="selectByExample" parameterType="com.device.business.equip.bean.PileBeanExample" resultMap="BaseResultMap">
     <!--

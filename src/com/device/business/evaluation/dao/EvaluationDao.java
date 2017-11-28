@@ -62,27 +62,27 @@ public class EvaluationDao {
 		String scoreMark = null;
 		
 		if(null==pile.getPileLength()||0==pile.getPileLength().floatValue()){
-			scoreMark = "桩长不够";
+			scoreMark = "桩长不合格";
 			return mapper.updatePileScore((int) score, scoreMark,1, pileId);
 		}
 
 		float lengthScore = this.evalPileLength(bean, list, pile);
 		if (0 == lengthScore) {
-			scoreMark = "桩长不够";
+			scoreMark = "桩长不合格";
 			//pileBrokenMapper.insert(broken);
 			return mapper.updatePileScore((int) score, scoreMark,1, pileId);
 		}
 
 		float cementScore = this.evalCement(bean, list, pile);
 		if (0 == cementScore) {
-			scoreMark = "水泥用量不够";
+			scoreMark = "水泥用量不合格";
 			//pileBrokenMapper.insert(broken);
 			return mapper.updatePileScore((int) score, scoreMark,2, pileId);
 		}
 
 		float leanScore = this.evalLean(bean, list, pile);
 		if (0 == leanScore) {
-			scoreMark = "垂直度太大";
+			scoreMark = "垂直度不合格";
 			//pileBrokenMapper.insert(broken);
 			return mapper.updatePileScore((int) score, scoreMark,3, pileId);
 		}
@@ -117,32 +117,30 @@ public class EvaluationDao {
 
 	public float evalPileLength(EvalBean eval, List<EvalEntireBean> entitys, PileBean pile) {
 		float score = 0L;
+		float deviation=(pile.getPileLength().floatValue()-eval.getPilePlanLength())/eval.getPilePlanLength()*100L;
 
 		if (eval.getId() == 1 || eval.getId() == 3) {
-			float l = eval.getPilePlanLength() - pile.getPileLength().floatValue();
-			if (l < 0L) {
+			if (deviation >=0L) {
 				score = eval.getLengthScore() * 100;
 			} else {
+				deviation=Math.abs(deviation);
 				for (EvalEntireBean entity : entitys) {
 					if (entity.getEvaluationType() != 1) {
 						continue;
 					}
 
-					if (null == entity.getPileLengthMore() || 0 == entity.getPileLengthMore()) {
-						if (entity.getPileLengthLess() >= l) {
-							score = entity.getScore() * eval.getLengthScore();
-						}
-					}
-
-					if (entity.getPileLengthLess() >= l && entity.getPileLengthMore() <= l) {
-						score = entity.getScore() * eval.getLengthScore();
-					}
-
-					if (null == entity.getPileLengthLess() || 0 == entity.getPileLengthLess()) {
-						if (entity.getPileLengthMore() <= l) {
-							score = entity.getScore() * eval.getLengthScore();
-						}
-					}
+					if(entity.getPileLengthLess()!=0) {
+                        if (deviation >= entity.getPileLengthMore() && deviation < entity.getPileLengthLess()) {
+                            score = entity.getScore() * eval.getLengthScore();
+                            break;
+                        }
+                    }
+                    else{
+                        if (deviation >= entity.getPileLengthMore()) {
+                            score = 0L;
+                            break;
+                        }
+                    }
 				}
 			}
 		}
@@ -171,28 +169,31 @@ public class EvaluationDao {
 
 	public float evalCement(EvalBean eval, List<EvalEntireBean> entitys, PileBean pile) {
 		float score = 0L;
-		float d = eval.getCementDensity() - pile.getTotalCement().floatValue() / pile.getPileLength().floatValue();
-		if (d < 0L) {
+		float actualPileCementDensity=pile.getTotalCement().floatValue() / pile.getPileLength().floatValue();
+        System.out.println("actual cement density"+actualPileCementDensity);
+		float deviation = (actualPileCementDensity-eval.getCementDensity())/eval.getCementDensity()*100L;
+		System.out.println("cement deviation"+deviation);
+		if (deviation >= 0L) {
 			score = eval.getCementScore() * 100;
 		} else {
+            deviation=Math.abs(deviation);
 			for (EvalEntireBean entity : entitys) {
 				if (entity.getEvaluationType() != 2) {
 					continue;
 				}
 
-				if (null == entity.getCementMore() || 0 == entity.getCementMore()) {
-					if (entity.getCementLess() >= d) {
-						score = entity.getScore() * eval.getCementScore();
-					}
-				}
-				if (entity.getCementLess() >= d && entity.getCementMore() <= d) {
-					score = entity.getScore() * eval.getCementScore();
-				}
-				if (null == entity.getCementLess() || 0 == entity.getCementLess()) {
-					if (entity.getCementMore() <= d) {
-						score = entity.getScore() * eval.getCementScore();
-					}
-				}
+                if(entity.getCementLess()!=0) {
+                    if (deviation >= entity.getCementMore()&& deviation < entity.getCementLess()) {
+                        score = entity.getScore() * eval.getCementScore();
+                        break;
+                    }
+                }
+                else{
+                    if (deviation >= entity.getCementMore()) {
+                        score = 0L;
+                        break;
+                    }
+                }
 			}
 		}
 		return score / 100;
@@ -200,29 +201,27 @@ public class EvaluationDao {
 
 	public float evalLean(EvalBean eval, List<EvalEntireBean> entitys, PileBean pile) {
 		float score = 0L;
-		float l = 0;
-		if (null == pile.getMaxLean()) {
+		float actualPileMaxLean=Math.abs(pile.getMaxLean().floatValue());
+		if (actualPileMaxLean ==0L) {
 			score = eval.getLeanScore() * 100;
 		} else {
-			l = pile.getMaxLean().floatValue();
 			for (EvalEntireBean entity : entitys) {
 				if (entity.getEvaluationType() != 3) {
 					continue;
 				}
 
-				if (null == entity.getLeanMore() || 0 == entity.getLeanMore()) {
-					if (entity.getLeanLess() <= l) {
-						score = entity.getScore() * eval.getLeanScore();
-					}
-				}
-				if (entity.getLeanLess() >= l && entity.getLeanMore() <= l) {
-					score = entity.getScore() * eval.getLeanScore();
-				}
-				if (null == entity.getLeanLess() || 0 == entity.getLeanLess()) {
-					if (entity.getLeanMore() <= l) {
-						score = entity.getScore() * eval.getLeanScore();
-					}
-				}
+                if(entity.getLeanLess()!=0) {
+                    if (actualPileMaxLean >= entity.getLeanMore()&& actualPileMaxLean < entity.getLeanLess()) {
+                        score = entity.getScore() * eval.getLeanScore();
+                        break;
+                    }
+                }
+                else{
+                    if (actualPileMaxLean >= entity.getLeanMore()) {
+                        score = 0L;
+                        break;
+                    }
+                }
 			}
 		}
 		return score / 100;

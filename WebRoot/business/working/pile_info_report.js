@@ -1,28 +1,30 @@
-Ext.namespace('dm.equip.pile');
+Ext.namespace('dm.equip.pileReport');
 
 /**
  * 主面板
  */
-dm.equip.pile.MainPanel = function(projectRecord) {
-	var mainPanel = this;
-	mainPanel.gridPanel = new dm.equip.pile.GridPanel();
+var mainPanel;
+dm.equip.pileReport.MainPanel = function(reportSearchConditions) {
+	mainPanel = this;
+	mainPanel.autoScroll = true;
+	mainPanel.gridPanel = new dm.equip.pileReport.GridPanel();
 	mainPanel.gridPanel.parent = mainPanel;
-	mainPanel.searchPanel = new dm.equip.pile.SearchPanel(mainPanel.gridPanel, projectRecord);
+	mainPanel.searchPanel = new dm.equip.pileReport.SearchPanel(mainPanel.gridPanel, reportSearchConditions);
 	/**
 	 * 标签面板的构造函数
 	 */
-	dm.equip.pile.MainPanel.superclass.constructor.call(this, {
+	dm.equip.pileReport.MainPanel.superclass.constructor.call(this, {
 				title : '成桩列表',
 				layout : 'border',
 				baseCls : "x-plain",
 				closable : true,
-				items : [mainPanel.searchPanel, mainPanel.gridPanel, new dm.equip.pile.bottom()]
+				items : [mainPanel.searchPanel, mainPanel.gridPanel]
 			});
 	mainPanel.on('afterrender', function() {
 				// 加载表格数据
-				if(projectRecord){
-					mainPanel.gridPanel.searchConditions.projectId = projectRecord.data.projectId;
-					mainPanel.gridPanel.loadData(projectRecord);
+				if(reportSearchConditions.projectRecord){
+					mainPanel.gridPanel.searchConditions.projectId = reportSearchConditions.projectRecord.data.projectId;
+					mainPanel.gridPanel.loadData(reportSearchConditions);
 				}else{
 					mainPanel.gridPanel.loadData();
 				}
@@ -30,22 +32,23 @@ dm.equip.pile.MainPanel = function(projectRecord) {
 			});
 
 };
-Ext.extend(dm.equip.pile.MainPanel, Ext.Panel, {});
+Ext.extend(dm.equip.pileReport.MainPanel, Ext.Panel, {});
 
 /**
  * 搜索面板
  */
-dm.equip.pile.SearchPanel = function(grid,projectRecord) {
-	var searchPanel = this;
+var searchPanel;
+dm.equip.pileReport.SearchPanel = function(grid,reportSearchConditions) {
+	searchPanel = this;
 	searchPanel.grid = grid;
-	searchPanel.projectRecord=projectRecord;
+	searchPanel.projectRecord=reportSearchConditions.projectRecord;
 	//alert(projectRecord.data.projectId);
 	searchPanel.searchConditions = {
     		 projectId : projectRecord.data.projectId
     	};
 
-	dm.equip.pile.SearchPanel.superclass.constructor.call(this, {
-		height : 70,
+	dm.equip.pileReport.SearchPanel.superclass.constructor.call(this, {
+		height : 100,
 		region : 'north',
 		hideLabels : false,
 		frame : true,
@@ -59,10 +62,22 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 				baseCls : "x-plain"
 			},
 			items : [
-
 			 {
 				columnWidth : .3,
-				items : [{
+				items : [
+				{
+                    xtype: "label",
+                    height: 30,
+                    forId: "projectLabel",
+                    text: "项目名称:    ",
+                    },
+                {
+                    xtype: "label",
+                    height: 30,
+                    forId: "projectName",
+                    text: projectRecord.data.projectName,
+                    },
+				{
 					id : 'sectionId',
 					xtype : 'combo',
 					fieldLabel : '标段',// '操作人',
@@ -178,7 +193,7 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 							// labelWidth : 20,
 							fieldLabel : '桩机编号',
 							width : 150,
-							maxLength : 40,
+							maxLength : 50,
 							maxLengthText : '长度不能超过40'
 						}, {
 							id : 'pileNumber',
@@ -214,13 +229,34 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 							handler : function() {
 								searchPanel.grid.clearSearchCondition();
 							}
+						},{
+							iconCls : 'icon-print',
+							text : '打印',// '打印',
+							xtype : 'button',
+							// funcCode :
+							// DM.FUNCCODE.SYSTEMMONITOR_USECONDITION_RESET,
+							handler : function() {
+								var projectName = projectRecord.data.projectName;
+								var pileDriverNumber = Ext.getCmp("pileDriverNumber").getValue().trim();
+								var pileNumber = Ext.getCmp("pileNumber").getValue().trim();
+								var sectionName = Ext.getCmp("sectionId").getRawValue();
+								var startTime = dm.comm.comm_ConvertStringToDate(Ext.getCmp("startTime").getValue());
+								if(startTime == null){
+									startTime = '';
+								}
+						        var endTime = dm.comm.comm_ConvertStringToDate(Ext.getCmp("endTime").getValue());
+						        if(endTime == null){
+						        	endTime = '';
+								}
+								printGrid(projectName, sectionName, pileDriverNumber, pileNumber, startTime, endTime);
+							}
 						}]
 			}]
 		}]
 	});
 };
 
-Ext.extend(dm.equip.pile.SearchPanel, Ext.form.FormPanel, {
+Ext.extend(dm.equip.pileReport.SearchPanel, Ext.form.FormPanel, {
 			searchData : function() {
 				var searchPanel = this;
 				if (!searchPanel.getForm().isValid()) {
@@ -230,26 +266,55 @@ Ext.extend(dm.equip.pile.SearchPanel, Ext.form.FormPanel, {
 				}
 				//alert( Ext.getCmp("sectionId").getValue());
 				var grid = searchPanel.grid;
-				grid.searchConditions.pileNumber = Ext
-						.getCmp("pileNumber").getValue().trim();
-				grid.searchConditions.sectionNumber = Ext
-						.getCmp("sectionId").getValue();
+				alert(reportSearchConditions.sectionNumber);
+				grid.searchConditions.pileNumber = reportSearchConditions.pileNumber;
+				grid.searchConditions.sectionNumber =reportSearchConditions.sectionNumber;
 				//alert( grid.searchConditions.sectionNumber );
-				grid.searchConditions.pileDriverNumber = Ext
-						.getCmp("pileDriverNumber").getValue().trim();
-				grid.searchConditions.startTime = dm.comm.comm_ConvertStringToDate(Ext
-						.getCmp("startTime").getValue());
-				grid.searchConditions.endTime = dm.comm.comm_ConvertStringToDate(Ext
-						.getCmp("endTime").getValue());
+				grid.searchConditions.pileDriverNumber = reportSearchConditions.pileDriverNumber;
+				grid.searchConditions.startTime = reportSearchConditions.startTime;
+				grid.searchConditions.endTime = reportSearchConditions.endTime;
+				//alert(grid.searchConditions.endTime);
 				grid.loadData();
 			}
 		});
 
+var gridPanel;
+
+function printGrid(projectName, sectionName, pileDriverNumber, pileNumber, startTime, endTime){
+	
+	var myWindow = window.open('', '', 'width=1200,height=auto');
+	myWindow.document.write('<html><head>');
+	//myWindow.document.write('<title>' + 'Title' + '</title>');
+	//myWindow.document.write('<link rel="Stylesheet" type="text/css" href="component/tablestyle/table-style.css" />');
+	myWindow.document.write('<link rel="Stylesheet" type="text/css" href="ext/resources/css/ext-all.css" />');
+	myWindow.document.write('<script type="text/javascript" src="component/bootstrap/bootstrap.js"></script>'); 
+	myWindow.document.write('</head><body>'); 
+	var searchConditions = '<div><b><span style="font-size:25px;display:block;width:100%;text-align:center;">钉形水泥土双向搅拌桩现场记录表</span></b> ';
+	    searchConditions += '<br>';
+	    searchConditions += '<span style="display:block;width:100%;text-align:center;">项目名称: ' + projectName + '</span> ';
+		//searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<br>';
+		searchConditions += '<span>标段: ' + sectionName + '</span> ';
+        searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>桩机编号: ' + pileDriverNumber + '</span> ';
+		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>开始时间: ' + startTime + '</span> ';
+		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>结束时间: ' + endTime + '</span></div>';
+		searchConditions += '<div> &nbsp;&nbsp; </div>';
+	
+	myWindow.document.write(searchConditions); 
+	myWindow.document.write(gridPanel.body.dom.innerHTML);
+	myWindow.document.write('</body></html>');
+	setTimeout(function() {myWindow.print();},1000);
+	//myWindow.print();
+	
+}
 /**
  * 列表面板
  */
-dm.equip.pile.GridPanel = function() {
-	var gridPanel = this;
+dm.equip.pileReport.GridPanel = function() {
+	gridPanel = this;
 	gridPanel.searchConditions = {
 		 pileDriverNumber : "",
 		 /*startTime : "",
@@ -257,8 +322,13 @@ dm.equip.pile.GridPanel = function() {
 		 pileNumber : '',
 		 sectionNumber : ''
 	};
+	gridPanel.autoHeight = true;
+	gridPanel.autoWidth = true;
+	gridPanel.border=true;
+	gridPanel.columnLines=true;
+
 	// 勾选框
-	gridPanel.sm = new Ext.grid.CheckboxSelectionModel();
+	//gridPanel.sm = new Ext.grid.CheckboxSelectionModel();
 	// 每页显示条数下拉选择框
 	gridPanel.pagesize_combo = new dm.object.pagesize_combo();
 	// 每页显示的条数
@@ -330,59 +400,45 @@ dm.equip.pile.GridPanel = function() {
 							+ rowIndex;
 				}
 			}), gridPanel.sm, 
-	{
+	/*{
 		header : 'ID',
 		dataIndex : "id",
-		width : 40,
+		width : 48,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	}, {
+	},*/ {
 		header : '桩编号',
 		dataIndex : "pileNumber",
-		width : 40,
-		renderer : function(value) {
-			return dm.comm.comm_getTip(value);
-		}
-	}, {
-		header : '评分',
-		dataIndex : "score",
-		width : 60,
-		renderer : function(value) {
-			return dm.comm.comm_getTip(value);
-		}
-	}, {
-		header : '评分结果',
-		dataIndex : "scoreMark",
-		width : 60,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	}, {
 		header : '开始时间',
 		dataIndex : "startTime",
-		width : 60,
+		width : 65,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '结束时间',
 		dataIndex : "endTime",
-		width : 45,
+		width : 65,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '实际桩长(m)',
 		dataIndex : "pileLength",
-		width : 45,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '喷浆时间(s)',
 		dataIndex : "gunitingSecond",
-		width : 45,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
@@ -403,28 +459,28 @@ dm.equip.pile.GridPanel = function() {
 	},{
 		header : '提钻速度(cm/min)',
 		dataIndex : "maxUpSpeed",
-		width : 45,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '下钻速度(cm/min)',
 		dataIndex : "maxDownSpeed",
-		width : 45,
+		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '最大内电流(A)',
 		dataIndex : "maxInsidePower",
-		width : 45,
+		width : 60,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '最大外电流(A)',
 		dataIndex : "maxOutsidePower",
-		width : 45,
+		width : 60,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
@@ -442,14 +498,28 @@ dm.equip.pile.GridPanel = function() {
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	},{
+	}, {
+     		header : '评分',
+     		dataIndex : "score",
+     		width : 25,
+     		renderer : function(value) {
+     			return dm.comm.comm_getTip(value);
+     		}
+     	}, {
+     		header : '评分结果',
+     		dataIndex : "scoreMark",
+     		width : 45,
+     		renderer : function(value) {
+     			return dm.comm.comm_getTip(value);
+     		}
+     	}/*,{
 		header : '上传时间',
 		dataIndex : "createTime",
-		width : 45,
+		width : 100,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	}
+	}*/
 	]);
 	// 分页工具栏
 	gridPanel.ProgressBar = new dm.object.ProgressBarPager();
@@ -474,8 +544,9 @@ dm.equip.pile.GridPanel = function() {
 							}
 						});
 			});
-	dm.equip.pile.GridPanel.superclass.constructor.call(this, {
+	dm.equip.pileReport.GridPanel.superclass.constructor.call(this, {
 				autoWidth : true,
+				border:1,
 				height : 520,
 				region : 'center',
 				loadMask : {
@@ -487,7 +558,7 @@ dm.equip.pile.GridPanel = function() {
 				sm : gridPanel.sm,
 				// 勾选框
 				columns : gridPanel.cm,
-				tbar : [ {
+				/*tbar : [ {
 					xtype : 'combo',
 					value : '1',
 					id:'evalId',
@@ -510,12 +581,12 @@ dm.equip.pile.GridPanel = function() {
 					handler : function() {
 						gridPanel.evaluation();
 					}
-				}],
+				}],*/
 				// autoExpandColumn : 6,
 				// 分页
 				bbar : gridPanel.mybbar,
 				// 不产横向生滚动条, 各列自动扩展自动压缩, 适用于列数比较少的情况
-				viewConfig : {
+				/*viewConfig : {
 					forceFit : true,
 					getRowClass : function(record,rowIndex,rowParams,store){
 		                   //数据显示红色
@@ -527,13 +598,13 @@ dm.equip.pile.GridPanel = function() {
 	                	   	case 4:return 'x-grid-record-blue';
 	                	   }
 	                	   
-	                       /*return 'x-grid-record-red';
-	                       return '';*/
+	                       *//*return 'x-grid-record-red';
+	                       return '';*//*
 	                   }    
 	               }
-				},
+				},*/
 				listeners:{  
-					rowdblclick : function(grid,row,e){ 
+					/*rowdblclick : function(grid,row,e){
 						var selectionModel = grid.getSelectionModel();
 						var record = selectionModel.getSelected();
 						//console.info("record : ",record.data.pileNumber);
@@ -543,7 +614,7 @@ dm.equip.pile.GridPanel = function() {
 							
 							
 							pile2pilePerDeep(record.data.pileNumber);
-							/*var cmp = mainTab.getComponent("ext-iframe-252");
+							*//*var cmp = mainTab.getComponent("ext-iframe-252");
 							if (cmp){
 								mainTab.remove(cmp);
 							}
@@ -553,19 +624,19 @@ dm.equip.pile.GridPanel = function() {
 							tmp.id = "ext-iframe-252";
 							tmp.iconCls = "icon-module_252";
 							gridPanel.parent.frameParent.add(tmp);
-							gridPanel.parent.frameParent.loadTab(tmp);*/
+							gridPanel.parent.frameParent.loadTab(tmp);*//*
 							
 						});
 						
-					}
+					}*/
 				}
 			});
 	gridPanel.store.on('beforeload', function() {
 				gridPanel.store.baseParams = gridPanel.searchConditions;
 			});
 };
-Ext.extend(dm.equip.pile.GridPanel, Ext.grid.GridPanel, {
-	evaluation:function(){
+Ext.extend(dm.equip.pileReport.GridPanel, Ext.grid.GridPanel, {
+	/*evaluation:function(){
 		var gird = this;
 		var len = this.getSelectionModel().getSelections().length;
 		if (len == 0) {
@@ -610,7 +681,7 @@ Ext.extend(dm.equip.pile.GridPanel, Ext.grid.GridPanel, {
 			failure : function(response, action) {
 			}
 		});
-	},
+	},*/
 	loadData : function() {
 		var gridPanel = this;
 		gridPanel.store.load({
@@ -643,13 +714,13 @@ Ext.extend();*/
 
 
 
-dm.equip.pile.bottom= function(){
+dm.equip.pileReport.bottom= function(){
 	
 	var mainPanel = this;
 	/**
 	 * 标签面板的构造函数
 	 */
-	dm.equip.pile.bottom.superclass.constructor.call(this, {
+	dm.equip.pileReport.bottom.superclass.constructor.call(this, {
 				fitToFrame: true, 
 				height : 100,
 				region : 'south',
@@ -658,4 +729,4 @@ dm.equip.pile.bottom= function(){
 			});
 };
 
-Ext.extend(dm.equip.pile.bottom,Ext.Panel, {});
+Ext.extend(dm.equip.pileReport.bottom,Ext.Panel, {});
