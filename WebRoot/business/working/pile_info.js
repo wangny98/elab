@@ -242,7 +242,7 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 								var projectSupervisor=projectRecord.data.projectSupervisor;
 								var contractNumber=projectRecord.data.contractNumber;
 								//var pileDriverNumber = Ext.getCmp("pileDriverNumber").getValue().trim();
-								var pileNumber = Ext.getCmp("pileNumber").getValue().trim();
+								var pileDriverNumber = Ext.getCmp("pileDriverNumber").getValue().trim();
 								var sectionName = Ext.getCmp("sectionId").getRawValue();
 								var startTime = dm.comm.comm_ConvertStringToDate(Ext.getCmp("startTime").getValue());
 								if(startTime == null){
@@ -252,7 +252,7 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 						        if(endTime == null){
 						        	endTime = '';
 								}
-								printGrid(projectName, projectBuilder, projectSupervisor, contractNumber, sectionName, pileNumber, startTime, endTime);
+								printGrid(projectName, projectBuilder, projectSupervisor, contractNumber, sectionName, pileDriverNumber, startTime, endTime);
 							}
 						}]
 			}]
@@ -270,17 +270,13 @@ Ext.extend(dm.equip.pile.SearchPanel, Ext.form.FormPanel, {
 				}
 				//alert( Ext.getCmp("sectionId").getValue());
 				var grid = searchPanel.grid;
-				if(getCmp("pileNumber")!=null)
+				if(Ext.getCmp("pileNumber")!=null)
 				  grid.searchConditions.pileNumber = Ext.getCmp("pileNumber").getValue().trim();
-				grid.searchConditions.sectionNumber = Ext
-						.getCmp("sectionId").getValue();
+				grid.searchConditions.sectionNumber = Ext.getCmp("sectionId").getValue();
 				//alert( grid.searchConditions.sectionNumber );
-				grid.searchConditions.pileDriverNumber = Ext
-						.getCmp("pileDriverNumber").getValue().trim();
-				grid.searchConditions.startTime = dm.comm.comm_ConvertStringToDate(Ext
-						.getCmp("startTime").getValue());
-				grid.searchConditions.endTime = dm.comm.comm_ConvertStringToDate(Ext
-						.getCmp("endTime").getValue());
+				grid.searchConditions.pileDriverNumber = Ext.getCmp("pileDriverNumber").getValue().trim();
+				grid.searchConditions.startTime = dm.comm.comm_ConvertStringToDate(Ext.getCmp("startTime").getValue());
+				grid.searchConditions.endTime = dm.comm.comm_ConvertStringToDate(Ext.getCmp("endTime").getValue());
 				//alert(grid.searchConditions.endTime);
 				grid.loadData();
 			}
@@ -288,7 +284,7 @@ Ext.extend(dm.equip.pile.SearchPanel, Ext.form.FormPanel, {
 
 var gridPanel;
 
-function printGrid(projectName, projectBuilder,projectSupervisor,contractNumber,sectionName, pileNumber, startTime, endTime){
+function printGrid(projectName, projectBuilder,projectSupervisor,contractNumber,sectionName, pileDriverNumber, startTime, endTime){
 	
 	var myWindow = window.open('', '', 'width=1200,height=auto');
 	myWindow.document.write('<html><head>');
