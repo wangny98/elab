@@ -67,6 +67,7 @@ public class PileDeepManageService {
 		Map<String, Object> machineInfo = new HashMap<String, Object>();
 
 		Short maxSpeed=249;
+		BigDecimal maxCementWeight= new BigDecimal(14.9);
 
 		try{
 			down = pileDeepDao.selectByDown(pileNumber);
@@ -92,6 +93,9 @@ public class PileDeepManageService {
                     if (down.get(i).getSpeed()>= maxSpeed) down.get(i).setSpeed(maxSpeed);
                     //System.out.println("new speed:"+up.get(i).getSpeed());
                 }
+                if(down.get(i).getCementWeight()!=null) {
+                    if ((down.get(i).getCementWeight().compareTo(maxCementWeight)>0)) down.get(i).setCementWeight(maxCementWeight);
+                }
             }
 
 			up = pileDeepDao.selectByUP(pileNumber);
@@ -113,6 +117,9 @@ public class PileDeepManageService {
                         if (up.get(i).getSpeed()>= maxSpeed) up.get(i).setSpeed(maxSpeed);
                         //System.out.println("new speed:"+up.get(i).getSpeed());
                     }
+                if(up.get(i).getCementWeight()!=null) {
+                    if ((up.get(i).getCementWeight().compareTo(maxCementWeight)>0)) up.get(i).setCementWeight(maxCementWeight);
+                }
             }
 
 			machineInfo = pileDeepDao.selectMachineInfo(pileNumber);
@@ -133,6 +140,9 @@ public class PileDeepManageService {
                 if(absSum.get(i).getSpeed()!=null) {
                     if (absSum.get(i).getSpeed()>= maxSpeed) absSum.get(i).setSpeed(maxSpeed);
                     //System.out.println("new speed:"+up.get(i).getSpeed());
+                }
+                if(absSum.get(i).getCementWeight()!=null) {
+                    if ((absSum.get(i).getCementWeight().compareTo(maxCementWeight)>0)) absSum.get(i).setCementWeight(maxCementWeight);
                 }
             }
 

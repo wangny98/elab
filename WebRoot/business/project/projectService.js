@@ -169,7 +169,7 @@ dm.project.GridPanel = function() {
                                 mainTab.remove(cmp);
                             }
                             var tmp = new dm.equip.pile.MainPanel(record);
-                            tmp.setTitle("标段成桩报表");
+                            tmp.setTitle("标段成桩查询及评分");
 
                             tmp.id = "ext-iframe-16";
                             tmp.iconCls = "icon-module_16";

@@ -28,10 +28,15 @@ LTMS.GLOBAL.MODULE = [
 		jspath : ['systemSet/classificationManager.js','js/ux/comboxWithClass.js']
 	},{
 		id : '16',
-		name : '标段成桩报告',
+		name : '成桩列表查询及评分',
 		module : 'dm.equip.pile.MainPanel',
 		jspath : ['business/working/pile_info.js','systemSet/clearDateField.js']
 	},{
+    		id : '17',
+    		name : '成桩日报表',
+    		module : 'dm.equip.pileReport.MainPanel',
+    		jspath : ['business/working/pile_info_report.js','systemSet/clearDateField.js']
+    },{
 		id : '211',
 		name : '项目报告',
 		module : 'dm.slurryProjectAmount.charts.mainPanel',

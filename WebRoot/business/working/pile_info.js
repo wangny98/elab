@@ -213,7 +213,8 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 			}, {
 				columnWidth : .1,
 				layout : "form",
-				items : [{
+				items : [
+                         {
 							iconCls : 'icon-search',
 							text : '查询',// 查询
 							xtype : 'button',
@@ -237,7 +238,10 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 							// DM.FUNCCODE.SYSTEMMONITOR_USECONDITION_RESET,
 							handler : function() {
 								var projectName = projectRecord.data.projectName;
-								var pileDriverNumber = Ext.getCmp("pileDriverNumber").getValue().trim();
+								var projectBuilder= projectRecord.data.projectBuilder;
+								var projectSupervisor=projectRecord.data.projectSupervisor;
+								var contractNumber=projectRecord.data.contractNumber;
+								//var pileDriverNumber = Ext.getCmp("pileDriverNumber").getValue().trim();
 								var pileNumber = Ext.getCmp("pileNumber").getValue().trim();
 								var sectionName = Ext.getCmp("sectionId").getRawValue();
 								var startTime = dm.comm.comm_ConvertStringToDate(Ext.getCmp("startTime").getValue());
@@ -248,7 +252,7 @@ dm.equip.pile.SearchPanel = function(grid,projectRecord) {
 						        if(endTime == null){
 						        	endTime = '';
 								}
-								printGrid(projectName, sectionName, pileDriverNumber, pileNumber, startTime, endTime);
+								printGrid(projectName, projectBuilder, projectSupervisor, contractNumber, sectionName, pileNumber, startTime, endTime);
 							}
 						}]
 			}]
@@ -266,8 +270,8 @@ Ext.extend(dm.equip.pile.SearchPanel, Ext.form.FormPanel, {
 				}
 				//alert( Ext.getCmp("sectionId").getValue());
 				var grid = searchPanel.grid;
-				grid.searchConditions.pileNumber = Ext
-						.getCmp("pileNumber").getValue().trim();
+				if(getCmp("pileNumber")!=null)
+				  grid.searchConditions.pileNumber = Ext.getCmp("pileNumber").getValue().trim();
 				grid.searchConditions.sectionNumber = Ext
 						.getCmp("sectionId").getValue();
 				//alert( grid.searchConditions.sectionNumber );
@@ -284,32 +288,54 @@ Ext.extend(dm.equip.pile.SearchPanel, Ext.form.FormPanel, {
 
 var gridPanel;
 
-function printGrid(projectName, sectionName, pileDriverNumber, pileNumber, startTime, endTime){
+function printGrid(projectName, projectBuilder,projectSupervisor,contractNumber,sectionName, pileNumber, startTime, endTime){
 	
 	var myWindow = window.open('', '', 'width=1200,height=auto');
 	myWindow.document.write('<html><head>');
 	//myWindow.document.write('<title>' + 'Title' + '</title>');
-	myWindow.document.write('<link rel="Stylesheet" type="text/css" href="ext/resources/css/ext-all.css" />'); 
+	//myWindow.document.write('<link rel="Stylesheet" type="text/css" href="component/tablestyle/table-style.css" />');
+	myWindow.document.write('<link rel="Stylesheet" type="text/css" href="ext/resources/css/ext-all.css" />');
 	myWindow.document.write('<script type="text/javascript" src="component/bootstrap/bootstrap.js"></script>'); 
 	myWindow.document.write('</head><body>'); 
-	var searchConditions = '<div><span style="display:block;width:100%;text-align:center;">项目名称: ' + projectName + '</span> ';
+	var searchConditions = '<div><b><span style="font-size:25px;display:block;width:100%;text-align:center;">钉形水泥土双向搅拌桩现场记录表</span></b> ';
+	    searchConditions += '<br>';
+
+	    searchConditions += '<span style="display:block;width:100%;font-size:18px;text-align:center;">项目名称: ' + projectName + '</span> ';
 		//searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
 		searchConditions += '<br>';
-		searchConditions += '<span>桩机编号: ' + pileDriverNumber + '</span> ';
-		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
-		searchConditions += '<span>桩编号: ' + pileNumber + '</span>';
-		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>承包单位: ' + projectBuilder + '</span> ';
+        searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>监理单位: ' + projectSupervisor + '</span> ';
+        searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+        searchConditions += '<span>合同编号: ' + contractNumber + '</span> ';
+        searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+
+		searchConditions += '<br>';
 		searchConditions += '<span>标段: ' + sectionName + '</span> ';
+        searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		searchConditions += '<span>桩机编号: ' + pileDriverNumber + '</span> ';
 		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
 		searchConditions += '<span>开始时间: ' + startTime + '</span> ';
 		searchConditions += ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
 		searchConditions += '<span>结束时间: ' + endTime + '</span></div>';
 		searchConditions += '<div> &nbsp;&nbsp; </div>';
 	
-	myWindow.document.write(searchConditions); 
-	myWindow.document.write(gridPanel.body.dom.innerHTML); 
+	myWindow.document.write(searchConditions);
+	myWindow.document.write(gridPanel.body.dom.innerHTML.replace(/border=\"0\"/g, 'border=\"1\"').replace('cellspacing=\"0\"', 'cellspacing=\"2\"'));
+	//myWindow.document.write(gridPanel.body.dom.innerHTML);
+	var bottomSection='<span>记录: '+'_______________'+ '</span> ';
+	    bottomSection+=' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+	    bottomSection+='<span>机长: '+'_______________'+ '</span> ';
+        bottomSection+=' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+        bottomSection+='<span>施工技术员: '+'______________'+ '</span> ';
+        bottomSection+=' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+        bottomSection+='<span>场旁站: '+'______________'+ '</span> ';
+        bottomSection+=' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+        bottomSection+='<span>监理: '+'______________'+ '</span> ';
+        bottomSection+=' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+    myWindow.document.write(bottomSection);
 	myWindow.document.write('</body></html>');
-	setTimeout(function() {myWindow.print();},3000);
+	setTimeout(function() {myWindow.print();},1000);
 	//myWindow.print();
 	
 }
@@ -327,6 +353,9 @@ dm.equip.pile.GridPanel = function() {
 	};
 	gridPanel.autoHeight = true;
 	gridPanel.autoWidth = true;
+	gridPanel.border=true;
+	gridPanel.columnLines=true;
+
 	// 勾选框
 	gridPanel.sm = new Ext.grid.CheckboxSelectionModel();
 	// 每页显示条数下拉选择框
@@ -410,39 +439,39 @@ dm.equip.pile.GridPanel = function() {
 	},*/ {
 		header : '桩编号',
 		dataIndex : "pileNumber",
-		width : 50,
+		width : 42,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	}, {
 		header : '开始时间',
 		dataIndex : "startTime",
-		width : 65,
+		width : 70,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '结束时间',
 		dataIndex : "endTime",
-		width : 65,
+		width : 70,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '实际桩长(m)',
 		dataIndex : "pileLength",
-		width : 50,
+		width : 48,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	},{
+	}/*,{
 		header : '喷浆时间(s)',
 		dataIndex : "gunitingSecond",
 		width : 50,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	},{
+	}*/,{
 		header : '总浆量(L)',
 		dataIndex : "totalLiquid",
 		width : 45,
@@ -459,28 +488,28 @@ dm.equip.pile.GridPanel = function() {
 	},{
 		header : '提钻速度(cm/min)',
 		dataIndex : "maxUpSpeed",
-		width : 50,
+		width : 60,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '下钻速度(cm/min)',
 		dataIndex : "maxDownSpeed",
-		width : 50,
+		width : 60,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '最大内电流(A)',
 		dataIndex : "maxInsidePower",
-		width : 60,
+		width : 55,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
 	},{
 		header : '最大外电流(A)',
 		dataIndex : "maxOutsidePower",
-		width : 60,
+		width : 55,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
@@ -491,28 +520,28 @@ dm.equip.pile.GridPanel = function() {
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	},{
+	},/*{
 		header : '机号',
 		dataIndex : "pileDriverNumber",
 		width : 45,
 		renderer : function(value) {
 			return dm.comm.comm_getTip(value);
 		}
-	}, {
+	},*/ {
      		header : '评分',
      		dataIndex : "score",
-     		width : 25,
+     		width : 35,
      		renderer : function(value) {
      			return dm.comm.comm_getTip(value);
      		}
-     	}, {
+     	}/*, {
      		header : '评分结果',
      		dataIndex : "scoreMark",
-     		width : 45,
+     		width : 60,
      		renderer : function(value) {
      			return dm.comm.comm_getTip(value);
      		}
-     	}/*,{
+     	}*//*,{
 		header : '上传时间',
 		dataIndex : "createTime",
 		width : 100,
@@ -546,6 +575,7 @@ dm.equip.pile.GridPanel = function() {
 			});
 	dm.equip.pile.GridPanel.superclass.constructor.call(this, {
 				autoWidth : true,
+				border:1,
 				height : 520,
 				region : 'center',
 				loadMask : {
